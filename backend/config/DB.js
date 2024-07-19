@@ -3,13 +3,11 @@ const mysql = require('mysql2')
 
 const conn = mysql.createConnection({
 
-    host : "project-db-stu3.smhrd.com",
-    port :"3307",
-    database : "Insa5_JSA_hacksim_2",
-    password : "aischool2",
-    user : "Insa5_JSA_hacksim_2"
-
-
+    host: "project-db-stu3.smhrd.com",
+    port: "3307",
+    database: "Insa5_JSA_hacksim_2",
+    password: "aischool2",
+    user: "Insa5_JSA_hacksim_2"
 
 })
 
