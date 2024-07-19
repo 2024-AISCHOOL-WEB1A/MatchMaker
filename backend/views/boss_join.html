@@ -1,0 +1,16 @@
+{% extends 'main.html'%}
+
+{%block content%}
+<h3> 구장 관리자 회원가입</h3>
+<form action="/user/boss_join" method = 'post'>
+    ID : <input type="text" name="id"> 
+    <br/>
+    PW : <input type ="password" name="pw">
+    <br/>
+    name : <input type="text" name="name">
+    phone : <input type="text" name="phone">
+
+    <input type="submit" value="회원가입">
+</form>
+
+{%endblock%}

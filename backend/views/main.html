@@ -6,6 +6,24 @@
     <title>Document</title>
 </head>
 <body>
-    <h1></h1>
+    {% block content %}
+    <a href="/">
+        <h1>🎁회원관리 시스템🍚</h1>
+    </a>
+
+    {% if idName != NULL %}
+        <p>{{ idName }} 님 환영합니다</p>
+           
+    {% else %}
+        <h3>로그인 해주세용</h3>
+        <a href="#">회원가입</a>
+        <a href="/boss_join">구장 관리자용 회원가입 </a>
+        <a href="#">로그인</a>
+    {% endif %}
+
+  
+   
+
+    {% endblock %}
 </body>
 </html>
