@@ -11,7 +11,9 @@ router.get('/',(req,res)=>{
     res.render('main',{idName : req.session.idName})
 }) 
 
-
+router.get('/join', (req,res)=>{
+    res.render('join')
+})
 
 
 
