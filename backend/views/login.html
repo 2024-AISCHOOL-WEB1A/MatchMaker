@@ -3,6 +3,8 @@
 {% block content %}
     <h3>로그인 페이지</h3>
     <form action="/user/login" method="post">
+        일반회원 : <input type="radio" name="user">
+        풋살장 사장 : <input type="radio" name="boss"><br>
         ID : <input type="text" name="id"> <br>
         PW : <input type="password" name="pw">
         <input type="submit" value="로그인">

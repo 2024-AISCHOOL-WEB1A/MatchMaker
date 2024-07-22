@@ -97,5 +97,43 @@ router.post("/login", (req, res) => {
     });
 });
 
+// 로그아웃 기능 router
+router.get("/logout", (req, res) => {
+    console.log("로그아웃");
+    req.session.destroy();
+    res.send('<script>window.location.href="/"</script>');
+});
+
+// 마이페이지 기능 router
+router.get("/myPage", (req, res) => {
+    console.log(req.session.idName);
+    let sql = 'SELECT * FROM user_info WHERE user_id = ?;'
+    conn.query(sql, [req.session.idName], (err, rows) => {
+        console.log("rows", rows);
+        res.render("myPage", { rows: rows });
+    });
+});
+
+// 회원정보수정 기능 router
+router.post("/update", (req, res) => {
+    console.log("update", req.body);
+    console.log(req.session.idName);
+
+    let { nick, phone } = req.body;
+    let sql = 'UPDATE user_info SET user_nick = ?, user_phone = ? WHERE user_id = ?';
+    conn.query(sql, [nick, phone, req.session.idName], (err, rows) => {
+        console.log("rows", rows);
+        if (rows.affectedRows > 0) {
+            res.redirect('/');
+        } else {
+            res.send(`
+                <script>
+                    alert('다시 한번 시도해주세요.')
+                    window.location.href="/update"
+                </script>
+            `);
+        }
+    });
+});
 
 module.exports = router;

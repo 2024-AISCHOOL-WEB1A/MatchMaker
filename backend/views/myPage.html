@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h2>마이페이지</h2>
+    <form action="/user/update" method="post">
+        아이디 : {{rows[0].user_id}}<br>
+        닉네임 : <input type="text" name="nick" placeholder={{rows[0].user_nick}}><br>
+        생년월일 : {{rows[0].user_birthdate.toDateString()}}<br>
+        성별 : {{rows[0].user_gender}}<br>
+        전화번호 : <input type="text" name="phone" placeholder={{rows[0].user_phone}}><br>
+        레이트 : {{rows[0].user_rate}}<br>
+        랭크 : {{rows[0].user_rank}}<br>
+        슈팅 : {{rows[0].user_shooting_point}}<br>
+        패스 : {{rows[0].user_pass_point}}<br>
+        드리블 : {{rows[0].user_dribble_point}}<br>
+        체력 : {{rows[0].user_stamina_point}}<br>
+        매너 : {{rows[0].user_manner_point}}<br>
+        웃음 : {{rows[0].user_smile_point}}<br>
+        <input type="submit" value="회원정보수정">
+    </form>
+
+</body>
+
+</html>
