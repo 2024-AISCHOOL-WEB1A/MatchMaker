@@ -40,6 +40,7 @@ router.get("/boss_myPage", (req, res)=>{
 });
 
 
+// 예약 기능 구현
 router.get('/reserv', (req, res) => {
     const sql1 = 'SELECT * FROM court_info';
     const sql2 = 'SELECT * FROM field_info';

@@ -6,15 +6,15 @@ const conn = require('../config/DB')
 
 router.post('/reserv', (req, res) => {
     console.log(req.body)
-    const { court_idx, reserv_dt } = req.body;
+    const { court_idx, reserv_dt, reserv_tm } = req.body;
     const user_id = req.session.idName;
-    const reserv_tm = new Date().toISOString().slice(11, 19); // 현재 시간 타임스탬프로 설정
+    const created_at = new Date(); 
 
-    const sql = 'INSERT INTO reservations (user_id, court_idx, reserv_dt, reserv_tm) VALUES (?, ?, ?, ?)';
-    conn.query(sql, [user_id, court_idx, reserv_dt, reserv_tm], (err, rows) => {
+    const sql = 'INSERT INTO reservation_info (user_id, court_idx, reserv_dt, reserv_tm, created_at) VALUES (?, ?, ?, ?, ?)';
+    conn.query(sql, [user_id, court_idx, reserv_dt, reserv_tm, created_at], (err, rows) => {
         if (err) {
             console.error('Error inserting reservation: ' + err);
-            res.send('<script>alert("예약에 실패했습니다."); window.location.href="/reserv/reserve";</script>');
+            res.send('<script>alert("예약에 실패했습니다."); window.location.href="http://localhost:3007/reserv";</script>');
             return;
         }
 
