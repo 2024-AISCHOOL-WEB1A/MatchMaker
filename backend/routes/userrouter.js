@@ -73,7 +73,8 @@ router.post("/boss_join", (req, res) => {
 // 구장 정보 등록 router -> 코트 정보도 같이 입력됨
 router.post("/field_join", (req, res) => {
     console.log("구장 정보 등록", req.body);
-    let { field_name, field_addr, field_detail, court_count } = req.body;
+    let { field_name, field_addr, field_detail, court_count, main_region, sub_region } = req.body;
+    let region = `${req.body.main_region}, ${req.body.sub_region}`
     let boss_id = req.session.idName;
 
     if (!boss_id) {
@@ -81,8 +82,8 @@ router.post("/field_join", (req, res) => {
     }
 
     // field_info 테이블에 데이터 삽입
-    let sql = `INSERT INTO field_info (field_name, field_addr, field_detail, boss_id) VALUES (?, ?, ?, ?)`;
-    let fieldData = [field_name, field_addr, field_detail, boss_id];
+    let sql = `INSERT INTO field_info (field_name, field_addr, field_detail, boss_id, field_region) VALUES (?, ?, ?, ?, ?)`;
+    let fieldData = [field_name, field_addr, field_detail, boss_id, region];
 
     conn.query(sql, fieldData, (err, result) => {
         if (err) {
@@ -253,7 +254,7 @@ router.post("/field_info_update", (req, res) => {
 });
 
 
-// ㄴ풋살장 관리자의 마이페이지에서 court_info 테이블 업데이트 기능 router
+// 풋살장 관리자의 마이페이지에서 court_info 테이블 업데이트 기능 router
 router.post("/court_info_update", (req, res) => {
     console.log("court_info_update, ", `req.body: ${req.body}`);
 

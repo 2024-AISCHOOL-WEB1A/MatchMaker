@@ -5,6 +5,18 @@
 <form action="/user/field_join" method='post'>
     구장 이름 : <input type="text" name="field_name">
     <br />
+    <div class="field_region">
+        <label >구장 지역 : </label>
+        <select id="main_region" name="main_region" onchange="updateSubRegion()">
+            <option value="서울">서울특별시</option>
+            <option value="광주">광주광역시</option>
+            <option value="전북">전북특별자치도</option>
+        </select>
+
+        <select id="sub_region" name="sub_region">
+            <!-- 하위 지역 옵션이 여기에 동적으로 추가됩니다. -->
+        </select>
+    </div>
     구장 주소 : <input type="text" name="field_addr">
     <br />
     구장 상세 정보 : <input type="text" name="field_detail">
@@ -14,4 +26,50 @@
     <input type="submit" value="구장 등록">
 </form>
 
+<script>
+    function updateSubRegion() {
+        const subRegionSelect = document.getElementById('sub_region');
+        const mainRegion = document.getElementById('main_region').value;
+        
+        // 하위 지역 옵션 초기화
+        subRegionSelect.innerHTML = '';
+
+        let options = [];
+
+        if (mainRegion === '서울') {
+            options = [
+                { value: '종로', text: '종로구' },
+                { value: '강남', text: '강남구' },
+                { value: '동대문', text: '동대문구' }
+            ];
+        } else if (mainRegion === '광주') {
+            options = [
+                { value: '북구', text: '북구' },
+                { value: '광산구', text: '광산구' },
+                { value: '서구', text: '서구' },
+                { value: '동구', text: '동구' },
+                { value: '남구', text: '남구' }
+            ];
+        } else if (mainRegion === '전북') {
+            options = [
+                { value: '전주', text: '전주시' },
+                { value: '익산', text: '익산시' },
+                { value: '군산', text: '군산시' }
+            ];
+        }
+
+        // 새로운 옵션 추가
+        options.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option.value;
+            opt.textContent = option.text;
+            subRegionSelect.appendChild(opt);
+        });
+    }
+
+    // 페이지가 로드될 때 기본 하위 지역을 설정
+    document.addEventListener('DOMContentLoaded', updateSubRegion);
+</script>
+
 {%endblock%}
+
