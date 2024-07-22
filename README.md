@@ -4,3 +4,4 @@
 2. session-file-store
 3. npm install md5 (보안)
 4. chokidar nunjucks nodemon
+5. npm i mysql2
