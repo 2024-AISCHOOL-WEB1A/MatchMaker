@@ -131,19 +131,36 @@ router.post("/login", (req, res) => {
     console.log("login", req.body);
     let { id, pw } = req.body;
 
-    let sql = 'SELECT user_id, user_nick FROM user_info WHERE user_id = ? AND user_pw = ?';
-    conn.query(sql, [id, pw], (err, rows) => {
-        console.log("rows", rows);
-        if (rows.length > 0) {  // 로그인 성공
-            // req.session.nick = rows[0].nick;
-            req.session.idName = id;  // id 라는 변수는 이미 session 에서 예약어로 사용 중이기 때문에, idName 으로 설정
-            // console.log(rows[0].nick);
-            console.log(req.session.idName);
-            res.redirect('/');
-        } else {
-            res.send("<script>alert('아이디 혹은 비밀번호를 잘못 입력하셨습니다.'); window.location.href='/login';</script>")
-        }
-    });
+    let hashedPw = md5(pw);
+
+    let userOrboss = Object.keys(req.body)[0];
+
+    if (userOrboss === "user") {
+        let sql = 'SELECT user_id, user_nick FROM user_info WHERE user_id = ? AND user_pw = ?';
+        conn.query(sql, [id, hashedPw], (err, rows) => {
+            console.log("rows", rows);
+            if (rows.length > 0) {
+                req.session.idName = id;
+                console.log(req.session.idName);
+                res.redirect('/');
+            } else {
+                res.send("<script>alert('아이디 혹은 비밀번호를 잘못 입력하셨습니다.'); window.location.href='/login';</script>")
+            }
+        });
+    } else {
+        let sql = 'SELECT boss_id, boss_name FROM boss_info WHERE boss_id = ? AND boss_pw = ?';
+        conn.query(sql, [id, hashedPw], (err, rows) => {
+            console.log("rows", rows);
+            if (rows.length > 0) {
+                req.session.idName = id;
+                console.log(req.session.idName);
+                res.redirect('/');
+            } else {
+                res.send("<script>alert('아이디 혹은 비밀번호를 잘못 입력하셨습니다.'); window.location.href='/login';</script>")
+            }
+        });
+    };
+
 });
 
 
