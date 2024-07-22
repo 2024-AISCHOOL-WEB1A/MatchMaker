@@ -5,7 +5,7 @@ const nunjucks = require('nunjucks')
 const userRouter = require('./routes/userrouter')
 const session = require('express-session')
 const fileStore = require('session-file-store')(session)
-
+const reservRouter = require('./routes/reservRouter')
 
 app.set('view engine', 'html')
 nunjucks.configure('views', {
@@ -29,6 +29,7 @@ app.use(session({
 
 app.use('/', mainRouter)
 app.use('/user', userRouter)
+app.use('/reserv',reservRouter)
 
 
 app.listen(3007, () => {
