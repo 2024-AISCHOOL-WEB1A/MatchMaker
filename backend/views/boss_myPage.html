@@ -1,0 +1,33 @@
+{% extends 'main.html'%}
+
+{%block content%}
+<h3>풋살장 관리자의 마이페이지</h3><br><br>
+
+<form action="/user/boss_info_update" method="post">
+    <h4>[ boss_info 테이블 정보 업데이트 ]</h4>
+    id : <input type="text" name="id"> <br>
+    변경할 pw : <input type="password" name="pw"> <br>
+    변경할 이름 : <input type="text" name="name"> <br>
+    변경할 휴대폰 번호 : <input type="text" name="phone"> <br>
+    <input type="submit" value="정보수정">
+</form>
+<br><br>
+
+
+<form action="/user/field_info_update" method="post">
+    <h4>[ field_info 테이블 정보 업데이트 ]</h4>
+    변경할 구장 이름 : <input type="text" name="field_name"> <br>
+    변경할 구장 주소 : <input type="text" name="field_addr"> <br>
+    변경할 구장 상세 정보 : <input type="text" name="field_detail"> <br>
+    <input type="submit" value="정보수정">
+</form>
+<br><br>
+
+
+<form action="/user/court_info_update" method="post">
+    <h4>[ court_info 테이블 정보 업데이트 ]</h4>
+    변경할 코트 수 : <input type="number" min="1" name="court_count"> <br>
+    <input type="submit" value="정보수정">
+</form>
+
+{%endblock%}

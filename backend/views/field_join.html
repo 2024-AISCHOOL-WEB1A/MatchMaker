@@ -1,0 +1,17 @@
+{% extends 'main.html'%}
+
+{%block content%}
+<h3>구장 등록 화면입니다</h3>
+<form action="/user/field_join" method='post'>
+    구장 이름 : <input type="text" name="field_name">
+    <br />
+    구장 주소 : <input type="text" name="field_addr">
+    <br />
+    구장 상세 정보 : <input type="text" name="field_detail">
+    <br>
+    가지고 있는 코트 개수 : <input type="number" min="1" name="court_count">
+
+    <input type="submit" value="구장 등록">
+</form>
+
+{%endblock%}
