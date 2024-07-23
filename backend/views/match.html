@@ -1,0 +1,61 @@
+{% extends 'main.html'%}
+
+{% block content %}
+<h3>매칭 리스트</h3><br><br>
+<a href="/create_match">방 만들기</a><br><br>
+
+
+
+
+<table border="1">
+    <tr>
+        <th>매치 제목</th>
+        <th>지역</th>
+        <th>예상 경기 날짜</th>
+        <th>예상 시작 시간</th>
+        <th>예상 종료 시간</th>
+        <th>여성부 매치</th>
+        <th>점수 매치</th>
+        <th>매치 정보</th>
+    </tr>
+
+    {% for match in matches %}
+    <tr matchRoom_idx="{{ match.match_idx }}" class="clickable_row">
+        <td>{{ match.match_title }}</td>
+        <td>{{ match.match_region }}</td>
+        <td>{{ match.match_date }}</td>
+        <td>{{ match.match_st_dt}}</td>
+        <td>{{ match.match_ed_dt }}</td>
+        <td>{{ match.female_match_yn }}</td>
+        <td>{{ match.rate_match_yn }}</td>
+        <td class="match_info">{{ match.match_info }}</td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var rows = document.querySelectorAll(".clickable_row");
+        rows.forEach(function (row) {
+            row.addEventListener("click", function () {
+                var match_idx = this.getAttribute("matchRoom_idx");
+                window.location.href = "/match_room/" + match_idx;
+            });
+        });
+    });
+
+</script>
+
+<style>
+    .match_info {
+        word-wrap: break-word;
+        word-break: break-all;
+        white-space: pre-wrap;
+        tab-size: 5;
+    }
+</style>
+{% endblock %}

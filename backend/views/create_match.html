@@ -1,0 +1,134 @@
+{% extends "main.html" %}
+
+{% block content %}
+<h3>매칭 페이지</h3>
+
+<form action="/user/create_match" method="post">
+    방 제목을 설정해주세요 : <input type="text" name="match_title"><br><br>
+    여성부 매치 인가요? <input type="checkbox" name="female_match_yn"><br><br>
+    점수 걸고 한 판 하실 건가요? <input type="checkbox" name="rate_match_yn"><br><br><br>
+    시합 지역을 선택하세요
+    <div class="match_region">
+        <select id="main_region" name="main_region" onchange="updateSubRegion()">
+            <option value="서울특별시">서울특별시</option>
+            <option value="광주광역시">광주광역시</option>
+            <option value="전북특별자치도">전북특별자치도</option>
+        </select>
+
+        <select id="sub_region" name="sub_region">
+            <!-- 하위 지역 옵션이 여기에 동적으로 추가됩니다. -->
+        </select>
+    </div><br><br>
+
+    시합 예상 날짜 : <input type="date" name="match_date"><br>
+    시합 예상 진행 시간<br>
+    {% set times = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00",
+    "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00",
+    "20:00", "21:00", "22:00", "23:00","24:00"
+    ] %}
+    {% set min_time = times[0] %}
+    {% set max_time = times[-1] %}
+
+    {% for time in times %}
+    {% set hour = time.split(':')[0]|int %}
+    {% if min_time == 0 and max_time == 24 %}
+    <input type="checkbox" class="time" value="{{ time }}" name="reserv_tm">
+    {{ time }}
+    {% else %}
+    <input type="checkbox" class="time" value="{{ time }}" name="reserv_tm" {% if hour < min_time or hour> max_time %}
+    disabled {% endif %}>
+    {{ time }}
+    {% endif %}
+    {% endfor %}
+    <br><br><br>
+
+    시합 정보 입력 칸 <br>
+    <textarea name="match_info" cols="60" rows="4"
+        placeholder="예상 매칭 경기장 : &#10;경기 규칙 : 예) 20분 경기 5분 휴식, 거친 태클 금지, 축구화 금지 등등.."></textarea><br>
+
+    <br><input type="hidden"><input type="submit" value="방 생성 완료" id="submit">
+</form>
+
+
+
+
+<script>
+    function updateSubRegion() {
+        const subRegionSelect = document.getElementById('sub_region');
+        const mainRegion = document.getElementById('main_region').value;
+
+        // 하위 지역 옵션 초기화
+        subRegionSelect.innerHTML = '';
+
+        let options = [];
+
+        if (mainRegion === '서울특별시') {
+            options = [
+                { value: '종로구', text: '종로구' },
+                { value: '강남구', text: '강남구' },
+                { value: '동대문구', text: '동대문구' }
+            ];
+        } else if (mainRegion === '광주광역시') {
+            options = [
+                { value: '북구', text: '북구' },
+                { value: '동구', text: '동구' },
+                { value: '남구', text: '남구' }
+            ];
+        } else if (mainRegion === '전북특별자치도') {
+            options = [
+                { value: '전주', text: '전주시' },
+                { value: '익산', text: '익산시' },
+                { value: '군산', text: '군산시' }
+            ];
+        }
+
+        // 새로운 옵션 추가
+        options.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option.value;
+            opt.textContent = option.text;
+            subRegionSelect.appendChild(opt);
+        });
+    }
+
+    // 페이지가 로드될 때 기본 하위 지역을 설정
+    document.addEventListener('DOMContentLoaded', updateSubRegion);
+
+    document.getElementById("submit").addEventListener('keydown', function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+        };
+    }, true);
+
+
+    // 시합 예상 진행 시간 체크박스에 체크 할 때 적용하는 코드
+    document.addEventListener('change', function (e) {
+        if (e.target.classList.contains('time')) {
+            updateCheckboxes();
+        }
+    });
+
+    function updateCheckboxes() {
+        const checkboxes = document.querySelectorAll('.time');
+        let startChecked = false;
+        let endChecked = false;
+
+        checkboxes.forEach((checkbox, index) => {
+            if (checkbox.checked) {
+                if (!startChecked) {
+                    startChecked = index;
+                }
+                endChecked = index;
+            }
+        });
+
+        if (startChecked !== false && endChecked !== false) {
+            for (let i = startChecked; i <= endChecked; i++) {
+                checkboxes[i].checked = true;
+            }
+        }
+    }
+
+
+</script>
+{% endblock %}

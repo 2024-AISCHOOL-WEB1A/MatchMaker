@@ -1,0 +1,27 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+    <h3>{{ match.match_title }} 매칭방에 입장하셨습니다</h3>
+    <p>지역: {{ match.match_region }}</p>
+    <p>예상 경기 날짜: {{ match.match_date }}</p>
+    <p>예상 시작 시간: {{ match.match_st_dt }}</p>
+    <p>예상 종료 시간: {{ match.match_ed_dt }}</p>
+    <p>여성부 매치: {{ match.female_match_yn }}</p>
+    <p>점수 매치: {{ match.rate_match_yn }}</p>
+    <p>매치 정보</p>
+    <pre>{{ match.match_info }}</pre>
+
+    {% for join_user in match.join_user %}
+    <tr>
+        <td>{{ join_user }}</td>
+    </tr>
+    {% endfor %}
+
+    <br><br>
+    <form action="/user/join_game" method="post">
+        <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
+        <input type="submit" value="경기참가">
+    </form>
+
+{% endblock %}

@@ -69,7 +69,7 @@ router.post("/boss_join", (req, res) => {
 // 구장 정보 등록 router -> 코트 정보도 같이 입력됨
 router.post("/field_join", (req, res) => {
     console.log("구장 정보 등록", req.body);
-    let { field_name, field_addr, field_detail, court_count, main_region, sub_region, field_oper_st_time, field_oper_ed_time} = req.body;
+    let { field_name, field_addr, field_detail, court_count, main_region, sub_region, field_oper_st_time, field_oper_ed_time } = req.body;
     let region = `${req.body.main_region}, ${req.body.sub_region}`
     let boss_id = req.session.idName;
 
@@ -326,6 +326,95 @@ router.post("/court_info_update", (req, res) => {
         });
     });
 });
+
+
+
+// 매치페이지에서 방만들기 했을 때 match_info 테이블에 정보 insert 기능하는 router
+router.post("/create_match", (req, res) => {
+
+    console.log("match_info테이블", req.body);
+    let { match_title, female_match_yn, rate_match_yn, main_region, sub_region, match_date, reserv_tm, match_info } = req.body;
+
+    let boss_id = req.session.idName;
+    let join_user = boss_id;
+    let created_at = new Date();
+    let match_region = `${main_region}, ${sub_region}`;
+    let match_st_dt = reserv_tm[0];
+    let match_ed_dt = reserv_tm.pop();
+    console.log(`match_ed_dt : ${match_ed_dt}`);
+
+    if (req.body.female_match_yn === "on") {
+        female_match_yn = 'Y';
+    } else {
+        female_match_yn = 'N';
+    }
+
+    if (req.body.rate_match_yn === "on") {
+        rate_match_yn = 'Y';
+    } else {
+        rate_match_yn = 'N';
+    }
+
+
+    let sql = "insert into match_info1 (match_title, join_user, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, created_at, match_info) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    conn.query(sql, [match_title, join_user, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, created_at, match_info], (err, rows) => {
+        console.log('insert 완', rows);
+        if (rows) {
+            res.redirect('/user/match');
+        } else {
+            res.send(`<script>alert('다시 시도해 주세용~ ') 
+                window.location.href="/create_match"<script>`);
+        }
+    });
+
+});
+
+
+// 매치 페이지에서 방 리스트를 보여주는 라우터
+router.get("/match", (req, res) => {
+    console.log(req);
+
+    let sql = "SELECT match_idx, match_title, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, match_info FROM match_info1";
+    conn.query(sql, (err, results) => {
+        if (err) {
+            console.error('데이터 조회 오류:', err);
+            res.send("데이터를 가져오는 중 오류가 발생했습니다.");
+        } else {
+            res.render("match", { matches: results, idName: req.session.idName });
+        }
+    });
+});
+
+
+// 경기참가 버튼 클릭 시 호출되는 라우터
+router.post("/join_game", (req, res) => {
+    const newUserId = req.session.idName;
+    const match_idx = req.body.match_idx; // match_idx 값 가져오기
+    console.log(req.session.idName, "id값"); // 새로운 사용자의 user_id
+    console.log(req.body.match_idx, "match_idx값"); // 새로운 사용자의 user_id
+
+    let sql = "SELECT join_user FROM match_info1 WHERE match_idx = ?";
+    conn.query(sql, [match_idx], (err, results) => {
+        if (err) {
+            console.error('데이터 조회 오류:', err);
+            res.send("데이터를 가져오는 중 오류가 발생했습니다.");
+        } else {
+            let currentJoinUser = results[0].join_user; // 현재 join_user 컬럼의 값 가져오기
+            let join_user = currentJoinUser ? currentJoinUser + ", " + newUserId : newUserId; // 새로운 사용자 추가
+
+            sql = "UPDATE match_info1 SET join_user = ? WHERE match_idx = ?";
+            conn.query(sql, [join_user, match_idx], (err, results) => { // match_idx를 WHERE 조건으로 추가
+                if (err) {
+                    console.error('데이터 업데이트 오류:', err);
+                    res.send("데이터를 업데이트하는 중 오류가 발생했습니다.");
+                } else {
+                    res.send("데이터 업데이트 성공!");
+                }
+            });
+        }
+    });
+});
+
 
 
 module.exports = router;
