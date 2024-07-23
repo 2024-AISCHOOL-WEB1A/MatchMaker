@@ -8,7 +8,7 @@
 <form id="fieldForm" action="/reserv/reservAll" method="get">
     <label for="field">필드:</label>
     <select id="field" name="field_idx" required onchange="document.getElementById('fieldForm').submit()">
-        <option value="">필드를 선택하세요</option>
+        <option value="{{fields[10].field_idx}}">필드를 선택하세요</option>
         {% for item in fields %}
         <option value="{{ item.field_idx }}" {% if selected_field_idx==item.field_idx %} selected {% endif %}>
             {{ item.field_name }}
@@ -31,16 +31,73 @@
     <label for="reserv_dt">예약 날짜:</label>
     <input type="date" id="reserv_dt" name="reserv_dt" required><br>
 
-    
-    <label>예약 시간</label><br>
-    시작: <input type="time" name="reserv_st_tm" min="{{fieldoperTimes[0].field_oper_st_time}}" max="{{fieldoperTimes[0].field_oper_ed_time}}">
-    <br>
-    종료: <input type="time" name="reserv_ed_tm" min="{{fieldoperTimes[0].field_oper_st_time}}" max="{{fieldoperTimes[0].field_oper_ed_time}}">
-    <br>
+    <span>예약시간</span><br>
 
+
+    {% set times = ["00:00:00", "01:00:00", "02:00:00", "03:00:00", "04:00:00", "05:00:00", "06:00:00", "07:00:00",
+    "08:00:00", "09:00:00", "10:00:00",
+    "11:00:00", "12:00:00", "13:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00", "18:00:00", "19:00:00",
+    "20:00:00", "21:00:00", "22:00:00", "23:00:00",
+    "24:00:00"] %}
+    {% set min_time = field_oper_st_time.split(':')[0]|int %}
+    {% set max_time = field_oper_ed_time.split(':')[0]|int %}
+
+    {% for time in times %}
+    {% set hour = time.split(':')[0]|int %}
+    {% if min_time == 00 and max_time == 00 %}
+    <input type="checkbox" class="time" value="" name="reserv_tm">
+    {{ time }}<br>
+    {% else %}
+    <input type="checkbox" class="time" value="" name="reserv_tm" {% if hour < min_time or max_time < hour %} disabled {% endif %}>
+    {{ time }}<br>
+    {% endif %}
+    {% endfor %}
     
+
+
     <button type="submit">예약하기</button>
 </form>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkboxes = document.querySelectorAll('.time');
+        const minTime = field_oper_st_time;
+        const maxTime = field_oper_ed_time;
+
+        checkboxes.forEach(checkbox => {
+            const timeValue = parseInt(checkbox.value.split(':')[0], 10);
+            if (timeValue < minTime || timeValue > maxTime) {
+                checkbox.disabled = true;
+            }
+        });
+    });
+
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('time')) {
+            updateCheckboxes();
+        }
+    });
+
+    function updateCheckboxes() {
+        const checkboxes = document.querySelectorAll('.time');
+        let startChecked = false;
+        let endChecked = false;
+
+        checkboxes.forEach((checkbox, index) => {
+            if (checkbox.checked) {
+                if (!startChecked) {
+                    startChecked = index;
+                }
+                endChecked = index;
+            }
+        });
+
+        if (startChecked !== false && endChecked !== false) {
+            for (let i = startChecked; i <= endChecked; i++) {
+                checkboxes[i].checked = true;
+            }
+        }
+    }
+</script>
 
 {% endblock %}

@@ -41,9 +41,17 @@ router.get('/reservAll', (req, res) => {
                 console.log(fieldoperTimes);
                 console.log(fieldoperTimes[0]);
                 console.log(fieldoperTimes[0].field_oper_st_time);
-                
-                
-                res.render('reserv', { fields, courts, selected_field_idx: selectedFieldIdx, fieldoperTimes:fieldoperTimes});
+
+
+                res.render('reserv',
+                    {
+                        fields: fields,
+                        courts: courts,
+                        selected_field_idx: selectedFieldIdx,
+                        fieldoperTimes: fieldoperTimes,
+                        field_oper_st_time: fieldoperTimes[0].field_oper_st_time,
+                        field_oper_ed_time: fieldoperTimes[0].field_oper_ed_time
+                    });
             });
         });
     });
@@ -53,10 +61,11 @@ router.post('/reserv', (req, res) => {
     const { court_idx, reserv_dt, reserv_st_tm, reserv_ed_tm } = req.body;
     const user_id = req.session.idName;
     const created_at = new Date();
-
+    
     const sql = 'INSERT INTO reservation_info (user_id, court_idx, reserv_dt, created_at, reserv_st_tm, reserv_ed_tm) VALUES (?, ?, ?, ?, ?, ?)';
+
     // 시작 시간보다 더 이른 종료시간을 눌렀을 떄 return 'failed' 
-    // if () else {}
+
     if (req.body.reserv_ed_tm > req.body.reserv_st_tm) {
         conn.query(sql, [user_id, court_idx, reserv_dt, created_at, reserv_st_tm, reserv_ed_tm], (err, rows) => {
             if (err) {
@@ -69,7 +78,7 @@ router.post('/reserv', (req, res) => {
             res.redirect('/');
         });
     } else { return res.send('<script>alert("예약시작시간보다 종료시간이 더 빠릅니다"); window.location.href="/reserv/reservAll";</script>') }
-
 });
+
 
 module.exports = router;
