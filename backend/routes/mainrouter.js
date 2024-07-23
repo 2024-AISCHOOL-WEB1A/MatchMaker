@@ -40,30 +40,6 @@ router.get("/boss_myPage", (req, res)=>{
 });
 
 
-// 예약 기능 구현
-router.get('/reserv', (req, res) => {
-    const sql1 = 'SELECT * FROM court_info';
-    const sql2 = 'SELECT * FROM field_info';
-
-    conn.query(sql1, (err, courts) => {
-        if (err) {
-            console.error('Error fetching courts: ' + err);
-            res.status(500).send('서버 오류');
-            return;
-        }
-
-        conn.query(sql2, (err, fields) => {
-            if (err) {
-                console.error('Error fetching fields: ' + err);
-                res.status(500).send('서버 오류');
-                return;
-            }
-
-            res.render('reserv', { courts, fields });
-        });
-    });
-});
-
 // 밸런스 매칭 기능 페이지 열어주기
 router.get("/bal_rate_tmmatch", (req, res) => {
     res.render("bal_rate_tmmatch");

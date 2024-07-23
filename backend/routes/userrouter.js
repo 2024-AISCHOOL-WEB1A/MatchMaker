@@ -69,7 +69,7 @@ router.post("/boss_join", (req, res) => {
 // 구장 정보 등록 router -> 코트 정보도 같이 입력됨
 router.post("/field_join", (req, res) => {
     console.log("구장 정보 등록", req.body);
-    let { field_name, field_addr, field_detail, court_count, main_region, sub_region } = req.body;
+    let { field_name, field_addr, field_detail, court_count, main_region, sub_region, field_oper_st_time, field_oper_ed_time} = req.body;
     let region = `${req.body.main_region}, ${req.body.sub_region}`
     let boss_id = req.session.idName;
 
@@ -78,8 +78,8 @@ router.post("/field_join", (req, res) => {
     }
 
     // field_info 테이블에 데이터 삽입
-    let sql = `INSERT INTO field_info (field_name, field_addr, field_detail, boss_id, field_region) VALUES (?, ?, ?, ?, ?)`;
-    let fieldData = [field_name, field_addr, field_detail, boss_id, region];
+    let sql = `INSERT INTO field_info (field_name, field_addr, field_detail, boss_id, field_region, field_oper_st_time, field_oper_ed_time) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    let fieldData = [field_name, field_addr, field_detail, boss_id, region, field_oper_st_time, field_oper_ed_time];
 
     conn.query(sql, fieldData, (err, result) => {
         if (err) {
