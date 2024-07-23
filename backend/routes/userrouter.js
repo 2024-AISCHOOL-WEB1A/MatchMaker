@@ -1,8 +1,7 @@
-const express = require('express');
-const router = express.Router();
-const conn = require('../config/DB');
+const express = require('express')
+const router = express.Router()
+const conn = require('../config/DB')
 const md5 = require('md5');
-
 
 
 // 풋살을 하기 위한 회원들의 회원가입
@@ -10,24 +9,25 @@ router.post('/join', (req, res) => {
     console.log('join 실행', req.body);
 
     let { user_id, user_pw, user_nick, user_birthdate, user_gender, user_phone } = req.body;
+
     let hashedPw = md5(user_pw);
 
     // 새로 가입한 유저의 기본 값들 정의
-    let user_rate = 1500;
-    let user_rank = '세미프로';
-    let user_shooting_point = 0;
-    let user_pass_point = 0;
-    let user_dribble_point = 0;
-    let user_stamina_point = 0;
-    let user_manner_point = 0;
-    let user_smile_point = 0;
-    let joined_at = new Date();
+    let user_rate = 1500
+    let user_rank = '세미프로'
+    let user_shooting_point = 0
+    let user_pass_point = 0
+    let user_dribble_point = 0
+    let user_stamina_point = 0
+    let user_manner_point = 0
+    let user_smile_point = 0
+    let joined_at = new Date()
 
     let sql = `INSERT INTO user_info (
         user_id, user_pw, user_nick, user_birthdate, user_gender, user_phone, 
         user_rate, user_rank, user_shooting_point, user_pass_point, user_dribble_point, 
         user_stamina_point, user_manner_point, user_smile_point, joined_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
     conn.query(sql, [
         user_id, hashedPw, user_nick, user_birthdate, user_gender, user_phone,
@@ -42,13 +42,10 @@ router.post('/join', (req, res) => {
             req.session.idName = user_id
             res.redirect('/');
         }
-    });
-});
+    })
+})
 
-
-
-
-// 풋살장 구장주의 회원가입
+// 풋살장 사장님 회원가입
 router.post("/boss_join", (req, res) => {
 
     console.log("풋살장 관리자 회원가입", req.body);
@@ -68,7 +65,6 @@ router.post("/boss_join", (req, res) => {
     });
 
 });
-
 
 // 구장 정보 등록 router -> 코트 정보도 같이 입력됨
 router.post("/field_join", (req, res) => {
@@ -164,14 +160,12 @@ router.post("/login", (req, res) => {
 
 });
 
-
 // 로그아웃 기능 router
 router.get("/logout", (req, res) => {
     console.log("로그아웃");
     req.session.destroy();
     res.send('<script>window.location.href="/"</script>');
 });
-
 
 // 일반회원 마이페이지 기능 router
 router.get("/myPage", (req, res) => {
@@ -182,7 +176,6 @@ router.get("/myPage", (req, res) => {
         res.render("myPage", { rows: rows });
     });
 });
-
 
 // 일반회원 정보수정 기능 router
 router.post("/update", (req, res) => {
@@ -205,7 +198,6 @@ router.post("/update", (req, res) => {
         }
     });
 });
-
 
 // 풋살장 관리자의 마이페이지에서 boss_info 테이블 업데이트 기능 router
 router.post("/boss_info_update", (req, res) => {
@@ -334,7 +326,6 @@ router.post("/court_info_update", (req, res) => {
         });
     });
 });
-
 
 
 module.exports = router;

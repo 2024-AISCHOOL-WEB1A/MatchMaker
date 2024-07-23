@@ -64,5 +64,9 @@ router.get('/reserv', (req, res) => {
     });
 });
 
+// 밸런스 매칭 기능 페이지 열어주기
+router.get("/bal_rate_tmmatch", (req, res) => {
+    res.render("bal_rate_tmmatch");
+});
 
 module.exports = router;

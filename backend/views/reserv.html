@@ -4,29 +4,33 @@
 
 <h1>🍙예약하기🍙</h1>
 
-<form action="/reserv/reserv" method="post">
 
+<form id="fieldForm" action="/reserv/reservAll" method="get">
     <label for="field">필드:</label>
-    
-    <select id="field" name="field_index" required>
+    <select id="field" name="field_idx" required onchange="document.getElementById('fieldForm').submit()">
+        <option value="">필드를 선택하세요</option>
         {% for item in fields %}
-            <option value="{{ item.field_index }}">
+            <option value="{{ item.field_idx }}" {% if selected_field_idx == item.field_idx %} selected {% endif %}>
                 {{ item.field_name }}
             </option>
         {% endfor %}
     </select><br>
+</form>
+
+<form id="reservationForm" action="/reserv/reserv" method="post">
     <label for="court">코트:</label>
     <select id="court" name="court_idx" required>
+        <option value="">코트를 선택하세요</option>
         {% for item in courts %}
-        <option value="{{ item.court_idx }}" {% if item.book_yn == 'Y' %} disabled {% endif %}>
-            {{ item.court_name }} 
-           
-        </option>
+            <option value="{{ item.court_idx }}" {% if item.book_yn == 'Y' %} disabled {% endif %}>
+                {{ item.court_name }}
+            </option>
         {% endfor %}
     </select><br>
 
     <label for="reserv_dt">예약 날짜:</label>
     <input type="date" id="reserv_dt" name="reserv_dt" required><br>
+
     <label>예약 시간:</label>
     <select name="reserv_tm">
         <option value="M">오전</option>
@@ -34,7 +38,7 @@
         <option value="N">야간</option>
     </select><br>
     <button type="submit">예약하기</button>
-
 </form>
+
 
 {% endblock %}

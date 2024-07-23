@@ -1,11 +1,13 @@
 const express = require('express')
 const app = express()
-const mainRouter = require('./routes/mainrouter')
+const mainRouter = require('./routes/mainRouter')
 const nunjucks = require('nunjucks')
-const userRouter = require('./routes/userrouter')
+const userRouter = require('./routes/userRouter')
+const reservRouter = require('./routes/reservRouter')
+const balRouter = require('./routes/balRouter')
 const session = require('express-session')
 const fileStore = require('session-file-store')(session)
-const reservRouter = require('./routes/reservRouter')
+
 
 app.set('view engine', 'html')
 nunjucks.configure('views', {
@@ -26,10 +28,12 @@ app.use(session({
     saveUninitialized: false //세션에 저장할 내용이 없더라도 저장 할지 말지 
 }))
 
-
+// app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static("public"));
 app.use('/', mainRouter)
 app.use('/user', userRouter)
 app.use('/reserv',reservRouter)
+app.use('/bal',balRouter)
 
 
 app.listen(3007, () => {
