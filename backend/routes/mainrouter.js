@@ -29,8 +29,8 @@ router.get("/field_join", (req, res)=>{
 
 
 // 로그인 페이지 열어주기
-router.get("/login", (req, res) => {
-    res.render("login");
+router.get("/login1", (req, res) => {
+    res.render("login1");
 });
 
 
