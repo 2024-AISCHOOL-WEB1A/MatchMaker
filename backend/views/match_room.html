@@ -13,15 +13,34 @@
     <pre>{{ match.match_info }}</pre>
 
     {% for join_user in match.join_user %}
-    <tr>
-        <td>{{ join_user }}</td>
-    </tr>
+    <div>{{ join_user }}</div>
     {% endfor %}
 
     <br><br>
-    <form action="/user/join_game" method="post">
+    <form action="/user/join_game" method="post" onsubmit="return checkUserLimit()">
         <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
-        <input type="submit" value="경기참가">
+        <input type="submit" value="경기참가" id="joinButton" data-user-count="{{ join_users|length }}">
     </form>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var joinButton = document.getElementById("joinButton");
+            var userCount = joinButton.getAttribute("data-user-count");
+    
+            function checkUserLimit() {
+                if (userCount >= 10) {
+                    alert("참가 인원이 이미 10명을 초과했습니다. 더 이상 참가할 수 없습니다.");
+                    return false;
+                }
+                return true;
+            }
+    
+            if (userCount >= 10) {
+                joinButton.disabled = true;
+            }
+    
+            document.querySelector('form').onsubmit = checkUserLimit;
+        });
+    </script>
 
 {% endblock %}
