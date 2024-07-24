@@ -402,7 +402,7 @@ router.post("/join_game", (req, res) => {
         let currentJoinUsers = currentJoinUser.split(",").map(user => user.trim()); // 현재 join_user 컬럼
         if (currentJoinUsers.includes(newUserId)) {
             res.send(`<script>alert('어머 이미 가입 되셨네용 ~');
-                window.location.href="/create_match";</script>`);
+                window.history.back();</script>`);
         } else {
             currentJoinUsers.push(newUserId); // 새로운 사용자 추가
             let join_user = currentJoinUsers.join(", "); // 배열을 문자열로 변환
@@ -440,7 +440,7 @@ router.post("/cancel_game", (req, res) => {
 
         const index = currentJoinUsers.indexOf(cancelUserId);
         if (index === -1) {
-            return res.send("탈퇴할 사용자를 찾을 수 없습니다.");
+            return res.send(`<script> alert('탈퇴할 사용자를 찾을 수 없습니다.'); window.history.back(); </script>`);
         }
 
         // 탈퇴 여부 확인을 위한 페이지를 반환
@@ -477,7 +477,7 @@ router.post("/confirm_cancel_game", (req, res) => {
         
         const index = currentJoinUsers.indexOf(cancelUserId);
         if (index === -1) {
-            return res.send("탈퇴할 사용자를 찾을 수 없습니다.");
+            return res.send(`<script> alert('탈퇴할 사용자를 찾을 수 없습니다.'); window.history.back(); </script>`);
         }
 
         currentJoinUsers.splice(index, 1);
@@ -489,7 +489,8 @@ router.post("/confirm_cancel_game", (req, res) => {
                 console.error('데이터 업데이트 오류:', err);
                 return res.send("데이터를 업데이트하는 중 오류가 발생했습니다.");
             }
-            res.send("탈퇴가 완료되었습니다.");
+            res.send(`<script>alert('탈퇴가 완료되었습니다.');
+                window.location.href="/user/match";</script>`);
         });
     });
 });
