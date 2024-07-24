@@ -63,16 +63,30 @@ router.get('/match_room/:match_idx', (req, res) => {
     console.log(`match_idx : ${match_idx}`);
     let sql = "SELECT * FROM match_info1 WHERE match_idx = ?";
     conn.query(sql, [match_idx], (err, result) => {
-        console.log(`result: ${result[0].match_idx}`);
         if (err) {
             console.error(err);
             res.send("매치 정보를 가져오는 중 오류가 발생했습니다.");
-        } else {
-            res.render('match_room', { match: result[0], idName: req.session.idName });
+            return;
         }
+
+        if (!result || result.length === 0) {
+            res.send("매치 정보를 찾을 수 없습니다.");
+            return;
+        }
+
+        const currentUser = result[0].join_user;
+        if (!currentUser) {
+            res.send("사용자 정보가 없습니다.");
+            return;
+        }
+
+        const currentUsers = currentUser.split(",").map(user => user.trim());
+        const teamLeader = currentUsers[0];
+
+        console.log(`result: ${result[0].match_idx}`);
+        res.render('match_room', { match: result[0], idName: req.session.idName, teamLeader });
     });
 });
-
 
 
 module.exports = router;
