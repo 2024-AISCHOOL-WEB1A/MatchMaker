@@ -59,6 +59,7 @@ const nunjucks = require('nunjucks')
 const session = require('express-session')
 const fileStore = require('session-file-store')(session)
 const path = require('path')  // path 모듈 추가
+const conn = require('./config/DB.js')
 
 // 뷰 엔진 설정
 app.set('views', path.join(__dirname, 'views'));
