@@ -16,6 +16,12 @@
     font-family: 'Pretendard-Regular', sans-serif;
 }
 
+.member_choice{
+    display: flex;
+    justify-content: space-between;
+    color: white;
+}
+
 body {
     display: flex;
     align-items: center;

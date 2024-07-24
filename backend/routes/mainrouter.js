@@ -8,27 +8,38 @@ router.get('/', (req, res) => {
 
     if (req.session.idName) {
         console.log(`ID : ${req.session.idName}`);
-        res.render('main', { idName: req.session.idName });
+        res.render('main1', { idName: req.session.idName });
     } else {
-        res.render('main');
+        res.render('main1');
+    };
+});
+
+
+router.get('/main_login', (req, res) => {
+
+    if (req.session.idName) {
+        console.log(`ID : ${req.session.idName}`);
+        res.render('main_login', { idName: req.session.idName });
+    } else {
+        res.render('main_login');
     };
 });
 
 
 // 일반 회원 회원가입 페이지
 router.get('/join1', (req, res) => {
-    res.render('join1')
-})
+    res.render('join1');
+});
 
 
 // 풋살장 구장주 회원가입 페이지
-router.get('/boss_join', (req, res) => {
+router.get('/boss_join1', (req, res) => {
     res.render('boss_join1')
 })
 
-// router.ger("/join_select", (req, res)=>{
-//     res.render("join_select1")
-// })
+router.get("/join_select1", (req, res)=>{
+    res.render("join_select1");
+});
 
 // 구장 등록 페이지
 router.get("/field_join", (req, res)=>{

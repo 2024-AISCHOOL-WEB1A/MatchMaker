@@ -34,13 +34,14 @@ router.post('/join1', (req, res) => {
         user_rate, user_rank, user_shooting_point, user_pass_point, user_dribble_point,
         user_stamina_point, user_manner_point, user_smile_point, joined_at
     ], (err, rows) => {
+        console.log("rows", rows);
         if (err) {
             console.error('Database insert error:', err);
             res.send("<script>alert('다시 시도해주세요.'); window.history.back();</script>");
         } else {
             console.log('insert 완료', rows);
-            req.session.idName = user_id
-            res.redirect('/');
+            req.session.idName = user_id;
+            res.redirect("/main_login");
         }
     })
 })
@@ -139,9 +140,9 @@ router.post("/login", (req, res) => {
             if (rows.length > 0) {
                 req.session.idName = id;
                 console.log(req.session.idName);
-                res.redirect('/');
+                res.redirect('/main_login');
             } else {
-                res.send("<script>alert('아이디 혹은 비밀번호를 잘못 입력하셨습니다.'); window.location.href='/login';</script>")
+                res.send("<script>alert('아이디 혹은 비밀번호를 잘못 입력하셨습니다.'); window.location.href='/login1';</script>")
             }
         });
     } else {
@@ -151,9 +152,9 @@ router.post("/login", (req, res) => {
             if (rows.length > 0) {
                 req.session.idName = id;
                 console.log(req.session.idName);
-                res.redirect('/');
+                res.redirect('/main_login');
             } else {
-                res.send("<script>alert('아이디 혹은 비밀번호를 잘못 입력하셨습니다.'); window.location.href='/login';</script>")
+                res.send("<script>alert('아이디 혹은 비밀번호를 잘못 입력하셨습니다.'); window.location.href='/login1';</script>")
             }
         });
     };
