@@ -394,16 +394,21 @@ router.post("/join_game", (req, res) => {
     console.log(req.body.match_idx, "match_idx값"); // 새로운 사용자의 user_id
 
     let sql = "SELECT join_user FROM match_info1 WHERE match_idx = ?";
+
+
+
     conn.query(sql, [match_idx], (err, results) => {
-        if (err) {
-            console.error('데이터 조회 오류:', err);
-            res.send("데이터를 가져오는 중 오류가 발생했습니다.");
+        let currentJoinUser = results[0].join_user || "";
+        let currentJoinUsers = currentJoinUser.split(",").map(user => user.trim()); // 현재 join_user 컬럼
+        if (currentJoinUsers.includes(newUserId)) {
+            res.send(`<script>alert('어머 이미 가입 되셨네용 ~');
+                window.location.href="/create_match";</script>`);
         } else {
-            let currentJoinUser = results[0].join_user; // 현재 join_user 컬럼의 값 가져오기
-            let join_user = currentJoinUser ? currentJoinUser + ", " + newUserId : newUserId; // 새로운 사용자 추가
+            currentJoinUsers.push(newUserId); // 새로운 사용자 추가
+            let join_user = currentJoinUsers.join(", "); // 배열을 문자열로 변환
 
             sql = "UPDATE match_info1 SET join_user = ? WHERE match_idx = ?";
-            conn.query(sql, [join_user, match_idx], (err, results) => { // match_idx를 WHERE 조건으로 추가
+            conn.query(sql, [join_user, match_idx], (err, results) => {
                 if (err) {
                     console.error('데이터 업데이트 오류:', err);
                     res.send("데이터를 업데이트하는 중 오류가 발생했습니다.");
