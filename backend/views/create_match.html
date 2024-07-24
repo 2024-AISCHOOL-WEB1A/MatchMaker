@@ -3,10 +3,10 @@
 {% block content %}
 <h3>매칭 페이지</h3>
 
-<form action="/user/create_match" method="post">
-    방 제목을 설정해주세요 : <input type="text" name="match_title"><br><br>
-    여성부 매치 인가요? <input type="checkbox" name="female_match_yn"><br><br>
-    점수 걸고 한 판 하실 건가요? <input type="checkbox" name="rate_match_yn"><br><br><br>
+<form id="createMatchForm" action="/user/create_match" method="post">
+    방 제목을 설정해주세요 : <input type="text" name="match_title" id="match_title"><br><br>
+    여성부 매치 인가요? <input type="checkbox" name="female_match_yn" id="female_match_yn"><br><br>
+    점수 걸고 한 판 하실 건가요? <input type="checkbox" name="rate_match_yn" id="rate_match_yn"><br><br><br>
     시합 지역을 선택하세요
     <div class="match_region">
         <select id="main_region" name="main_region" onchange="updateSubRegion()">
@@ -20,7 +20,7 @@
         </select>
     </div><br><br>
 
-    시합 예상 날짜 : <input type="date" name="match_date"><br>
+    시합 예상 날짜 : <input type="date" name="match_date" id="match_date"><br>
     시합 예상 진행 시간<br>
     {% set times = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00",
     "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00",
@@ -43,14 +43,10 @@
     <br><br><br>
 
     시합 정보 입력 칸 <br>
-    <textarea name="match_info" cols="60" rows="4"
-        placeholder="예상 매칭 경기장 : &#10;경기 규칙 : 예) 20분 경기 5분 휴식, 거친 태클 금지, 축구화 금지 등등.."></textarea><br>
+    <textarea name="match_info" cols="60" rows="4" placeholder="예상 매칭 경기장 : &#10;경기 규칙 : 예) 20분 경기 5분 휴식, 거친 태클 금지, 축구화 금지 등등.." id="match_info"></textarea><br>
 
     <br><input type="hidden"><input type="submit" value="방 생성 완료" id="submit">
 </form>
-
-
-
 
 <script>
     function updateSubRegion() {
@@ -72,7 +68,9 @@
             options = [
                 { value: '북구', text: '북구' },
                 { value: '동구', text: '동구' },
-                { value: '남구', text: '남구' }
+                { value: '남구', text: '남구' },
+                { value: '서구', text: '서구' },
+                { value: '광산구', text: '광산구' },
             ];
         } else if (mainRegion === '전북특별자치도') {
             options = [
@@ -99,7 +97,6 @@
             event.preventDefault();
         };
     }, true);
-
 
     // 시합 예상 진행 시간 체크박스에 체크 할 때 적용하는 코드
     document.addEventListener('change', function (e) {
@@ -129,6 +126,44 @@
         }
     }
 
+    // 폼 검증 함수 추가
+    function validateForm() {
+        const matchTitle = document.getElementById('match_title').value.trim();
+        const mainRegion = document.getElementById('main_region').value;
+        const subRegion = document.getElementById('sub_region').value;
+        const matchDate = document.getElementById('match_date').value;
+        const reservTm = document.querySelectorAll('.time:checked');
+        const matchInfo = document.getElementById('match_info').value.trim();
 
+        if (!matchTitle) {
+            alert('방 제목을 입력해주세요.');
+            return false;
+        }
+
+        if (!mainRegion || !subRegion) {
+            alert('시합 지역을 선택해주세요.');
+            return false;
+        }
+
+        if (!matchDate) {
+            alert('시합 예상 날짜를 선택해주세요.');
+            return false;
+        }
+
+        if (reservTm.length === 0) {
+            alert('시합 예상 진행 시간을 선택해주세요.');
+            return false;
+        }
+
+        if (!matchInfo) {
+            alert('시합 정보를 입력해주세요.');
+            return false;
+        }
+
+        return true;
+    }
+
+    // 폼 제출 이벤트에 검증 함수 연결
+    document.getElementById('createMatchForm').onsubmit = validateForm;
 </script>
 {% endblock %}
