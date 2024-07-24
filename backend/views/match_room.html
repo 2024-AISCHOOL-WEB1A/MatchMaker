@@ -15,9 +15,8 @@
 <pre>{{ match.match_info }}</pre>
 
 <br><br>
-{% set join_users = match.join_user.split(",") %}
 {% for join_user in join_users %}
-<div>{{ join_user }}</div>
+    <div>{{ join_user }} - {{ user_info[join_user] }}</div>
 {% endfor %}
 
 <br><br>
@@ -43,25 +42,23 @@
 <pre>{{ match.match_info }}</pre>
 
 <br><br>
-{% set join_users = match.join_user.split(",") %}
 {% for join_user in join_users %}
-<div>{{ join_user }}</div>
+    <div>{{ join_user }} - {{ user_info[join_user] }}</div>
 {% endfor %}
 
 <br><br>
+<form action="/user/join_game" method="post" onsubmit="return checkUserLimit()">
+    <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
+    <input type="submit" value="경기참가" id="joinButton" data-user-count="{{ join_users|length }}">
+</form>
 
 <form action="/user/cancel_game" method="post">
     <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
     <input type="submit" value="경기탈퇴">
 </form>
 
-<form action="/user/join_game" method="post" onsubmit="return checkUserLimit()">
-    <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
-    <input type="submit" value="경기참가" id="joinButton" data-user-count="{{ join_users|length }}">
-</form>
-
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         var joinButton = document.getElementById("joinButton");
         var userCount = joinButton.getAttribute("data-user-count");
 
