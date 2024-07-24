@@ -4,81 +4,92 @@
 
 <h1>🍙예약하기🍙</h1>
 
-
 <form id="fieldForm" action="/reserv/reservAll" method="get">
     <label for="field">필드:</label>
-    <select id="field" name="field_idx" required onchange="document.getElementById('fieldForm').submit()">
-        <option value="{{fields[10].field_idx}}">필드를 선택하세요</option>
+    <select id="field" name="field_idx" required onchange="submitFieldForm()">
+        <option value="">필드를 선택하세요</option>
         {% for item in fields %}
         <option value="{{ item.field_idx }}" {% if selected_field_idx==item.field_idx %} selected {% endif %}>
             {{ item.field_name }}
         </option>
         {% endfor %}
     </select><br>
-</form>
 
-<form id="reservationForm" action="/reserv/reserv" method="post">
     <label for="court">코트:</label>
-    <select id="court" name="court_idx" required>
+    <select id="court" name="court_idx" required onchange="submitFieldForm()">
         <option value="">코트를 선택하세요</option>
         {% for item in courts %}
-        <option value="{{ item.court_idx }}">
+        <option value="{{ item.court_idx }}" {% if selected_court_idx==item.court_idx %} selected {% endif %}>
             {{ item.court_name }}
         </option>
         {% endfor %}
     </select><br>
 
     <label for="reserv_dt">예약 날짜:</label>
-    <input type="date" id="reserv_dt" name="reserv_dt" required><br>
+    <input type="date" id="reserv_dt" name="reserv_dt" value="{{reserv_date}}" required onchange="submitFieldForm()"><br>
+</form>
+
+<form id="reservationForm" action="/reserv/reserv" method="post">
+    <input type="hidden" name="field_idx" value="{{ selected_field_idx }}">
+    <input type="hidden" name="court_idx" value="{{ selected_court_idx }}">
+    <input type="hidden" name="reserv_dt" value="{{ reserv_date }}">
 
     <span>예약시간</span><br>
-
-
-    {% set times = ["00:00:00", "01:00:00", "02:00:00", "03:00:00", "04:00:00", "05:00:00", "06:00:00", "07:00:00",
-    "08:00:00", "09:00:00", "10:00:00",
-    "11:00:00", "12:00:00", "13:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00", "18:00:00", "19:00:00",
-    "20:00:00", "21:00:00", "22:00:00", "23:00:00",
-    "24:00:00"] %}
+    {% set times = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "24:00"] %}
     {% set min_time = field_oper_st_time.split(':')[0]|int %}
     {% set max_time = field_oper_ed_time.split(':')[0]|int %}
+    {% set is_24_hours = (min_time == 00 and max_time == 00) %}
 
     {% for time in times %}
     {% set hour = time.split(':')[0]|int %}
-    {% if min_time == 00 and max_time == 00 %}
-    <input type="checkbox" class="time" value="" name="reserv_tm">
-    {{ time }}<br>
-    {% else %}
-    <input type="checkbox" class="time" value="" name="reserv_tm" {% if hour < min_time or max_time < hour %} disabled {% endif %}>
-    {{ time }}<br>
+    {% set is_disabled = ((is_24_hours != is_24_hours) and (hour < min_time or max_time < hour)) %}
+    {% for reserv in reservations %}
+    {% set reserv_st_tm = reserv.reserv_st_tm.split(':')[0]|int %}
+    {% set reserv_ed_tm = reserv.reserv_ed_tm.split(':')[0]|int %}
+    {% if reserv.reserv_dt == reserv_date and (reserv_st_tm <= hour and hour <= reserv_ed_tm) %}
+    {% set is_disabled = true %}
     {% endif %}
     {% endfor %}
-    
-
+    <input type="checkbox" class="time" value="{{ time }}" name="reserv_tm" {% if is_disabled %} disabled {% endif %}>
+    {{ time }}<br>
+    {% endfor %}
 
     <button type="submit">예약하기</button>
 </form>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    function submitFieldForm() {
+        const fieldForm = document.getElementById('fieldForm');
+        fieldForm.submit();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
         const checkboxes = document.querySelectorAll('.time');
-        const minTime = field_oper_st_time;
-        const maxTime = field_oper_ed_time;
+        const minTimeStr = "{{ field_oper_st_time }}";
+        const maxTimeStr = "{{ field_oper_ed_time }}";
 
-        checkboxes.forEach(checkbox => {
-            const timeValue = parseInt(checkbox.value.split(':')[0], 10);
-            if (timeValue < minTime || timeValue > maxTime) {
-                checkbox.disabled = true;
-            }
-        });
-    });
+        const is24Hours = (minTimeStr === "00:00:00" && maxTimeStr === "00:00:00");
 
-    document.addEventListener('change', function(e) {
-        if (e.target.classList.contains('time')) {
-            updateCheckboxes();
+        if (!is24Hours) {
+            const minTime = parseInt(minTimeStr.split(':')[0], 10);
+            const maxTime = parseInt(maxTimeStr.split(':')[0], 10);
+
+            checkboxes.forEach(checkbox => {
+                const timeValue = parseInt(checkbox.value.split(':')[0], 10);
+                if (timeValue < minTime || timeValue > maxTime) {
+                    checkbox.disabled = true;
+                }
+            });
         }
     });
 
-    function updateCheckboxes() {
+    document.addEventListener('change', function (e) {
+        if (e.target.classList.contains('time')) {
+            updateCheckboxes(e.target);
+        }
+    });
+
+    function updateCheckboxes(clickedCheckbox) {
         const checkboxes = document.querySelectorAll('.time');
         let startChecked = false;
         let endChecked = false;
@@ -94,6 +105,11 @@
 
         if (startChecked !== false && endChecked !== false) {
             for (let i = startChecked; i <= endChecked; i++) {
+                if (checkboxes[i].disabled) {
+                    alert("선택한 범위 내에 예약할 수 없는 시간이 있습니다.");
+                    clickedCheckbox.checked = false;  // 클릭한 체크박스를 다시 해제
+                    return;
+                }
                 checkboxes[i].checked = true;
             }
         }
