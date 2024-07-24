@@ -5,7 +5,7 @@ const md5 = require('md5');
 
 
 // 풋살을 하기 위한 회원들의 회원가입
-router.post('/join', (req, res) => {
+router.post('/join1', (req, res) => {
     console.log('join 실행', req.body);
 
     let { user_id, user_pw, user_nick, user_birthdate, user_gender, user_phone } = req.body;
@@ -69,7 +69,7 @@ router.post("/boss_join", (req, res) => {
 // 구장 정보 등록 router -> 코트 정보도 같이 입력됨
 router.post("/field_join", (req, res) => {
     console.log("구장 정보 등록", req.body);
-    let { field_name, field_addr, field_detail, court_count, main_region, sub_region, field_oper_st_time, field_oper_ed_time } = req.body;
+    let { field_name, field_addr, field_detail, court_count, main_region, sub_region, field_oper_st_time, field_oper_ed_time} = req.body;
     let region = `${req.body.main_region}, ${req.body.sub_region}`
     let boss_id = req.session.idName;
 
@@ -326,175 +326,6 @@ router.post("/court_info_update", (req, res) => {
         });
     });
 });
-
-
-
-// 매치페이지에서 방만들기 했을 때 match_info 테이블에 정보 insert 기능하는 router
-router.post("/create_match", (req, res) => {
-
-    console.log("match_info테이블", req.body);
-    let { match_title, female_match_yn, rate_match_yn, main_region, sub_region, match_date, reserv_tm, match_info } = req.body;
-
-    let boss_id = req.session.idName;
-    let join_user = boss_id;
-    let created_at = new Date();
-    let match_region = `${main_region}, ${sub_region}`;
-    let match_st_dt = reserv_tm[0];
-    let match_ed_dt = reserv_tm.pop();
-    console.log(`match_ed_dt : ${match_ed_dt}`);
-
-    if (req.body.female_match_yn === "on") {
-        female_match_yn = 'Y';
-    } else {
-        female_match_yn = 'N';
-    }
-
-    if (req.body.rate_match_yn === "on") {
-        rate_match_yn = 'Y';
-    } else {
-        rate_match_yn = 'N';
-    }
-
-
-    let sql = "insert into match_info1 (match_title, join_user, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, created_at, match_info) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    conn.query(sql, [match_title, join_user, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, created_at, match_info], (err, rows) => {
-        console.log('insert 완', rows);
-        if (rows) {
-            res.redirect('/user/match');
-        } else {
-            res.send(`<script>alert('다시 시도해 주세용~ ') 
-                window.location.href="/create_match"<script>`);
-        }
-    });
-
-});
-
-
-// 매치 페이지에서 방 리스트를 보여주는 라우터
-router.get("/match", (req, res) => {
-    console.log(req);
-
-    let sql = "SELECT match_idx, match_title, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, match_info FROM match_info1";
-    conn.query(sql, (err, results) => {
-        if (err) {
-            console.error('데이터 조회 오류:', err);
-            res.send("데이터를 가져오는 중 오류가 발생했습니다.");
-        } else {
-            res.render("match", { matches: results, idName: req.session.idName });
-        }
-    });
-});
-
-
-// 경기참가 버튼 클릭 시 호출되는 라우터
-router.post("/join_game", (req, res) => {
-    const newUserId = req.session.idName;
-    const match_idx = req.body.match_idx; // match_idx 값 가져오기
-    console.log(req.session.idName, "id값"); // 새로운 사용자의 user_id
-    console.log(req.body.match_idx, "match_idx값"); // 새로운 사용자의 user_id
-
-    let sql = "SELECT join_user FROM match_info1 WHERE match_idx = ?";
-
-
-
-    conn.query(sql, [match_idx], (err, results) => {
-        let currentJoinUser = results[0].join_user || "";
-        let currentJoinUsers = currentJoinUser.split(",").map(user => user.trim()); // 현재 join_user 컬럼
-        if (currentJoinUsers.includes(newUserId)) {
-            res.send(`<script>alert('어머 이미 가입 되셨네용 ~');
-                window.history.back();</script>`);
-        } else {
-            currentJoinUsers.push(newUserId); // 새로운 사용자 추가
-            let join_user = currentJoinUsers.join(", "); // 배열을 문자열로 변환
-
-            sql = "UPDATE match_info1 SET join_user = ? WHERE match_idx = ?";
-            conn.query(sql, [join_user, match_idx], (err, results) => {
-                if (err) {
-                    console.error('데이터 업데이트 오류:', err);
-                    res.send("데이터를 업데이트하는 중 오류가 발생했습니다.");
-                } else {
-                    res.send("데이터 업데이트 성공!");
-                }
-            });
-        }
-    });
-});
-
-// 경기탈퇴 버튼 클릭 시 호출되는 라우터
-router.post("/cancel_game", (req, res) => {
-    const cancelUserId = req.session.idName;
-    const match_idx = req.body.match_idx;
-
-    console.log(req.session.idName, "id값");
-    console.log(req.body.match_idx, "match_idx값");
-
-    let sql = "SELECT join_user FROM match_info1 WHERE match_idx = ?";
-    conn.query(sql, [match_idx], (err, results) => {
-        if (err) {
-            console.error('데이터베이스 조회 오류:', err);
-            return res.send("데이터를 조회하는 중 오류가 발생했습니다.");
-        }
-
-        let currentJoinUser = results[0].join_user || "";
-        let currentJoinUsers = currentJoinUser.split(",").map(user => user.trim());
-
-        const index = currentJoinUsers.indexOf(cancelUserId);
-        if (index === -1) {
-            return res.send(`<script> alert('탈퇴할 사용자를 찾을 수 없습니다.'); window.history.back(); </script>`);
-        }
-
-        // 탈퇴 여부 확인을 위한 페이지를 반환
-        res.send(`
-            <form id="confirmForm" action="/user/confirm_cancel_game" method="post">
-                <input type="hidden" name="match_idx" value="${match_idx}" />
-                <input type="hidden" name="user_id" value="${cancelUserId}" />
-                <script>
-                    if (confirm('정말 탈퇴하시겠습니까?')) {
-                        document.getElementById('confirmForm').submit();
-                    } else {
-                        window.history.back();
-                    }
-                </script>
-            </form>
-        `);
-    });
-});
-
-// 탈퇴 확정 처리를 위한 라우터
-router.post("/confirm_cancel_game", (req, res) => {
-    const cancelUserId = req.body.user_id;
-    const match_idx = req.body.match_idx;
-    console.log('탈퇴회원: ', cancelUserId);
-    let sql = "SELECT join_user FROM match_info1 WHERE match_idx = ?";
-    conn.query(sql, [match_idx], (err, results) => {
-        if (err) {
-            console.error('데이터베이스 조회 오류:', err);
-            return res.send("데이터를 조회하는 중 오류가 발생했습니다.");
-        }
-
-        let currentJoinUser = results[0].join_user || "";
-        let currentJoinUsers = currentJoinUser.split(",").map(user => user.trim());
-        
-        const index = currentJoinUsers.indexOf(cancelUserId);
-        if (index === -1) {
-            return res.send(`<script> alert('탈퇴할 사용자를 찾을 수 없습니다.'); window.history.back(); </script>`);
-        }
-
-        currentJoinUsers.splice(index, 1);
-        let join_user = currentJoinUsers.join(", ");
-
-        sql = "UPDATE match_info1 SET join_user = ? WHERE match_idx = ?";
-        conn.query(sql, [join_user, match_idx], (err, results) => {
-            if (err) {
-                console.error('데이터 업데이트 오류:', err);
-                return res.send("데이터를 업데이트하는 중 오류가 발생했습니다.");
-            }
-            res.send(`<script>alert('탈퇴가 완료되었습니다.');
-                window.location.href="/user/match";</script>`);
-        });
-    });
-});
-
 
 
 module.exports = router;

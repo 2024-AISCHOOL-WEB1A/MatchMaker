@@ -1,13 +1,41 @@
+// const express = require('express')
+// const app = express()
+// const mainRouter = require('./routes/mainrouter')
+// const nunjucks = require('nunjucks')
+// const userRouter = require('./routes/userRouter')
+// const reservRouter = require('./routes/reservRouter')
+// const balRouter = require('./routes/balRouter')
+// const session = require('express-session')
+// const fileStore = require('session-file-store')(session)
+// const conn = require('./config/DB.js') // 데이터베이스 연결 모듈
+
+// app.set('view engine', 'html')
+// nunjucks.configure('views', {
+//     express: app,
+//     watch: true
+// })
+
+// // post 데이터 처리 
+// app.use(express.urlencoded({ extended: true }))
+// app.use(express.json()) // JSON 데이터 처리를 위해 추가
+
+// app.use(session({
+//     httpOnly: true,
+//     resave: false,
+//     secret: "secret",
+//     store: new fileStore(),
+//     saveUninitialized: false
+// }))
 const express = require('express')
 const app = express()
-const mainRouter = require('./routes/mainRouter')
+const mainRouter = require('./routes/mainrouter')
 const nunjucks = require('nunjucks')
 const userRouter = require('./routes/userRouter')
 const reservRouter = require('./routes/reservRouter')
 const balRouter = require('./routes/balRouter')
 const session = require('express-session')
 const fileStore = require('session-file-store')(session)
-
+const conn = require('./config/DB.js') // 데이터베이스 연결 모듈
 
 app.set('view engine', 'html')
 nunjucks.configure('views', {
@@ -15,27 +43,47 @@ nunjucks.configure('views', {
     watch: true
 })
 
-
-//post 데이터 처리 
+// post 데이터 처리 
 app.use(express.urlencoded({ extended: true }))
-
+app.use(express.json()) // JSON 데이터 처리를 위해 추가
 
 app.use(session({
-    httponly: true, //http 요청으로 온 것만 처리 
-    resave: false,  //세션을 항상 재저장 할 건지 ? 
-    secret: "secret", // 암호화 할 때 사용하는 키 
-    store: new fileStore(), // 세션을 어디에 저장 할 건지 ? 
-    saveUninitialized: false //세션에 저장할 내용이 없더라도 저장 할지 말지 
+    secret: "secret",
+    resave: false,
+    saveUninitialized: false,
+    store: new fileStore({
+        path: './sessions',
+        logFn: function(){},
+        retries: 0,
+    }),
+    cookie: {
+        httpOnly: true,
+        secure: false, // HTTPS를 사용하지 않는 경우 false
+        maxAge: 1000 * 60 * 60 * 24 // 24시간
+    }
 }))
-
-// app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static("public"));
 app.use('/', mainRouter)
 app.use('/user', userRouter)
-app.use('/reserv',reservRouter)
-app.use('/bal',balRouter)
+app.use('/reserv', reservRouter)
+app.use('/bal', balRouter)
+
+// 아이디 중복 확인 API
+app.post('/check-username', (req, res) => {
+    const { username } = req.body;
+    const query = 'SELECT * FROM user_info WHERE user_id = ?';
+    
+    conn.query(query, [username], (error, results) => {
+        if (error) {
+            console.error('Error checking username:', error);
+            res.status(500).json({ error: '서버 오류' });
+        } else {
+            res.json({ exists: results.length > 0 });
+        }
+    });
+});
 
 
 app.listen(3007, () => {
-    console.log('3007  port waiting')
+    console.log('3007 port waiting')
 })
