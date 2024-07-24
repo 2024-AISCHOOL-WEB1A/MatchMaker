@@ -12,6 +12,8 @@
     <p>매치 정보</p>
     <pre>{{ match.match_info }}</pre>
 
+    <br><br>
+    {% set join_users = match.join_user.split(",") %}
     {% for join_user in match.join_user %}
     <div>{{ join_user }}</div>
     {% endfor %}
