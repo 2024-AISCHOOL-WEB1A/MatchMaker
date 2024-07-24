@@ -56,11 +56,6 @@ app.use(session({
         logFn: function(){},
         retries: 0,
     }),
-    cookie: {
-        httpOnly: true,
-        secure: false, // HTTPS를 사용하지 않는 경우 false
-        maxAge: 1000 * 60 * 60 * 24 // 24시간
-    }
 }))
 app.use(express.static("public"));
 app.use('/', mainRouter)

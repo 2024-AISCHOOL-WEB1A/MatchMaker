@@ -5,11 +5,13 @@ const conn = require('../config/DB');
 
 // 메인 페이지
 router.get('/', (req, res) => {
-    if (req.session.idname) {
-        console.log('session', req.session.idName)
-    }
-    res.render('main', { idName: req.session.idName })
-})
+    if (req.session.idName) {
+        res.render('main', { idName: req.session.idName });
+        console.log(`ID : ${idName}`);
+    } else {
+        res.render('main');
+    };
+});
 
 
 // 일반 회원 회원가입 페이지
