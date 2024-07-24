@@ -420,6 +420,80 @@ router.post("/join_game", (req, res) => {
     });
 });
 
+// 경기탈퇴 버튼 클릭 시 호출되는 라우터
+router.post("/cancel_game", (req, res) => {
+    const cancelUserId = req.session.idName;
+    const match_idx = req.body.match_idx;
+
+    console.log(req.session.idName, "id값");
+    console.log(req.body.match_idx, "match_idx값");
+
+    let sql = "SELECT join_user FROM match_info1 WHERE match_idx = ?";
+    conn.query(sql, [match_idx], (err, results) => {
+        if (err) {
+            console.error('데이터베이스 조회 오류:', err);
+            return res.send("데이터를 조회하는 중 오류가 발생했습니다.");
+        }
+
+        let currentJoinUser = results[0].join_user || "";
+        let currentJoinUsers = currentJoinUser.split(",").map(user => user.trim());
+
+        const index = currentJoinUsers.indexOf(cancelUserId);
+        if (index === -1) {
+            return res.send("탈퇴할 사용자를 찾을 수 없습니다.");
+        }
+
+        // 탈퇴 여부 확인을 위한 페이지를 반환
+        res.send(`
+            <form id="confirmForm" action="/user/confirm_cancel_game" method="post">
+                <input type="hidden" name="match_idx" value="${match_idx}" />
+                <input type="hidden" name="user_id" value="${cancelUserId}" />
+                <script>
+                    if (confirm('정말 탈퇴하시겠습니까?')) {
+                        document.getElementById('confirmForm').submit();
+                    } else {
+                        window.history.back();
+                    }
+                </script>
+            </form>
+        `);
+    });
+});
+
+// 탈퇴 확정 처리를 위한 라우터
+router.post("/confirm_cancel_game", (req, res) => {
+    const cancelUserId = req.body.user_id;
+    const match_idx = req.body.match_idx;
+    console.log('탈퇴회원: ', cancelUserId);
+    let sql = "SELECT join_user FROM match_info1 WHERE match_idx = ?";
+    conn.query(sql, [match_idx], (err, results) => {
+        if (err) {
+            console.error('데이터베이스 조회 오류:', err);
+            return res.send("데이터를 조회하는 중 오류가 발생했습니다.");
+        }
+
+        let currentJoinUser = results[0].join_user || "";
+        let currentJoinUsers = currentJoinUser.split(",").map(user => user.trim());
+        
+        const index = currentJoinUsers.indexOf(cancelUserId);
+        if (index === -1) {
+            return res.send("탈퇴할 사용자를 찾을 수 없습니다.");
+        }
+
+        currentJoinUsers.splice(index, 1);
+        let join_user = currentJoinUsers.join(", ");
+
+        sql = "UPDATE match_info1 SET join_user = ? WHERE match_idx = ?";
+        conn.query(sql, [join_user, match_idx], (err, results) => {
+            if (err) {
+                console.error('데이터 업데이트 오류:', err);
+                return res.send("데이터를 업데이트하는 중 오류가 발생했습니다.");
+            }
+            res.send("탈퇴가 완료되었습니다.");
+        });
+    });
+});
+
 
 
 module.exports = router;
