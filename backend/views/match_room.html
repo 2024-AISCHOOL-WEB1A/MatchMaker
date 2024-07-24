@@ -23,7 +23,7 @@
 <br><br>
 
 <form action="/user/cancel_game" method="post">
-    <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
+    <input type="hidden" name="match_idx" value="{{ match.matcㄴh_idx }}">
     <input type="submit" value="경기탈퇴">
 </form>
 <a href="/reserv/reservAll"><button>예약하기</button></a>
@@ -32,6 +32,15 @@
 
 {% else %}
 
+<h3>{{ match.match_title }} 매칭방에 입장하셨습니다</h3>
+<p>지역: {{ match.match_region }}</p>
+<p>예상 경기 날짜: {{ match.match_date }}</p>
+<p>예상 시작 시간: {{ match.match_st_dt }}</p>
+<p>예상 종료 시간: {{ match.match_ed_dt }}</p>
+<p>여성부 매치: {{ match.female_match_yn }}</p>
+<p>점수 매치: {{ match.rate_match_yn }}</p>
+<p>매치 정보</p>
+<pre>{{ match.match_info }}</pre>
 <h3>{{ match.match_title }} 매칭방에 입장하셨습니다</h3>
 <p>지역: {{ match.match_region }}</p>
 <p>예상 경기 날짜: {{ match.match_date }}</p>
