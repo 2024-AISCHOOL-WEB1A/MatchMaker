@@ -5,9 +5,10 @@ const conn = require('../config/DB');
 
 // 메인 페이지
 router.get('/', (req, res) => {
+
     if (req.session.idName) {
+        console.log(`ID : ${req.session.idName}`);
         res.render('main', { idName: req.session.idName });
-        console.log(`ID : ${idName}`);
     } else {
         res.render('main');
     };
