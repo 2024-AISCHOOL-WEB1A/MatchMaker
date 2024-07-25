@@ -14,7 +14,157 @@
 <p>매치 정보</p>
 <pre>{{ match.match_info }}</pre>
 
-<br><br>
+<br><br>{% block content %}
+
+{% if idName == teamLeader %}
+    
+    <h3>{{ match.match_title }} 매칭방에 입장하셨습니다</h3>
+    <p>지역: {{ match.match_region }}</p>
+    <p>예상 경기 날짜: {{ match.match_date }}</p>
+    <p>예상 시작 시간: {{ match.match_st_dt }}</p>
+    <p>예상 종료 시간: {{ match.match_ed_dt }}</p>
+    <p>여성부 매치: {{ match.female_match_yn }}</p>
+    <p>점수 매치: {{ match.rate_match_yn }}</p>
+    <p>매치 정보</p>
+    <pre>{{ match.match_info }}</pre>
+
+    <br><br>
+    {% for join_user in join_users %}
+    <div>{{ join_user }} - {{ user_info[join_user] }}</div>
+    {% endfor %}
+
+    <br><br>
+
+    <form action="/user/cancel_game" method="post">
+        <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
+        <input type="submit" value="경기탈퇴" {% if 0 < matchcomplete %} disabled {% endif %}>
+
+    </form>
+
+    <form action="/reserv/reservAll" method="get">
+        <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
+        <a href="/reserv/reservAll"><input type="submit" value="예약하기"></a><br>
+    </form>
+
+    {% if join_users.length == 10 %}
+    <form action="/bal/tmmatch" method="post">
+        <input type="hidden" name="match_title" value="{{ match.match_title }}">
+        <input type="hidden" name="match_region" value="{{ match.match_region }}">
+        <input type="hidden" name="match_date" value="{{ match.match_date }}">
+        <input type="hidden" name="match_st_dt" value="{{ match.match_st_dt }}">
+        <input type="hidden" name="match_ed_dt" value="{{ match.match_ed_dt }}">
+        <input type="hidden" name="female_match_yn" value="{{ match.female_match_yn }}">
+        <input type="hidden" name="rate_match_yn" value="{{ match.rate_match_yn }}">
+        <input type="hidden" name="match_info" value="{{ match.match_info }}">
+        <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
+        {% for join_user in join_users %}
+            <input type="hidden" name="user_id" value="{{ join_user }}">
+        {% endfor %}
+        <input type="submit" value="밸런스 매칭"><br>
+    </form>
+    
+    {% endif %}
+
+    {% if teamA and teamA.length > 0 %}
+        팀A (Average rate: {{ avgTeamA }})<br>
+        {% for member in teamA %}
+                [{{ member.user_id }}, {{ member.user_rate }}]<br>
+        {% endfor %}
+        <br>
+        팀B (Average rate: {{ avgTeamB }})<br>
+        {% for member in teamB %}
+                [{{ member.user_id }}, {{ member.user_rate }}]<br>
+        {% endfor %}
+    {% endif %}
+
+    <br>
+    <form action="/user/team" method="post">
+        <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
+        <input type="hidden" name="teamA_user1" value="{{ teamA[0].user_id }}">
+        <input type="hidden" name="teamA_user2" value="{{ teamA[1].user_id }}">
+        <input type="hidden" name="teamA_user3" value="{{ teamA[2].user_id }}">
+        <input type="hidden" name="teamA_user4" value="{{ teamA[3].user_id }}">
+        <input type="hidden" name="teamA_user5" value="{{ teamA[4].user_id }}">
+        <input type="hidden" name="teamB_user1" value="{{ teamB[0].user_id }}">
+        <input type="hidden" name="teamB_user2" value="{{ teamB[1].user_id }}">
+        <input type="hidden" name="teamB_user3" value="{{ teamB[2].user_id }}">
+        <input type="hidden" name="teamB_user4" value="{{ teamB[3].user_id }}">
+        <input type="hidden" name="teamB_user5" value="{{ teamB[4].user_id }}">
+
+        <input type="submit" value="팀확정"><br>
+    </form>
+
+    
+
+{% else %}
+
+    <h3>{{ match.match_title }} 매칭방에 입장하셨습니다</h3>
+    <p>지역: {{ match.match_region }}</p>
+    <p>예상 경기 날짜: {{ match.match_date }}</p>
+    <p>예상 시작 시간: {{ match.match_st_dt }}</p>
+    <p>예상 종료 시간: {{ match.match_ed_dt }}</p>
+    <p>여성부 매치: {{ match.female_match_yn }}</p>
+    <p>점수 매치: {{ match.rate_match_yn }}</p>
+    <p>매치 정보</p>
+    <pre>{{ match.match_info }}</pre>
+
+    <br><br>
+    {% for join_user in join_users %}
+        <div>{{ join_user }} - {{ user_info[join_user] }}</div>
+    {% endfor %}
+
+    <br><br>
+    <form action="/user/join_game" method="post" onsubmit="return checkUserLimit()">
+        <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
+        <input type="submit" value="경기참가" id="joinButton" data-user-count="{{ join_users|length }}">
+    </form>
+
+    <form action="/user/cancel_game" method="post">
+        <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
+        <input type="submit" value="경기탈퇴">
+    </form>
+
+    {% if join_users.length == 10 %}
+        <form action="/bal/tmmatch" method="post">
+            <input type="hidden" name="match_title" value="{{ match.match_title }}">
+            <input type="hidden" name="match_region" value="{{ match.match_region }}">
+            <input type="hidden" name="match_date" value="{{ match.match_date }}">
+            <input type="hidden" name="match_st_dt" value="{{ match.match_st_dt }}">
+            <input type="hidden" name="match_ed_dt" value="{{ match.match_ed_dt }}">
+            <input type="hidden" name="female_match_yn" value="{{ match.female_match_yn }}">
+            <input type="hidden" name="rate_match_yn" value="{{ match.rate_match_yn }}">
+            <input type="hidden" name="match_info" value="{{ match.match_info }}">
+            <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
+            {% for join_user in join_users %}
+                <input type="hidden" name="user_id" value="{{ join_user }}">
+                <input type="hidden" name="user_rate" value="{{ user_info[join_user] }}">
+            {% endfor %}
+            <input type="submit" value="밸런스 매칭"><br>
+        </form>
+    {% endif %}
+        
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var joinButton = document.getElementById("joinButton");
+        var userCount = joinButton.getAttribute("data-user-count");
+        function checkUserLimit() {
+            if (userCount >= 10) {
+                alert("참가 인원이 이미 10명을 초과했습니다. 더 이상 참가할 수 없습니다.");
+                return false;
+            }
+            return true;
+        }
+        if (userCount >= 10) {
+            joinButton.disabled = true;
+        }
+        document.querySelector('form').onsubmit = checkUserLimit;
+    });
+</script>
+
+{% endblock %}
+
 {% for join_user in join_users %}
     <div>{{ join_user }} - {{ user_info[join_user] }}</div>
 {% endfor %}

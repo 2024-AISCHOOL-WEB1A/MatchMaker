@@ -1,9 +1,7 @@
-const express = require('express')
-const router = express.Router()
-const conn = require('../config/DB')
+const express = require('express');
+const router = express.Router();
+const conn = require('../config/DB');
 
-
-// 밸런스 매칭
 // 점수 배열을 입력받아 5명의 팀을 구성하는 모든 조합을 반환
 function getCombinations(arr, size) {
     if (size > arr.length) return [];
@@ -49,32 +47,74 @@ function findBestTeams(scores) {
         if (difference < smallestDifference) {
             smallestDifference = difference;
             bestTeams = { teamA, teamB, avgA, avgB };
+            console.log("bestTeams", bestTeams);
         }
     });
 
-    return bestTeams;
+return bestTeams;
 }
 
-// 밸런스 매칭 기능 실행
+
+// 참가자들 정보를 받아와 팀구성 기능
 router.post("/tmmatch", (req, res) => {
-    console.log("tmmatch", req.body);
-    console.log(req.body.rate);
-    // 테스트용 점수 배열
-    let rates = req.body.rate
+    const join_users = req.body.user_id;
+    const match_idx = req.body.match_idx;
+    const user_rates = req.body.user_rate;
+    console.log("user_rates", user_rates);
+
+    // join_users는 배열 형식으로 user_id가 전달될 것으로 가정합니다.
+    const user_ids = Array.isArray(join_users) ? join_users : [join_users];  
+    console.log("user_ids", user_ids);
 
 
-    let bestTeams = findBestTeams(rates);
+    // user_info 테이블에서 user_id에 대한 user_rate를 SELECT
+    const sql = 'SELECT user_id, user_rate FROM user_info WHERE user_id IN (?)';
+    conn.query(sql, [user_ids], (err, results) => {
+        if (err) {
+            console.error('SQL 오류:', err);
+            return res.send('<script>alert("다시 시도해 주세요"); window.location.href="/create_match";</script>');
+        }
 
-    console.log(bestTeams.teamA.map(player => `Player ${player + 1}`));
+        if (results.length !== 10) {
+            return res.send('<script>alert("참가자 수가 10명이 아닙니다."); window.history.back();</script>');
+        }
 
-    console.log('팀 A:', bestTeams.teamA.map(player => `Player ${player + 1}`), '평균 점수:', bestTeams.avgA);
-    console.log('팀 B:', bestTeams.teamB.map(player => `Player ${player + 1}`), '평균 점수:', bestTeams.avgB);
+        console.log("results", results);
+        const user_ids = results.map(result => result.user_id);
+        const scores = results.map(result => result.user_rate);
+        console.log("user_ids", user_ids);
+        console.log("scores",scores);
+        
+        const userInfo = {};
+        results.forEach(result => {
+            userInfo[result.user_id] = result.user_rate;
+        });
 
-    res.render('bal_rate_tmmatch', {
-        teamA: bestTeams.teamA.map(player => `Player ${player + 1}`).join(', '),
-        teamB: bestTeams.teamB.map(player => `Player ${player + 1}`).join(', ')
+        // 최적의 팀을 구성
+        const bestTeams = findBestTeams(scores);
+        if (!bestTeams || !bestTeams.teamA.length || !bestTeams.teamB.length) {
+            return res.send(`<script>alert('팀 구성이 불가합니다.'); window.history.back();</script>`);
+        }
+
+        const teamA = bestTeams.teamA.map(index => ({ user_id: user_ids[index], user_rate: userInfo[user_ids[index]] }));
+        const teamB = bestTeams.teamB.map(index => ({ user_id: user_ids[index], user_rate: userInfo[user_ids[index]] }));
+        console.log("teamA", teamA);
+
+        // 팀 평균 계산
+        const avgTeamA = calculateAverage(teamA.map(player => player.user_rate));
+        const avgTeamB = calculateAverage(teamB.map(player => player.user_rate));
+
+        // 팀 정보를 HTML로 렌더링하기 위해 필요한 데이터를 전송
+        res.render('match_room', {
+            match: req.body,  // 기존 매칭 정보
+            join_users: join_users,
+            user_info: userInfo,
+            teamA: teamA,
+            teamB: teamB,
+            avgTeamA: avgTeamA,
+            avgTeamB: avgTeamB
+        });
     });
-
 });
 
 module.exports = router;

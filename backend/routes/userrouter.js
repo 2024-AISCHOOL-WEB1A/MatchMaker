@@ -40,7 +40,9 @@ router.post('/join1', (req, res) => {
             res.send("<script>alert('다시 시도해주세요.'); window.history.back();</script>");
         } else {
             console.log('insert 완료', rows);
-            req.session.idName = user_id;
+            req.session.idName = user_id
+            req.session.nick = user_nick
+            req.session.rate = user_rate
             res.redirect("/main_login");
         }
     })
@@ -139,6 +141,8 @@ router.post("/login", (req, res) => {
             console.log("rows", rows);
             if (rows.length > 0) {
                 req.session.idName = id;
+                req.session.nick = rows[0].user_nick;
+                req.session.rate = rows[0].user_rate;
                 console.log(req.session.idName);
                 res.redirect('/main_login');
             } else {
@@ -488,5 +492,42 @@ router.post("/confirm_cancel_game", (req, res) => {
         });
     });
 });
+
+// 팀 확정 후, 테이블 저장 라우터
+router.post("/team", (req, res) => {
+    console.log("team", req.body);
+
+    const match_idx = parseInt(req.body.match_idx);
+    const teamA_user1 = req.body.teamA_user1;
+    const teamA_user2 = req.body.teamA_user2;
+    const teamA_user3 = req.body.teamA_user3;
+    const teamA_user4 = req.body.teamA_user4;
+    const teamA_user5 = req.body.teamA_user5;
+    const teamB_user1 = req.body.teamB_user1;
+    const teamB_user2 = req.body.teamB_user2;
+    const teamB_user3 = req.body.teamB_user3;
+    const teamB_user4 = req.body.teamB_user4;
+    const teamB_user5 = req.body.teamB_user5;
+    const created_at = new Date();
+
+
+
+    // match_idx가 존재하지 않으면 INSERT 쿼리 실행
+
+    let sql = 'INSERT INTO team_info1 (teamA_user1, teamA_user2, teamA_user3, teamA_user4, teamA_user5, teamB_user1, teamB_user2, teamB_user3, teamB_user4, teamB_user5, match_idx, created_at) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+    // team_info 테이블에 삽입
+    conn.query(sql, [teamA_user1, teamA_user2, teamA_user3, teamA_user4, teamA_user5, teamB_user1, teamB_user2, teamB_user3, teamB_user4, teamB_user5, match_idx, created_at], (err, rows) => {
+
+        if (err) {
+            console.error('SQL 오류:', err);
+            return res.send(`<script>alert("이미 팀이 구성되었습니다. 구장예약을 해주세요"); window.history.go(-1);</script>`);
+        }
+
+        console.log("team rows", rows);
+        res.send(`<script>alert("밸런스 매칭 완료! 구장예약을 해주세요"); window.history.go(-1);</script>`);
+    });
+});
+
 
 module.exports = router;
