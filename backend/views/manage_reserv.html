@@ -1,0 +1,50 @@
+{% extends "main.html" %}
+
+{% block content %}
+<h1>🍥 예약 관리 페이지 입니당 🍥</h1>
+
+
+{% if boss_id == idName %}
+    <p>관리자: {{ boss_id }}</p>
+    <p>코트 이름: {{ court_name }}</p>
+    <p>코트 인덱스: {{ court_idx }}</p>
+
+    <h3>예약 정보</h3>
+    {% if reservations.length > 0 %}
+    <table>
+        <thead>
+            <tr>
+                <th>예약 ID</th>
+                <th>사용자 ID</th>
+                <th>예약 시작 시간</th>
+                <th>예약 종료 시간</th>
+                <th>예약 상태</th>
+                <th>작업</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+            <tr>
+                <td>{{ reservation.reservation_id }}</td>
+                <td>{{ reservation.user_id }}</td>
+                <td>{{ reservation.start_time }}</td>
+                <td>{{ reservation.end_time }}</td>
+                <td>{{ reservation.status }}</td>
+                <td>
+                    <form action="/manage/cancel_reservation" method="post" onsubmit="return confirm('정말로 이 예약을 취소하시겠습니까?');">
+                        <input type="hidden" name="reservation_id" value="{{ reservation.reservation_id }}">
+                        <button type="submit">취소</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>예약 정보가 없습니다.</p>
+    {% endif %}
+{% else %}
+<p>권한이 없습니다.</p>
+{% endif %}
+
+{% endblock %}

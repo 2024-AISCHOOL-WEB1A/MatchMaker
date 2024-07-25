@@ -6,28 +6,30 @@
     <title>Document</title>
 </head>
 <body>
-    
     <a href="/">
         <h1>🎁회원관리 시스템🍚</h1>
     </a>
 
-    {% if idName != NULL %}
+    {% if bossId and bossId.includes(idName) %}
         <p>{{ idName }} 님 환영합니다</p>
         <a href="/user/logout">로그아웃</a>
         <a href="/user/myPage">마이페이지</a>
         <a href="/boss_myPage">풋살장 관리자의 마이페이지</a>
         <a href="/user/match">매치</a>
+        <a href="/manage/reserv">예약 관리</a>
+    {% elif idName %}
+        <p>{{ idName }} 님 환영합니다</p>
+        <a href="/user/logout">로그아웃</a>
+        <a href="/user/myPage">마이페이지</a>
+        <a href="/user/match">매치</a>
         <a href="/reserv/reservAll">예약하기</a>
-           
     {% else %}
         <h3>로그인 해주세용</h3>
-        <a href="/join1">회원가입</a>
-        <a href="/boss_join">구장 관리자용 회원가입 </a>
+        <a href="/join">회원가입</a>
+        <a href="/boss_join">구장 관리자용 회원가입</a>
         <a href="/login1">로그인</a>
         <a href="/bal_rate_tmmatch">밸런스 매칭 기능</a>
     {% endif %}
-
-  
 
     {% block content %}
     {% endblock %}

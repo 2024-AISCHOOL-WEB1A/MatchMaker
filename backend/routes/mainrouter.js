@@ -5,13 +5,20 @@ const conn = require('../config/DB');
 
 // 메인 페이지
 router.get('/', (req, res) => {
-
     if (req.session.idName) {
-        console.log(`ID : ${req.session.idName}`);
-        res.render('main1', { idName: req.session.idName });
-    } else {
-        res.render('main1');
-    };
+        console.log('session', req.session.idName);
+    }
+
+    const sql = "SELECT boss_id FROM boss_info";
+    conn.query(sql, (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send("Database query error");
+        }
+
+        const bossId = results.map(row => row.boss_id); 
+        res.render('main', { idName: req.session.idName, bossId });
+    });
 });
 
 
@@ -125,5 +132,7 @@ router.get('/match_room/:match_idx', (req, res) => {
         }
     });
 });
+
+
 
 module.exports = router;
