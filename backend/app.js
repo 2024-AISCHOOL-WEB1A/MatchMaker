@@ -91,11 +91,12 @@ const mainRouter = require('./routes/mainrouter')
 const userRouter = require('./routes/userrouter')
 const reservRouter = require('./routes/reservRouter')
 const balRouter = require('./routes/balRouter')
-
+const manageRouter = require('./routes/manageRouter.js')
 app.use('/', mainRouter)
 app.use('/user', userRouter)
 app.use('/reserv', reservRouter)
 app.use('/bal', balRouter)
+app.use('/manage',manageRouter)
 
 // 아이디 중복 확인 API
 app.post('/check-username', (req, res) => {
