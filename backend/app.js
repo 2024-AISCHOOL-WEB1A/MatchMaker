@@ -52,7 +52,8 @@
 // app.listen(3007, () => {
 //     console.log('3007 port waiting')
 // })
-
+require("dotenv").config()
+console.log(process.env.CUSTOMKEY);
 const express = require('express')
 const app = express()
 const nunjucks = require('nunjucks')

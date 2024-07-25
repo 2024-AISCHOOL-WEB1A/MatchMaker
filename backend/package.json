@@ -1,4 +1,11 @@
 {
+  "name" : "matchmaker" ,
+  "version": "1.0.0",
+  "description": "anything",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
   "dependencies": {
     "chokidar": "^3.6.0",
     "express": "^4.19.2",
