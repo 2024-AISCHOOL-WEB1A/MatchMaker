@@ -1,14 +1,69 @@
 {% extends 'main.html'%}
 
 {% block content %}
-<h3>매칭 리스트</h3><br><br>
-<a href="/create_match">방 만들기</a><br><br>
 
+<link rel="stylesheet" href="/css/match.css">
 
+<nav id="navbar">
+    <img src="/img/logo1.png" alt="" class="main_logo">
+    <div class="user_info">
+        <a href="/user/myPage">
+            <ion-icon name="person-outline" class="user_logo"></ion-icon>
+        </a>
+        <a href="/user/logout">
+            <ion-icon name="log-out-outline" class="logout_logo"></ion-icon>
+        </a>
+    </div>
+</nav>
 
+<!-- 배너슬라이드 -->
 
-<table border="1">
-    <tr>
+<section id="banner">
+    <div class="banner-image active" style="background-image: url('/img/banner8.jpg');"></div>
+    <div class="banner-image" style="background-image: url('/img/banner7.jpg');"></div>
+    <div class="banner-image" style="background-image: url('/img/banner5.jpg');"></div>
+    <div class="banner-image" style="background-image: url('/img/banner6.jpg');"></div>
+
+</section>
+
+<a href="/create_match" class="room_make">방만들기</a><br><br>
+
+<!-- 조건 선택칸 -->
+<div class="match_options">
+    <div class="match_region">
+        <select id="main_region" name="main_region" onchange="updateSubRegion(); filterMatches();">
+            <option value="기본값">지역선택</option>
+            <option value="서울특별시">서울특별시</option>
+            <option value="광주광역시">광주광역시</option>
+            <option value="전북특별자치도">전북특별자치도</option>
+        </select>
+
+        <select id="sub_region" name="sub_region" onchange="filterMatches()">
+            <!-- 하위 지역 옵션이 여기에 동적으로 추가됩니다. -->
+            <option value="동네 선택">동네 선택</option>
+        </select>
+    </div>
+
+    <div class="female_match_yn">
+        <select name="female_match_yn" id="female_match_yn" onchange="filterMatches()">
+            <option value="모든성별">모든성별</option>
+            <option value="여성부경기">여성부경기</option>
+            <option value="남녀무관">남녀무관</option>
+        </select>
+    </div>
+
+    <div class="rate_match_yn">
+        <select name="rate_match_yn" id="rate_match_yn" onchange="filterMatches()">
+            <option value="모든매치">모든매치</option>
+            <option value="점수매치">점수매치</option>
+            <option value="친선매치">친선매치</option>
+        </select>
+    </div>
+</div>
+
+<!-- 개설된 경기 생기는 곳 -->
+<table class="table">
+    <tr class="match-list">
         <th>매치 제목</th>
         <th>지역</th>
         <th>예상 경기 날짜</th>
@@ -20,7 +75,8 @@
     </tr>
 
     {% for match in matches %}
-    <tr matchRoom_idx="{{ match.match_idx }}" class="clickable_row">
+    <tr matchRoom_idx="{{ match.match_idx }}" class="clickable_row" data-region="{{ match.match_region }}"
+        data-female="{{ match.female_match_yn }}" data-rate="{{ match.rate_match_yn }}">
         <td>{{ match.match_title }}</td>
         <td>{{ match.match_region }}</td>
         <td>{{ match.match_date }}</td>
@@ -30,15 +86,15 @@
         <td>{{ match.rate_match_yn }}</td>
         <td class="match_info">{{ match.match_info }}</td>
     </tr>
-
     {% endfor %}
 
 </table>
 
-
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener('DOMContentLoaded', function () {
         var rows = document.querySelectorAll(".clickable_row");
         rows.forEach(function (row) {
             row.addEventListener("click", function () {
@@ -46,16 +102,121 @@
                 window.location.href = "/match_room/" + match_idx;
             });
         });
+
+        updateSubRegion();
+        filterMatches();
     });
 
+    function updateSubRegion() {
+        const subRegionSelect = document.getElementById('sub_region');
+        const mainRegion = document.getElementById('main_region').value;
+
+        // 하위 지역 옵션 초기화
+        subRegionSelect.innerHTML = '';
+
+        let options = [{ value: '동네 선택', text: '동네 선택' }];
+
+        if (mainRegion === '서울특별시') {
+            options = [
+                { value: '동네 선택', text: '동네 선택' },
+                { value: '종로구', text: '종로구' },
+                { value: '강남구', text: '강남구' },
+                { value: '동대문구', text: '동대문구' }
+            ];
+        } else if (mainRegion === '광주광역시') {
+            options = [
+                { value: '동네 선택', text: '동네 선택' },
+                { value: '북구', text: '북구' },
+                { value: '동구', text: '동구' },
+                { value: '남구', text: '남구' },
+                { value: '서구', text: '서구' },
+                { value: '광산구', text: '광산구' },
+            ];
+        } else if (mainRegion === '전북특별자치도') {
+            options = [
+                { value: '동네 선택', text: '동네 선택' },
+                { value: '전주', text: '전주' },
+                { value: '익산', text: '익산' },
+                { value: '군산', text: '군산' }
+            ];
+        }
+
+        // 새로운 옵션 추가
+        options.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option.value;
+            opt.textContent = option.text;
+            subRegionSelect.appendChild(opt);
+        });
+
+        filterMatches();
+    }
+
+    function filterMatches() {
+        const mainRegion = document.getElementById('main_region').value;
+        const subRegion = document.getElementById('sub_region').value;
+        const femaleMatch = document.getElementById('female_match_yn').value;
+        const rateMatch = document.getElementById('rate_match_yn').value;
+        const rows = document.querySelectorAll(".clickable_row");
+
+        rows.forEach(row => {
+            const region = row.getAttribute("data-region");
+            const femaleMatchValue = row.getAttribute("data-female");
+            const rateMatchValue = row.getAttribute("data-rate");
+
+            let display = true;
+
+            // 지역 필터링
+            if (mainRegion !== '기본값' && subRegion !== '동네 선택') {
+                if (region !== `${mainRegion}, ${subRegion}`) {
+                    display = false;
+                }
+            } else if (mainRegion !== '기본값' && subRegion === '동네 선택') {
+                if (!region.startsWith(mainRegion)) {
+                    display = false;
+                }
+            }
+
+            // 여성부 매치 필터링
+            if (femaleMatch === '여성부경기' && femaleMatchValue !== 'Y') {
+                display = false;
+            } else if (femaleMatch === '남녀무관' && femaleMatchValue !== 'N') {
+                display = false;
+            }
+
+            // 점수 매치 필터링
+            if (rateMatch === '점수매치' && rateMatchValue !== 'Y') {
+                display = false;
+            } else if (rateMatch === '친선매치' && rateMatchValue !== 'N') {
+                display = false;
+            }
+
+            // 필터링 조건에 맞는 경우 표시
+            row.style.display = display ? "" : "none";
+        });
+    }
 </script>
 
-<style>
-    .match_info {
-        word-wrap: break-word;
-        word-break: break-all;
-        white-space: pre-wrap;
-        tab-size: 5;
-    }
-</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log('Page Loaded');
+    });
+
+    // 이미지 배너 스크립트
+    document.addEventListener('DOMContentLoaded', () => {
+        const images = document.querySelectorAll('.banner-image');
+        let currentIndex = 0;
+
+        function showNextImage() {
+            images[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % images.length;
+            images[currentIndex].classList.add('active');
+        }
+
+        setInterval(showNextImage, 3000); // Change image every 3 seconds
+    });
+</script>
+
+
+
 {% endblock %}
