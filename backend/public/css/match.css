@@ -31,7 +31,7 @@ body{
 .user_logo{
     width: 30px;
     height: 30px;
-    color: white;
+    color: black;
 }
 
 a {
@@ -44,7 +44,7 @@ a {
     width: 30px;
     height: 30px;
     margin-left: 10px;
-    color: white;
+    color: black;
 }
 
 /* 배너 */

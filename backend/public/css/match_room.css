@@ -1,0 +1,154 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Pretendard-Regular';
+    font-size: 14px;
+    height: 100vh;
+    margin: 0;
+    padding: 0 50px;
+    background: url(../img/1234567.jpg) no-repeat center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #252547;
+}
+
+#navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 20px;
+    height: 70px;
+    padding-top: 8px;
+    margin-bottom: 30px;
+}
+
+.main_logo {
+    width: 200px;
+    height: 100px;
+}
+
+.user_logo {
+    width: 30px;
+    height: 30px;
+    color: black;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+    font-weight: 900;
+}
+
+.logout_logo {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    color: black;
+}
+
+.content-container{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.matchfield-container {
+    position: relative;
+    width: 70%;
+    margin: auto;
+}
+
+.matchfield {
+    width: 100%;
+}
+
+.overlay-image {
+    position: absolute;
+    top: 50%; /* 적절한 위치 설정 */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 110px; 
+    height: 110px; 
+}
+
+.info-container {
+    max-width: 300px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    overflow: auto;
+    max-height: 80vh; /* 뷰포트 높이의 80%로 최대 높이 제한 */
+}
+
+.info-container pre {
+    white-space: pre-wrap; /* pre 태그 내용의 줄바꿈 유지 */
+    word-break: break-word; /* 긴 단어 강제 줄바꿈 */
+    font-family: 'Pretendard-Regular';
+    font-size: 18px;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.button-container form,
+.button-container a {
+    margin: 0;
+}
+
+.btn{
+    font-family: 'Pretendard-Regular';
+}
+
+.overlay-image {
+    position: absolute;
+    width: 110px;
+    height: 110px;
+}
+
+.overlay-image img {
+    width: 100%;
+    height: 100%;
+}
+
+.player-info {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px black;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.player-info span {
+    display: block;
+    font-size: 12px;
+}
+
+
+.st { top: 10%; left: 50%; transform: translate(-50%, -50%); }
+.lm { top: 30%; left: 20%; transform: translate(-50%, -50%); }
+.lcm { top: 30%; left: 40%; transform: translate(-50%, -50%); }
+.rcm { top: 30%; left: 60%; transform: translate(-50%, -50%); }
+.rm { top: 30%; left: 80%; transform: translate(-50%, -50%); }
+.lb { top: 50%; left: 20%; transform: translate(-50%, -50%); }
+.lcb { top: 50%; left: 40%; transform: translate(-50%, -50%); }
+.rcb { top: 50%; left: 60%; transform: translate(-50%, -50%); }
+.rb { top: 50%; left: 80%; transform: translate(-50%, -50%); }
+.gk { top: 70%; left: 50%; transform: translate(-50%, -50%); }
