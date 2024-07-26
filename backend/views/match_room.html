@@ -44,6 +44,7 @@
         {% for join_user in join_users %}
             <input type="hidden" name="user_id" value="{{ join_user }}">
         {% endfor %}
+        <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
         <input type="submit" value="밸런스 매칭"><br>
     </form>
     
@@ -123,6 +124,7 @@
                 <input type="hidden" name="user_id" value="{{ join_user }}">
                 <input type="hidden" name="user_rate" value="{{ user_info[join_user] }}">
             {% endfor %}
+            <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
             <input type="submit" value="밸런스 매칭"><br>
         </form>
     {% endif %}

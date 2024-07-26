@@ -7,9 +7,11 @@ router.get('/reservAll', (req, res) => {
     const selectedFieldIdx = req.query.field_idx || '';
     const selectedCourtIdx = req.query.court_idx || '';
     const selectedreservDate = req.query.reserv_dt || '';
+    const matchIdx = req.query.match_idx[0] || '';
     const currentDate = new Date();
     const currentDateString = currentDate.toISOString().split('T')[0];
     const currentTimeString = currentDate.toTimeString().split(' ')[0];
+    console.log("match_idx", matchIdx);
 
     const sql1 = 'SELECT * FROM field_info';
 
@@ -69,7 +71,8 @@ router.get('/reservAll', (req, res) => {
                             reserv_date: selectedreservDate,
                             current_date: currentDateString, // 현재 날짜를 템플릿으로 전달
                             current_time: currentTimeString, // 현재 시간을 템플릿으로 전달
-                            reservations: reservations
+                            reservations: reservations,
+                            match_idx: matchIdx // match_idx 추가
                         });
                     });
                 } else {
@@ -85,7 +88,8 @@ router.get('/reservAll', (req, res) => {
                         reserv_date: selectedreservDate,
                         current_date: currentDateString, // 현재 날짜를 템플릿으로 전달
                         current_time: currentTimeString, // 현재 시간을 템플릿으로 전달
-                        reservations: []
+                        reservations: [],
+                        match_idx: matchIdx // match_idx 추가
                     });
                 }
             });
@@ -106,7 +110,7 @@ router.post('/reserv', (req, res) => {
     const sql = 'INSERT INTO reservation_info (user_id, court_idx, reserv_dt, created_at, reserv_st_tm, reserv_ed_tm, match_idx) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
     if (reserv_ed_tm > reserv_st_tm) {
-        conn.query(sql, [user_id, court_idx, reserv_dt, created_at, reserv_st_tm, reserv_ed_tm, match_idx], (err, rows) => {
+        conn.query(sql, [user_id, court_idx, reserv_dt, created_at, reserv_st_tm, reserv_ed_tm, finalMatchIdx], (err, rows) => {
             if (err) {
                 console.error('Error inserting reservation: ' + err);
                 res.send('<script>alert("예약에 실패했습니다."); window.location.href="/reserv/reservAll";</script>');
@@ -114,11 +118,12 @@ router.post('/reserv', (req, res) => {
             }
 
             console.log('reservation 완료', rows);
-            res.redirect('/');
+            res.redirect(`/match_room/${finalMatchIdx}`);
         });
     } else {
         res.send('<script>alert("예약시작시간보다 종료시간이 더 빠릅니다"); window.location.href="/reserv/reservAll";</script>');
     }
 });
+
 
 module.exports = router;

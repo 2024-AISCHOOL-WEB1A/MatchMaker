@@ -143,6 +143,7 @@ router.post("/login", (req, res) => {
                 req.session.idName = id;
                 req.session.nick = rows[0].user_nick;
                 req.session.rate = rows[0].user_rate;
+                req.session.rank = rows[0].user_rank;
                 console.log(req.session.idName);
                 res.redirect('/main_login');
             } else {

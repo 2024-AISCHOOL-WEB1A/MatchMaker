@@ -58,9 +58,10 @@ return bestTeams;
 // 참가자들 정보를 받아와 팀구성 기능
 router.post("/tmmatch", (req, res) => {
     const join_users = req.body.user_id;
-    const match_idx = req.body.match_idx;
+    const match_idx = req.body.match_idx[0];
     const user_rates = req.body.user_rate;
     console.log("user_rates", user_rates);
+    console.log("match_idx", match_idx);
 
     // join_users는 배열 형식으로 user_id가 전달될 것으로 가정합니다.
     const user_ids = Array.isArray(join_users) ? join_users : [join_users];  
@@ -112,7 +113,8 @@ router.post("/tmmatch", (req, res) => {
             teamA: teamA,
             teamB: teamB,
             avgTeamA: avgTeamA,
-            avgTeamB: avgTeamB
+            avgTeamB: avgTeamB,
+            match_idx: match_idx
         });
     });
 });
