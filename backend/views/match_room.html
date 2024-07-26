@@ -6,7 +6,12 @@
 <link rel="stylesheet" href="/css/match_room.css">
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-
+<style>
+    ul { list-style-type: none; margin: 0; padding: 0; }
+    li { padding: 8px; margin-bottom: 10px; background: #f1f1f1; }
+    input { padding: 10px; width: 300px; }
+    button { padding: 10px; }
+</style>
 <nav id="navbar">
     <img src="/img/logo2.png" alt="" class="main_logo">
     <div class="user_info">
@@ -49,6 +54,11 @@
         <p>예상 종료 시간: {{ match.match_ed_dt }}</p>
         <p>여성부 매치: {{ match.female_match_yn }}</p>
         <p>점수 매치: {{ match.rate_match_yn }}</p>
+        <ul id="messages"></ul>
+        <form id="form" action="">
+            <input id="input" autocomplete="off" /><button>Send</button>
+        </form>    
+    </div>
         <div class="button-container">
             <form action="/user/cancel_game" method="post">
                 <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
@@ -111,6 +121,12 @@
         <p>예상 종료 시간: {{ match.match_ed_dt }}</p>
         <p>여성부 매치: {{ match.female_match_yn }}</p>
         <p>점수 매치: {{ match.rate_match_yn }}</p>
+        <div class="chatt">
+            <ul id="messages"></ul>
+            <form id="form" action="">
+                <input id="input" autocomplete="off" /><button>Send</button>
+            </form>    
+        </div>
         <div class="button-container">
             <form action="/user/join_game" method="post" onsubmit="return checkUserLimit()">
                 <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
@@ -150,6 +166,51 @@
 
         document.querySelector('form').onsubmit = checkUserLimit;
     });
+
+    let ws;
+
+function connect() {
+    ws = new WebSocket(`ws://${window.location.host}`);
+
+    ws.onopen = function() {
+        console.log('Connected to the WebSocket server');
+    };
+
+    ws.onmessage = function(event) {
+        const item = document.createElement('li');
+        item.textContent = event.data;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+    };
+
+    ws.onclose = function() {
+        console.log('WebSocket connection closed');
+        // 재연결 시도
+        setTimeout(connect, 1000);
+    };
+
+    ws.onerror = function(error) {
+        console.error('WebSocket error:', error);
+    };
+}
+
+connect();
+
+const form = document.getElementById('form');
+const input = document.getElementById('input');
+const messages = document.getElementById('messages');
+
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (input.value) {
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send(input.value);
+            input.value = '';
+        } else {
+            console.error('WebSocket is not open. ReadyState:', ws.readyState);
+        }
+    }
+});
 </script>
 
 {% endif %}
