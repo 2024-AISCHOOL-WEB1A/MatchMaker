@@ -1,0 +1,125 @@
+{% extends "main.html" %}
+
+{% block content %}
+<style>
+    .reservation-details {
+        width: 70%;
+        margin: 0 auto;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .reservation-details h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    .reservation-details p {
+        font-size: 18px;
+        color: #555;
+        line-height: 1.6;
+    }
+    .teams-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+    .team-section {
+        width: 45%;
+    }
+    .team-section h2 {
+        color: #444;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 10px;
+    }
+    .team-list {
+        list-style: none;
+        padding: 0;
+    }
+    .team-list li {
+        font-size: 16px;
+        color: #666;
+        padding: 5px 0;
+    }
+    .winner-btn {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .winner-btn:hover {
+        background-color: #218838;
+    }
+</style>
+
+<div class="reservation-details">
+    <h1>예약 상세 정보</h1>
+
+    <p><strong>매치 제목:</strong> {{ reservation.match_title }}</p>
+    <p><strong>사용된 코트:</strong> {{ reservation.court_name }}</p>
+    <p><strong>예약 날짜:</strong> {{ reservation.reserv_dt }}</p>
+    <p><strong>예약 시간:</strong> {{ reservation.reserv_st_tm }} ~ {{ reservation.reserv_ed_tm }}</p>
+
+    <div class="teams-container">
+        <div class="team-section">
+            <h2>팀 A</h2>
+            <ul class="team-list">
+                <li><strong>사용자 1:</strong> {{ reservation.teamA_user1 }}</li>
+                <li><strong>사용자 2:</strong> {{ reservation.teamA_user2 }}</li>
+                <li><strong>사용자 3:</strong> {{ reservation.teamA_user3 }}</li>
+                <li><strong>사용자 4:</strong> {{ reservation.teamA_user4 }}</li>
+                <li><strong>사용자 5:</strong> {{ reservation.teamA_user5 }}</li>
+            </ul>
+            <button class="winner-btn" onclick="setWinner('A')">팀 A 승자 설정</button>
+        </div>
+
+        <div class="team-section">
+            <h2>팀 B</h2>
+            <ul class="team-list">
+                <li><strong>사용자 1:</strong> {{ reservation.teamB_user1 }}</li>
+                <li><strong>사용자 2:</strong> {{ reservation.teamB_user2 }}</li>
+                <li><strong>사용자 3:</strong> {{ reservation.teamB_user3 }}</li>
+                <li><strong>사용자 4:</strong> {{ reservation.teamB_user4 }}</li>
+                <li><strong>사용자 5:</strong> {{ reservation.teamB_user5 }}</li>
+            </ul>
+            <button class="winner-btn" onclick="setWinner('B')">팀 B 승자 설정</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setWinner(team) {
+        if (confirm(team + "팀을 승자로 설정하시겠습니까?")) {
+            // 여기에서 서버로 승자 정보를 전송하거나 추가적인 동작을 수행합니다.
+            console.log(team + "팀이 승자로 설정되었습니다.");
+            // 예: 서버로 데이터 전송
+            fetch('/set_winner', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ winner: team, reserv_idx: "{{ reservation.reserv_idx }}" }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(team + "팀이 승자로 설정되었습니다.");
+                } else {
+                    alert("승자 설정에 실패했습니다. 다시 시도해주세요.");
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert("승자 설정에 실패했습니다. 다시 시도해주세요.");
+            });
+        }
+    }
+</script>
+{% endblock %}

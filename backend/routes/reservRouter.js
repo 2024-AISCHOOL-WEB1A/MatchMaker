@@ -7,6 +7,9 @@ router.get('/reservAll', (req, res) => {
     const selectedFieldIdx = req.query.field_idx || '';
     const selectedCourtIdx = req.query.court_idx || '';
     const selectedreservDate = req.query.reserv_dt || '';
+    const currentDate = new Date();
+    const currentDateString = currentDate.toISOString().split('T')[0];
+    const currentTimeString = currentDate.toTimeString().split(' ')[0];
 
     const sql1 = 'SELECT * FROM field_info';
 
@@ -41,7 +44,6 @@ router.get('/reservAll', (req, res) => {
                     return res.status(500).send(err);
                 }
 
-                // 선택된 코트의 예약 정보를 가져오는 쿼리
                 let sql4 = 'SELECT reserv_dt, reserv_st_tm, reserv_ed_tm FROM reservation_info WHERE court_idx = ?';
                 let queryParams4 = [];
 
@@ -56,6 +58,7 @@ router.get('/reservAll', (req, res) => {
                         }
 
                         res.render('reserv', {
+                            idName: req.session.idName,
                             fields: fields,
                             courts: courts,
                             selected_field_idx: selectedFieldIdx,
@@ -64,11 +67,14 @@ router.get('/reservAll', (req, res) => {
                             field_oper_st_time: fieldoperTimes[0].field_oper_st_time,
                             field_oper_ed_time: fieldoperTimes[0].field_oper_ed_time,
                             reserv_date: selectedreservDate,
-                            reservations: reservations // 예약 정보를 전달
+                            current_date: currentDateString, // 현재 날짜를 템플릿으로 전달
+                            current_time: currentTimeString, // 현재 시간을 템플릿으로 전달
+                            reservations: reservations
                         });
                     });
                 } else {
                     res.render('reserv', {
+                        idName: req.session.idName,
                         fields: fields,
                         courts: courts,
                         selected_field_idx: selectedFieldIdx,
@@ -77,7 +83,9 @@ router.get('/reservAll', (req, res) => {
                         field_oper_st_time: fieldoperTimes[0].field_oper_st_time,
                         field_oper_ed_time: fieldoperTimes[0].field_oper_ed_time,
                         reserv_date: selectedreservDate,
-                        reservations: [] // 빈 예약 정보를 전달
+                        current_date: currentDateString, // 현재 날짜를 템플릿으로 전달
+                        current_time: currentTimeString, // 현재 시간을 템플릿으로 전달
+                        reservations: []
                     });
                 }
             });
@@ -85,17 +93,20 @@ router.get('/reservAll', (req, res) => {
     });
 });
 
+
+
 router.post('/reserv', (req, res) => {
-    const { court_idx, reserv_dt, reserv_tm } = req.body;
+    const { court_idx, reserv_dt, reserv_tm, match_idx } = req.body;
     const user_id = req.session.idName;
     const created_at = new Date();
     let reserv_st_tm = Array.isArray(reserv_tm) ? reserv_tm[0] : reserv_tm;
     let reserv_ed_tm = Array.isArray(reserv_tm) ? reserv_tm[reserv_tm.length - 1] : reserv_tm;
+    const finalMatchIdx = match_idx || null; // 빈 문자열이 아닌 null로 설정
 
-    const sql = 'INSERT INTO reservation_info (user_id, court_idx, reserv_dt, created_at, reserv_st_tm, reserv_ed_tm) VALUES (?, ?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO reservation_info (user_id, court_idx, reserv_dt, created_at, reserv_st_tm, reserv_ed_tm, match_idx) VALUES (?, ?, ?, ?, ?, ?, ?)';
 
     if (reserv_ed_tm > reserv_st_tm) {
-        conn.query(sql, [user_id, court_idx, reserv_dt, created_at, reserv_st_tm, reserv_ed_tm], (err, rows) => {
+        conn.query(sql, [user_id, court_idx, reserv_dt, created_at, reserv_st_tm, reserv_ed_tm, match_idx], (err, rows) => {
             if (err) {
                 console.error('Error inserting reservation: ' + err);
                 res.send('<script>alert("예약에 실패했습니다."); window.location.href="/reserv/reservAll";</script>');
