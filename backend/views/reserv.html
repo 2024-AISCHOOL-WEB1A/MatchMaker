@@ -26,35 +26,35 @@
     </select><br>
 
     <label for="reserv_dt">예약 날짜:</label>
-    <input type="date" id="reserv_dt" name="reserv_dt" value="{{reserv_date}}" required onchange="submitFieldForm()"><br>
+    <input type="date" id="reserv_dt" name="reserv_dt" value="{{reserv_date}}" required
+        onchange="submitFieldForm()"><br>
 </form>
 
 <form id="reservationForm" action="/reserv/reserv" method="post">
     <input type="hidden" name="field_idx" value="{{ selected_field_idx }}">
     <input type="hidden" name="court_idx" value="{{ selected_court_idx }}">
     <input type="hidden" name="reserv_dt" value="{{ reserv_date }}">
+    <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
 
     <span>예약시간</span><br>
-    {% set times = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "24:00"] %}
+    {% set times = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00",
+    "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00",
+    "24:00"] %}
     {% set min_time = field_oper_st_time.split(':')[0]|int %}
     {% set max_time = field_oper_ed_time.split(':')[0]|int %}
     {% set is_24_hours = (min_time == 00 and max_time == 00) %}
 
     {% for time in times %}
     {% set hour = time.split(':')[0]|int %}
-    {% set is_disabled = ((is_24_hours != is_24_hours) and (hour < min_time or max_time < hour)) %}
-    {% for reserv in reservations %}
-    {% set reserv_st_tm = reserv.reserv_st_tm.split(':')[0]|int %}
-    {% set reserv_ed_tm = reserv.reserv_ed_tm.split(':')[0]|int %}
-    {% if reserv.reserv_dt == reserv_date and (reserv_st_tm <= hour and hour <= reserv_ed_tm) %}
-    {% set is_disabled = true %}
-    {% endif %}
-    {% endfor %}
-    <input type="checkbox" class="time" value="{{ time }}" name="reserv_tm" {% if is_disabled %} disabled {% endif %}>
-    {{ time }}<br>
-    {% endfor %}
+    {% set is_disabled = ((is_24_hours != is_24_hours) and (hour < min_time or max_time < hour)) %} {% for reserv in
+        reservations %} {% set reserv_st_tm=reserv.reserv_st_tm.split(':')[0]|int %} {% set
+        reserv_ed_tm=reserv.reserv_ed_tm.split(':')[0]|int %} {% if reserv.reserv_dt==reserv_date and (reserv_st_tm
+        <=hour and hour <=reserv_ed_tm) %} {% set is_disabled=true %} {% endif %} {% endfor %} <input type="checkbox"
+        class="time" value="{{ time }}" name="reserv_tm" {% if is_disabled %} disabled {% endif %}>
+        {{ time }}<br>
+        {% endfor %}
 
-    <button type="submit">예약하기</button>
+        <button type="submit">예약하기</button>
 </form>
 
 <script>
@@ -67,6 +67,9 @@
         const checkboxes = document.querySelectorAll('.time');
         const minTimeStr = "{{ field_oper_st_time }}";
         const maxTimeStr = "{{ field_oper_ed_time }}";
+        const currentTimeStr = "{{ current_time }}";
+        const currentDateStr = "{{ current_date }}";
+        const reservDateStr = "{{ reserv_date }}";
 
         const is24Hours = (minTimeStr === "00:00:00" && maxTimeStr === "00:00:00");
 
@@ -77,6 +80,23 @@
             checkboxes.forEach(checkbox => {
                 const timeValue = parseInt(checkbox.value.split(':')[0], 10);
                 if (timeValue < minTime || timeValue > maxTime) {
+                    checkbox.disabled = true;
+                }
+            });
+        }
+
+        // 현재 시간보다 이전 시간 비활성화
+        const currentTimeParts = currentTimeStr.split(':');
+        const currentHour = parseInt(currentTimeParts[0], 10);
+        const currentMinute = parseInt(currentTimeParts[1], 10);
+
+        if (reservDateStr === currentDateStr) {
+            checkboxes.forEach(checkbox => {
+                const timeParts = checkbox.value.split(':');
+                const checkboxHour = parseInt(timeParts[0], 10);
+                const checkboxMinute = parseInt(timeParts[1], 10);
+
+                if (checkboxHour < currentHour || (checkboxHour === currentHour && checkboxMinute <= currentMinute)) {
                     checkbox.disabled = true;
                 }
             });

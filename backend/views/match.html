@@ -76,7 +76,7 @@
 
     {% for match in matches %}
     <tr matchRoom_idx="{{ match.match_idx }}" class="clickable_row" data-region="{{ match.match_region }}"
-        data-female="{{ match.female_match_yn }}" data-rate="{{ match.rate_match_yn }}">
+        data-female="{{ match.female_match_yn }}" data-rate="{{ match.rate_match_yn }}" data-team-leader-rank="{{ match.team_leader_rank }}">
         <td>{{ match.match_title }}</td>
         <td>{{ match.match_region }}</td>
         <td>{{ match.match_date }}</td>
@@ -158,11 +158,13 @@
         const femaleMatch = document.getElementById('female_match_yn').value;
         const rateMatch = document.getElementById('rate_match_yn').value;
         const rows = document.querySelectorAll(".clickable_row");
+        const userRank = "{{ rank }}"; // 현재 사용자의 rank
 
         rows.forEach(row => {
             const region = row.getAttribute("data-region");
             const femaleMatchValue = row.getAttribute("data-female");
             const rateMatchValue = row.getAttribute("data-rate");
+            const teamLeaderRank = row.getAttribute("data-team-leader-rank");
 
             let display = true;
 
@@ -189,6 +191,15 @@
                 display = false;
             } else if (rateMatch === '친선매치' && rateMatchValue !== 'N') {
                 display = false;
+            }
+
+            // 랭크 필터링 (점수매치일 때만 적용)
+            if (rateMatch === '점수매치' && userRank && teamLeaderRank) {
+                const userRankPart = userRank.split(',')[0].trim();
+                const teamLeaderRankPart = teamLeaderRank.split(',')[0].trim();
+                if (userRankPart !== teamLeaderRankPart) {
+                    display = false;
+                }
             }
 
             // 필터링 조건에 맞는 경우 표시

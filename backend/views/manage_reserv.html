@@ -3,48 +3,75 @@
 {% block content %}
 <h1>🍥 예약 관리 페이지 입니당 🍥</h1>
 
-
-{% if boss_id == idName %}
+{% if boss_id %}
     <p>관리자: {{ boss_id }}</p>
-    <p>코트 이름: {{ court_name }}</p>
-    <p>코트 인덱스: {{ court_idx }}</p>
-
-    <h3>예약 정보</h3>
     {% if reservations.length > 0 %}
-    <table>
-        <thead>
-            <tr>
-                <th>예약 ID</th>
-                <th>사용자 ID</th>
-                <th>예약 시작 시간</th>
-                <th>예약 종료 시간</th>
-                <th>예약 상태</th>
-                <th>작업</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for reservation in reservations %}
-            <tr>
-                <td>{{ reservation.reservation_id }}</td>
-                <td>{{ reservation.user_id }}</td>
-                <td>{{ reservation.start_time }}</td>
-                <td>{{ reservation.end_time }}</td>
-                <td>{{ reservation.status }}</td>
-                <td>
-                    <form action="/manage/cancel_reservation" method="post" onsubmit="return confirm('정말로 이 예약을 취소하시겠습니까?');">
-                        <input type="hidden" name="reservation_id" value="{{ reservation.reservation_id }}">
-                        <button type="submit">취소</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <h3>예약 정보</h3>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>예약 ID</th>
+                    <th>사용자 ID</th>
+                    <th>코트 이름</th>
+                    <th>예약 날짜</th>
+                    <th>예약 시작 시간</th>
+                    <th>예약 종료 시간</th>
+                    <th>매치 제목</th>
+                    <th>팀 A 사용자 1</th>
+                    <th>팀 A 사용자 2</th>
+                    <th>팀 A 사용자 3</th>
+                    <th>팀 A 사용자 4</th>
+                    <th>팀 A 사용자 5</th>
+                    <th>팀 B 사용자 1</th>
+                    <th>팀 B 사용자 2</th>
+                    <th>팀 B 사용자 3</th>
+                    <th>팀 B 사용자 4</th>
+                    <th>팀 B 사용자 5</th>
+                    <th>예약 취소</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations %}
+                <tr onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">
+                    <td>{{ reservation.reserv_idx }}</td>
+                    <td>{{ reservation.user_id }}</td>
+                    <td>{{ reservation.court_name }}</td>
+                    <td>{{ reservation.reserv_dt }}</td>
+                    <td>{{ reservation.reserv_st_tm }}</td>
+                    <td>{{ reservation.reserv_ed_tm }}</td>
+                    <td>{{ reservation.match_title }}</td>
+                    <td>{{ reservation.teamA_user1 }}</td>
+                    <td>{{ reservation.teamA_user2 }}</td>
+                    <td>{{ reservation.teamA_user3 }}</td>
+                    <td>{{ reservation.teamA_user4 }}</td>
+                    <td>{{ reservation.teamA_user5 }}</td>
+                    <td>{{ reservation.teamB_user1 }}</td>
+                    <td>{{ reservation.teamB_user2 }}</td>
+                    <td>{{ reservation.teamB_user3 }}</td>
+                    <td>{{ reservation.teamB_user4 }}</td>
+                    <td>{{ reservation.teamB_user5 }}</td>
+                    <td>
+                        <form action="/manage/cancel_reservation" method="post" onsubmit="return confirm('정말로 이 예약을 취소하시겠습니까?');">
+                            <input type="hidden" name="reserv_idx" value="{{ reservation.reserv_idx }}">
+                            <button type="submit">취소</button>
+                        </form>
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     {% else %}
-    <p>예약 정보가 없습니다.</p>
+        <p>예약 정보가 없습니다.</p>
     {% endif %}
 {% else %}
-<p>권한이 없습니다.</p>
+    <p>권한이 없습니다.</p>
 {% endif %}
+
+<script>
+    function redirectToWLResult(reserv_idx) {
+        window.location.href = '/manage/result_set/' + reserv_idx;
+    }
+</script>
 
 {% endblock %}

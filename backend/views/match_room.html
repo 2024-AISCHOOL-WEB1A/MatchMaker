@@ -30,7 +30,7 @@
 
     <br><br>
     {% for join_user in join_users %}
-    <div>{{ join_user }} - {{ user_info[join_user] }}</div>
+        <div>닉네임 : {{ join_user }} / 점수 : {{ user_rate[join_user] }} / 랭크 : {{ user_rank[join_user] }}</div> 
     {% endfor %}
 
     <br><br>
@@ -110,7 +110,7 @@
 
     <br><br>
     {% for join_user in join_users %}
-        <div>{{ join_user }} - {{ user_info[join_user] }}</div>
+        <div>닉네임 : {{ join_user }} / 점수 : {{ user_rate[join_user] }} / 랭크 : {{ user_rank[join_user] }}</div>
     {% endfor %}
 
     <br><br>
@@ -166,7 +166,7 @@
 {% endblock %}
 
 {% for join_user in join_users %}
-    <div>{{ join_user }} - {{ user_info[join_user] }}</div>
+    <div>닉네임 : {{ join_user }} / 점수 : {{ user_rate[join_user] }} / 랭크 : {{ user_rank[join_user] }}</div>
 {% endfor %}
 
 <br><br>
@@ -193,7 +193,7 @@
 
 <br><br>
 {% for join_user in join_users %}
-    <div>{{ join_user }} - {{ user_info[join_user] }}</div>
+    <div>닉네임 : {{ join_user }} / 점수 : {{ user_rate[join_user] }} / 랭크 : {{ user_rank[join_user] }}</div>
 {% endfor %}
 
 <br><br>

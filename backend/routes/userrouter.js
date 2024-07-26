@@ -378,16 +378,29 @@ router.post("/create_match", (req, res) => {
 router.get("/match", (req, res) => {
     console.log(req);
 
-    let sql = "SELECT match_idx, match_title, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, match_info FROM match_info1";
+    let sql = `
+    SELECT m.match_idx, m.match_title, m.match_region, m.match_date, m.match_st_dt, m.match_ed_dt, 
+           m.female_match_yn, m.rate_match_yn, m.match_info, m.join_user,
+           u.user_rank as team_leader_rank
+    FROM match_info1 m
+    LEFT JOIN user_info u ON u.user_id = SUBSTRING_INDEX(m.join_user, ',', 1)
+    `;
+
     conn.query(sql, (err, results) => {
         if (err) {
             console.error('데이터 조회 오류:', err);
             res.send("데이터를 가져오는 중 오류가 발생했습니다.");
         } else {
-            res.render("match", { matches: results, idName: req.session.idName });
+            res.render("match", { 
+                matches: results, 
+                idName: req.session.idName, 
+                rate: req.session.rate, 
+                rank: req.session.rank 
+            });
         }
     });
 });
+
 
 
 // 경기참가 버튼 클릭 시 호출되는 라우터
@@ -492,6 +505,8 @@ router.post("/confirm_cancel_game", (req, res) => {
         });
     });
 });
+
+
 
 // 팀 확정 후, 테이블 저장 라우터
 router.post("/team", (req, res) => {
