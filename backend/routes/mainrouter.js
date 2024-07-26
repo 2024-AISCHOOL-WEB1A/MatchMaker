@@ -115,8 +115,8 @@ router.get('/match_room/:match_idx', (req, res) => {
 
                 const teamLeader = join_users[0]; // 방장 아이디 값 저장
                 console.log("teamLeader", teamLeader);
-                console.log(user_rate);
-                console.log(user_rank);
+                console.log("user_rate", user_rate);
+                console.log("user_rank", user_rank);
 
                 res.render('match_room', {
                     match: match,
