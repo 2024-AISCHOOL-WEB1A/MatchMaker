@@ -175,10 +175,84 @@ router.get("/logout", (req, res) => {
 // 일반회원 마이페이지 기능 router
 router.get("/myPage", (req, res) => {
     console.log(req.session.idName);
-    let sql = 'SELECT * FROM user_info WHERE user_id = ?;'
-    conn.query(sql, [req.session.idName], (err, rows) => {
-        console.log("rows", rows);
-        res.render("myPage", { rows: rows });
+    let id = req.session.idName;
+
+    const currentDate = new Date();
+    const currentDateString = currentDate.toISOString().split('T')[0];
+    const currentTimeString = currentDate.toTimeString().split(' ')[0].substring(0, 5);
+
+
+    let sql1 = 'SELECT * FROM user_info WHERE user_id = ?;'
+    let sql2 = `
+        SELECT *
+        FROM match_info1
+        WHERE match_idx IN (
+            SELECT match_idx
+            FROM team_info1
+            WHERE teamA_user1 = ?
+                OR teamA_user2 = ?
+                OR teamA_user3 = ?
+                OR teamA_user4 = ?
+                OR teamA_user5 = ?
+                OR teamB_user1 = ?
+                OR teamB_user2 = ?
+                OR teamB_user3 = ?
+                OR teamB_user4 = ?
+                OR teamB_user5 = ?);`
+    let sql3 = `
+        SELECT * 
+        FROM team_info1 
+        WHERE teamA_user1 = ?
+            OR teamA_user2 = ?
+            OR teamA_user3 = ?
+            OR teamA_user4 = ?
+            OR teamA_user5 = ?
+            OR teamB_user1 = ?
+            OR teamB_user2 = ?
+            OR teamB_user3 = ?
+            OR teamB_user4 = ?
+            OR teamB_user5 = ?;`
+
+    // 첫 번째 쿼리 실행
+    conn.query(sql1, [id], (err1, userInfoRows) => {
+        if (err1) {
+            console.error('첫 번째 쿼리 실행 오류: ', err1);
+            return res.status(500).send('서버 오류');
+        }
+
+        // 두 번째 쿼리 실행
+        conn.query(sql2, [id, id, id, id, id, id, id, id, id, id], (err2, matchInfoRows) => {
+            if (err2) {
+                console.error('두 번째 쿼리 실행 오류: ', err2);
+                return res.status(500).send('서버 오류');
+            }
+
+
+            // 각 경기 정보에 대해 시간 비교 수행
+            const matchInfoWithTimestamps = matchInfoRows.map(match => {
+                const matchDateTime = new Date(`${match.match_date}T${match.match_ed_dt}`);
+                match.matchTimestamp = matchDateTime.getTime();
+                match.isMatchEnded = currentDate.getTime() > match.matchTimestamp;
+                return match;
+            });
+            // 세 번째 쿼리 실행
+            conn.query(sql3, [id, id, id, id, id, id, id, id, id, id], (err3, teamInfoRows) => {
+                console.log("matchInfo", matchInfoWithTimestamps);
+                // 세 쿼리 결과를 한 번에 렌더링
+                res.render("myPage", {
+                    userInfo: userInfoRows,
+                    matchInfo: matchInfoWithTimestamps,
+                    currentTimestamp: currentDate.getTime(),
+                    currentDateString: currentDateString,
+                    currentTimeString: currentTimeString,
+                    matchInfoRows:matchInfoRows,
+                    teamInfoRows : teamInfoRows
+                    
+                });
+
+           
+            });
+        });
     });
 });
 

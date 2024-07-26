@@ -1,34 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-
-<body>
-    <h2>마이페이지</h2>
-    <form action="/user/update" method="post">
-        아이디 : {{rows[0].user_id}}<br>
-        닉네임 : <input type="text" name="nick" placeholder={{rows[0].user_nick}}><br>
-        생년월일 : {{rows[0].user_birthdate.toDateString()}}<br>
-        성별 : {{rows[0].user_gender}}<br>
-        전화번호 : <input type="text" name="phone" placeholder={{rows[0].user_phone}}><br>
-        레이트 : {{rows[0].user_rate}}<br>
-        랭크 : {{rows[0].user_rank}}<br>
-        슈팅 : {{rows[0].user_shooting_point}}<br>
-        패스 : {{rows[0].user_pass_point}}<br>
-        드리블 : {{rows[0].user_dribble_point}}<br>
-        체력 : {{rows[0].user_stamina_point}}<br>
-        매너 : {{rows[0].user_manner_point}}<br>
-        웃음 : {{rows[0].user_smile_point}}<br>
-        <input type="submit" value="회원정보수정">
-    </form>
-
-</body>
-
-</html> -->
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -37,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Match Maker - 마이페이지</title>
     <link rel="stylesheet" href="/css/mypage2.css">
+
+
 </head>
 
 <body>
@@ -46,56 +17,162 @@
             <a href="#">
                 <ion-icon name="person-outline" class="user_logo"></ion-icon>
             </a>
-            <a href="/user/logout">
-                <ion-icon name="log-out-outline" class="logout_logo"></ion-icon>
-            </a>
         </div>
     </nav>
     <div class="container">
         <div class="sidebar">
             <div class="profile_wrapper">
-                <img id="profileImage" src="/img/user_profile2.png" alt="Profile Image" class="profile_image circle">
+                <img id="profileImage" src="/img/default-profile.png" alt="Profile Image" class="profile_image circle">
                 <label for="imageUpload" class="upload-icon">
                     <ion-icon name="camera"></ion-icon>
                 </label>
                 <input type="file" id="imageUpload" accept="image/*" style="display: none;">
             </div>
-            <h3 class="username">{{rows[0].user_nick}}</h3>
+            <h3 class="username">{{userInfo[0].user_nick}}</h3>
             <ul class="menu">
-                <li>나의 프로필</li>
-                <br>
                 <li>레이팅</li>
-                <li>{{rows[0].user_rate}}</li>
-                <li>경기 전적</li>
+                <li>{{userInfo[0].user_rate}}</li>
+                <li>랭크</li>
+                <li>{{userInfo[0].user_rank}}</li>
+                <br>
+                <li>슈팅 {{userInfo[0].user_shooting_point}}</li>
+                <li>패스 {{userInfo[0].user_pass_point}}</li>
+                <li>드리블 {{userInfo[0].user_dribble_point}}</li>
+                <li>체력 {{userInfo[0].user_stamina_point}}</li>
+                <li>매너 {{userInfo[0].user_manner_point}}</li>
+                <li>웃음 {{userInfo[0].user_smile_point}}</li>
+
             </ul>
         </div>
         <div class="content">
             <div class="box">
                 <h2>정보수정</h2>
-                <form action="/user/boss_info_update" method="post">
+                <form action="/user/update" method="post">
                     <div class="inputbox">
-                        변경할 닉네임 <input type="text" name="id" class="edit_input"> <br>
-                        변경할 pw <input type="password" name="pw" class="edit_input"> <br>
-                        변경할 휴대폰 번호 <input type="text" name="phone" class="edit_input"> <br>
+                        변경할 닉네임 <input type="text" name="nick" class="edit_input"
+                            placeholder="{{userInfo[0].user_nick}}"> <br>
+                        변경할 pw <input type="password" name="pw" class="edit_input" placeholder="●●●●●●●●●●●●"> <br>
+                        변경할 휴대폰 번호 <input type="text" name="phone" class="edit_input"
+                            placeholder="{{userInfo[0].user_phone}}"> <br>
                         <input type="submit" value="정보수정" class="edit_button">
                     </div>
                 </form>
             </div>
             <div class="box">
                 <h2>레이팅</h2>
-                <span class="rate_box">{{rows[0].user_rate}}</span>
+                <span class="rate_box">{{userInfo[0].user_rate}}</span>
                 <!-- 레이팅 내용 추가 -->
             </div>
             <div class="box">
                 <h2>경기 전적</h2>
+
                 <!-- 경기 전적 내용 추가 -->
+                {% for matchList in matchInfo %}
+                {% if matchList.isMatchEnded %}
+                <div class="click">
+                    {% if matchList.rate_match_yn == 'Y' %}
+                    <h2>레이팅 매치</h2>
+                    {% else %}
+                    <h2>일반 매치</h2>
+                    {% endif %}
+                    <h3>{{matchList.match_title}}</h3>
+                    지역 {{matchList.match_region}}&nbsp;&nbsp;&nbsp;
+                    경기날짜 {{matchList.match_date}}&nbsp;&nbsp;&nbsp;
+                    경기시간 {{matchList.match_st_dt}} ~
+                    {{matchList.match_ed_dt}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br><br>
+                    참가선수 {{matchList.join_user}}<br><Br>
+                    경기정보 {{matchList.match_info}}
+                    {% for teamList in teamInfoRows %}
+                    {% if matchList.match_idx == teamList.match_idx %}
+                    TEAM A : {{teamList.teamA_user1}}, {{teamList.teamA_user2}}, {{teamList.teamA_user3}},
+                    {{teamList.teamA_user4}}, {{teamList.teamA_user5}}
+                    TEAM B : {{teamList.teamB_user1}}, {{teamList.teamB_user2}}, {{teamList.teamB_user3}},
+                    {{teamList.teamB_user4}}, {{teamList.teamB_user5}}
+                    {% endif %}
+                    {% endfor %}
+                </div><br><br>
+                {% endif %}
+                {% endfor %}
+
             </div>
+        </div>
+    </div>
+
+    <!-- 모달 구조 -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <div class="modal-header">               
+                <h1>⚽ 최근 경기 전적 ⚽</h1>
+            </div>
+            <div id="modalContent">
+            {% set latestMatch = null %}
+            {% set latestTimestamp = 0 %}
+
+            {% for matchList in matchInfo %}
+            {% if matchList.isMatchEnded and matchList.matchTimestamp > latestTimestamp %}
+            {% set latestMatch = matchList %}
+            {% set latestTimestamp = matchList.matchTimestamp %}
+            {% endif %}
+            {% endfor %}
+
+            {% if latestMatch %}
+            <div class="click">
+                {% if latestMatch.rate_match_yn == 'Y' %}
+                <h2>레이팅 매치</h2>
+                {% else %}
+                <h2>일반 매치</h2>
+                {% endif %}
+                <h3>{{ latestMatch.match_title }}</h3>
+                지역: {{ latestMatch.match_region }}<br><br>
+                경기날짜: {{ latestMatch.match_date }}&nbsp;&nbsp;&nbsp;
+                경기시간: {{ latestMatch.match_st_dt }} ~ {{ latestMatch.match_ed_dt
+                }}<br><br>
+                참가선수: {{ latestMatch.join_user }}<br><br>
+                {% for teamList in teamInfoRows %}
+                {% if latestMatch.match_idx == teamList.match_idx %}
+                TEAM A: {{ teamList.teamA_user1 }}, {{ teamList.teamA_user2 }}, {{ teamList.teamA_user3 }}, {{
+                teamList.teamA_user4 }}, {{ teamList.teamA_user5 }}<br>
+                TEAM B: {{ teamList.teamB_user1 }}, {{ teamList.teamB_user2 }}, {{ teamList.teamB_user3 }}, {{
+                teamList.teamB_user4 }}, {{ teamList.teamB_user5 }}
+                {% endif %}
+                {% endfor %}
+            </div><br><br>
+            {% endif %}
         </div>
     </div>
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script src="/js/mypage.css"></script>
+
+    <script>
+        // 모달 열기
+        function showPopup() {
+            document.getElementById("myModal").style.display = "block";
+        }
+
+        // 페이지 로드 시 팝업 표시
+        window.onload = showPopup;
+
+        // 모달 닫기
+        function closePopup() {
+            document.getElementById("myModal").style.display = "none";
+        }
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function (event) {
+            var modal = document.getElementById("myModal");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+
+
+
+    </script>
+
 </body>
 
 </html>
