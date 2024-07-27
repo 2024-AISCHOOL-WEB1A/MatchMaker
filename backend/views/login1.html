@@ -14,8 +14,8 @@
         <form action="/user/login" method="post">
             <h1>Login</h1>
             <div class="member_choice">
-                일반회원 : <input type="radio" name="user">
-                풋살장 사장 : <input type="radio" name="boss"><br>
+                일반회원 : <input type="radio" name="user" id="user">
+                풋살장 사장 : <input type="radio" name="boss" id="boss"><br>
             </div>
             <div class="inputbox">
                 <ion-icon name="person-circle-outline"></ion-icon>
@@ -34,6 +34,23 @@
             </div>
         </form>
     </section>
+
+    <script>
+        // 라디오 버튼 요소 가져오기
+        const userRadio = document.getElementById('user');
+        const bossRadio = document.getElementById('boss');
+
+        // 이벤트 리스너 추가
+        userRadio.addEventListener('click', function() {
+            bossRadio.checked = false;
+        });
+
+        bossRadio.addEventListener('click', function() {
+            userRadio.checked = false;
+        });
+    </script>
+
+
 </body>
 
 </html>
