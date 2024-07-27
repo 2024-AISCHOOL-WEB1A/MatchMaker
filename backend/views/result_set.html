@@ -8,40 +8,48 @@
         border: 1px solid #ddd;
         padding: 20px;
         border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
+
     .reservation-details h1 {
         text-align: center;
         color: #333;
         margin-bottom: 20px;
     }
+
     .reservation-details p {
         font-size: 18px;
         color: #555;
         line-height: 1.6;
     }
+
     .teams-container {
         display: flex;
         justify-content: space-between;
         margin-top: 20px;
     }
+
     .team-section {
         width: 45%;
     }
+
     .team-section h2 {
         color: #444;
         border-bottom: 2px solid #ddd;
         padding-bottom: 10px;
     }
+
     .team-list {
         list-style: none;
         padding: 0;
     }
+
     .team-list li {
         font-size: 16px;
         color: #666;
         padding: 5px 0;
     }
+
     .winner-btn {
         display: block;
         width: 100%;
@@ -54,7 +62,25 @@
         cursor: pointer;
         font-size: 16px;
     }
+
     .winner-btn:hover {
+        background-color: #218838;
+    }
+
+    .update-btn {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .update-btn:hover {
         background-color: #218838;
     }
 </style>
@@ -67,59 +93,137 @@
     <p><strong>예약 날짜:</strong> {{ reservation.reserv_dt }}</p>
     <p><strong>예약 시간:</strong> {{ reservation.reserv_st_tm }} ~ {{ reservation.reserv_ed_tm }}</p>
 
-    <div class="teams-container">
-        <div class="team-section">
-            <h2>팀 A</h2>
-            <ul class="team-list">
-                <li><strong>사용자 1:</strong> {{ reservation.teamA_user1 }}</li>
-                <li><strong>사용자 2:</strong> {{ reservation.teamA_user2 }}</li>
-                <li><strong>사용자 3:</strong> {{ reservation.teamA_user3 }}</li>
-                <li><strong>사용자 4:</strong> {{ reservation.teamA_user4 }}</li>
-                <li><strong>사용자 5:</strong> {{ reservation.teamA_user5 }}</li>
-            </ul>
-            <button class="winner-btn" onclick="setWinner('A')">팀 A 승자 설정</button>
-        </div>
+    <form id="updateRatingsForm" action="/manage/update_ratings" method="POST">
+        <div class="teams-container">
+            <div class="team-section">
+                <h2>팀 A</h2><h3>평균 레이트 : {{teamAavgRate}}</h3>
+                <ul class="team-list">
+                    <li><strong>사용자 1:</strong> {{ reservation.teamA_user1 }}, {{ teamAUser1Rate }} <span id="a_player1_newRt"></span></li>
+                    <input type="hidden" name="teamA_user1" value="{{ reservation.teamA_user1 }}">
+                    <input type="hidden" name="exist_rateA" id="a_player1Rt" value="{{ teamAUser1Rate }}">
+                    <input type="hidden" name="new_rateA" id="a_player1_newRtInput">
 
-        <div class="team-section">
-            <h2>팀 B</h2>
-            <ul class="team-list">
-                <li><strong>사용자 1:</strong> {{ reservation.teamB_user1 }}</li>
-                <li><strong>사용자 2:</strong> {{ reservation.teamB_user2 }}</li>
-                <li><strong>사용자 3:</strong> {{ reservation.teamB_user3 }}</li>
-                <li><strong>사용자 4:</strong> {{ reservation.teamB_user4 }}</li>
-                <li><strong>사용자 5:</strong> {{ reservation.teamB_user5 }}</li>
-            </ul>
-            <button class="winner-btn" onclick="setWinner('B')">팀 B 승자 설정</button>
+                    <li><strong>사용자 2:</strong> {{ reservation.teamA_user2 }}, {{ teamAUser2Rate }} <span id="a_player2_newRt"></span></li>
+                    <input type="hidden" name="teamA_user2" value="{{ reservation.teamA_user2 }}">
+                    <input type="hidden" name="exist_rateA" id="a_player2Rt" value="{{ teamAUser2Rate }}">
+                    <input type="hidden" name="new_rateA" id="a_player2_newRtInput">
+
+                    <li><strong>사용자 3:</strong> {{ reservation.teamA_user3 }}, {{ teamAUser3Rate }} <span id="a_player3_newRt"></span></li>
+                    <input type="hidden" name="teamA_user3" value="{{ reservation.teamA_user3 }}">
+                    <input type="hidden" name="exist_rateA" id="a_player3Rt" value="{{ teamAUser3Rate }}">
+                    <input type="hidden" name="new_rateA" id="a_player3_newRtInput">
+
+                    <li><strong>사용자 4:</strong> {{ reservation.teamA_user4 }}, {{ teamAUser4Rate }} <span id="a_player4_newRt"></span></li>
+                    <input type="hidden" name="teamA_user4" value="{{ reservation.teamA_user4 }}">
+                    <input type="hidden" name="exist_rateA" id="a_player4Rt" value="{{ teamAUser4Rate }}">
+                    <input type="hidden" name="new_rateA" id="a_player4_newRtInput">
+
+                    <li><strong>사용자 5:</strong> {{ reservation.teamA_user5 }}, {{ teamAUser5Rate }} <span id="a_player5_newRt"></span></li>
+                    <input type="hidden" name="teamA_user5" value="{{ reservation.teamA_user5 }}">
+                    <input type="hidden" name="exist_rateA" id="a_player5Rt" value="{{ teamAUser5Rate }}">
+                    <input type="hidden" name="new_rateA" id="a_player5_newRtInput">
+                </ul>
+                <button class="winner-btn" type="button" onclick="setWinner('A')">팀 A 승자 설정</button>
+            </div>
+
+            <div class="team-section">
+                <h2>팀 B</h2><h3>평균 레이트 : {{teamBavgRate}}</h3>
+                <ul class="team-list">
+                    <li><strong>사용자 1:</strong> {{ reservation.teamB_user1 }}, {{ teamBUser1Rate }} <span id="b_player1_newRt"></span></li>
+                    <input type="hidden" name="teamB_user1" value="{{ reservation.teamB_user1 }}">
+                    <input type="hidden" name="exist_rateB" id="b_player1Rt" value="{{ teamBUser1Rate }}">
+                    <input type="hidden" name="new_rateB" id="b_player1_newRtInput">
+
+                    <li><strong>사용자 2:</strong> {{ reservation.teamB_user2 }}, {{ teamBUser2Rate }} <span id="b_player2_newRt"></span></li>
+                    <input type="hidden" name="teamB_user2" value="{{ reservation.teamB_user2 }}">
+                    <input type="hidden" name="exist_rateB" id="b_player2Rt" value="{{ teamBUser2Rate }}">
+                    <input type="hidden" name="new_rateB" id="b_player2_newRtInput">
+
+                    <li><strong>사용자 3:</strong> {{ reservation.teamB_user3 }}, {{ teamBUser3Rate }} <span id="b_player3_newRt"></span></li>
+                    <input type="hidden" name="teamB_user3" value="{{ reservation.teamB_user3 }}">
+                    <input type="hidden" name="exist_rateB" id="b_player3Rt" value="{{ teamBUser3Rate }}">
+                    <input type="hidden" name="new_rateB" id="b_player3_newRtInput">
+
+                    <li><strong>사용자 4:</strong> {{ reservation.teamB_user4 }}, {{ teamBUser4Rate }} <span id="b_player4_newRt"></span></li>
+                    <input type="hidden" name="teamB_user4" value="{{ reservation.teamB_user4 }}">
+                    <input type="hidden" name="exist_rateB" id="b_player4Rt" value="{{ teamBUser4Rate }}">
+                    <input type="hidden" name="new_rateB" id="b_player4_newRtInput">
+
+                    <li><strong>사용자 5:</strong> {{ reservation.teamB_user5 }}, {{ teamBUser5Rate }} <span id="b_player5_newRt"></span></li>
+                    <input type="hidden" name="teamB_user5" value="{{ reservation.teamB_user5 }}">
+                    <input type="hidden" name="exist_rateB" id="b_player5Rt" value="{{ teamBUser5Rate }}">
+                    <input type="hidden" name="new_rateB" id="b_player5_newRtInput">
+                </ul>
+                <button class="winner-btn" type="button" onclick="setWinner('B')">팀 B 승자 설정</button>
+            </div>
         </div>
-    </div>
+        <button class="update-btn" type="submit">Update Ratings</button>
+    </form>
 </div>
 
+
+
 <script>
-    function setWinner(team) {
-        if (confirm(team + "팀을 승자로 설정하시겠습니까?")) {
-            // 여기에서 서버로 승자 정보를 전송하거나 추가적인 동작을 수행합니다.
-            console.log(team + "팀이 승자로 설정되었습니다.");
-            // 예: 서버로 데이터 전송
-            fetch('/set_winner', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ winner: team, reserv_idx: "{{ reservation.reserv_idx }}" }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(team + "팀이 승자로 설정되었습니다.");
-                } else {
-                    alert("승자 설정에 실패했습니다. 다시 시도해주세요.");
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert("승자 설정에 실패했습니다. 다시 시도해주세요.");
-            });
-        }
+
+    function updateEloRatings(homeRatings, awayRatings, gameResult) {
+    let homeTeamAvg = homeRatings.reduce((a, b) => a + b, 0) / homeRatings.length;
+    let awayTeamAvg = awayRatings.reduce((a, b) => a + b, 0) / awayRatings.length;
+
+    let newHomeRatings = homeRatings.map(homeRating => {
+        let expectedHomeWinProb = 1 / (1 + Math.pow(10, (awayTeamAvg - homeRating) / 400));
+        return homeRating + Math.round(32 * (gameResult - expectedHomeWinProb));
+    });
+
+    let newAwayRatings = awayRatings.map(awayRating => {
+        let expectedAwayWinProb = 1 / (1 + Math.pow(10, (homeTeamAvg - awayRating) / 400));
+        return awayRating + Math.round(32 * (1 - gameResult - expectedAwayWinProb));
+    });
+
+    return { newHomeRatings, newAwayRatings };
+}
+
+function displayNewRatings(homeNewRatings, awayNewRatings) {
+    for (let i = 0; i < homeNewRatings.length; i++) {
+        document.getElementById(`a_player${i + 1}_newRt`).innerText = homeNewRatings[i];
+        document.getElementById(`a_player${i + 1}_newRtInput`).value = homeNewRatings[i];
     }
+    for (let i = 0; i < awayNewRatings.length; i++) {
+        document.getElementById(`b_player${i + 1}_newRt`).innerText = awayNewRatings[i];
+        document.getElementById(`b_player${i + 1}_newRtInput`).value = awayNewRatings[i];
+    }
+}
+
+function setWinner(winningTeam) {
+    let confirmationMessage = `${winningTeam} 팀 승리가 맞나요?`;
+    if (!confirm(confirmationMessage)) {
+        return; // If user cancels, do nothing
+    }
+
+    alert(`축하합니다! ${winningTeam} 팀이 승리했습니다!`);
+
+    let homeRatings = [
+        parseInt(document.getElementById("a_player1Rt").value),
+        parseInt(document.getElementById("a_player2Rt").value),
+        parseInt(document.getElementById("a_player3Rt").value),
+        parseInt(document.getElementById("a_player4Rt").value),
+        parseInt(document.getElementById("a_player5Rt").value)
+    ];
+
+    let awayRatings = [
+        parseInt(document.getElementById("b_player1Rt").value),
+        parseInt(document.getElementById("b_player2Rt").value),
+        parseInt(document.getElementById("b_player3Rt").value),
+        parseInt(document.getElementById("b_player4Rt").value),
+        parseInt(document.getElementById("b_player5Rt").value)
+    ];
+
+    let homeGameResult = (winningTeam === 'A') ? 1 : 0;
+    let awayGameResult = (winningTeam === 'A') ? 0 : 1;
+
+    let { newHomeRatings, newAwayRatings } = updateEloRatings(homeRatings, awayRatings, homeGameResult);
+
+    displayNewRatings(newHomeRatings, newAwayRatings);
+}
+
 </script>
 {% endblock %}

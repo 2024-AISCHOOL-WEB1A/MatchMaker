@@ -61,8 +61,7 @@ router.get('/manage_reserv', (req, res) => {
 // 예약 내역에서 경기 종료후 사장님이 경기결과를 설정하는 페이지
 router.get('/result_set/:reserv_idx', (req, res) => {
     const reserv_idx = req.params.reserv_idx;
-    console.log("reserv_idx", reserv_idx);
-    
+
     const sql = `
         SELECT r.reserv_idx, r.user_id, r.reserv_dt, r.reserv_st_tm, r.reserv_ed_tm,
             c.court_name, 
@@ -74,28 +73,142 @@ router.get('/result_set/:reserv_idx', (req, res) => {
         LEFT JOIN team_info1 t ON r.match_idx = t.match_idx
         LEFT JOIN court_info c ON r.court_idx = c.court_idx
         WHERE r.reserv_idx = ?`;
+    const sql2 = 'SELECT * FROM user_info WHERE user_id IN (?)';
+
 
     conn.query(sql, [reserv_idx], (err, reservation) => {
-        console.log("reservation", reservation);
+
         if (err) {
             console.error(err);
             return res.status(500).send("Database query error");
         }
 
         if (reservation.length > 0) {
-            res.render('result_set', {
-                idName: req.session.idName,
-                reservation: reservation[0]
+
+            const userList = [
+                reservation[0].teamA_user1,
+                reservation[0].teamA_user2,
+                reservation[0].teamA_user3,
+                reservation[0].teamA_user4,
+                reservation[0].teamA_user5,
+                reservation[0].teamB_user1,
+                reservation[0].teamB_user2,
+                reservation[0].teamB_user3,
+                reservation[0].teamB_user4,
+                reservation[0].teamB_user5
+            ];
+
+            // sql2 쿼리 수정
+            const sql2 = `SELECT * FROM user_info WHERE user_id IN (?)`;
+
+            // userList 배열을 쿼리에 전달
+            conn.query(sql2, [userList], (err2, users) => {
+                if (err2) {
+                    console.error(err2);
+                    return res.status(500).send("Database query error");
+                }
+
+                // user_id와 user_rate를 매칭하여 team_user, user_rate 형식으로 출력
+                const teamAUsers = [];
+                const teamBUsers = [];
+
+                // user_id와 user_rate를 매칭하여 team_user, user_rate 형식으로 저장
+                reservation.forEach(reserve => {
+                    for (let i = 1; i <= 5; i++) {
+                        const teamA_user = reserve[`teamA_user${i}`];
+                        const teamB_user = reserve[`teamB_user${i}`];
+
+                        const userA = users.find(user => user.user_id === teamA_user);
+                        const userB = users.find(user => user.user_id === teamB_user);
+
+                        if (userA) {
+                            const userDataA = {
+                                [`TeamA_user${i}`]: {
+                                    user_id: userA.user_id,
+                                    user_rate: userA.user_rate
+                                }
+                            };
+                            teamAUsers.push(userDataA);
+                        } else {
+                            const userDataA = {
+                                [`TeamA_user${i}`]: {
+                                    user_id: 'User not found',
+                                    user_rate: 'User not found'
+                                }
+                            };
+                            teamAUsers.push(userDataA);
+                        }
+
+                        if (userB) {
+                            const userDataB = {
+                                [`TeamB_user${i}`]: {
+                                    user_id: userB.user_id,
+                                    user_rate: userB.user_rate
+                                }
+                            };
+                            teamBUsers.push(userDataB);
+                        } else {
+                            const userDataB = {
+                                [`TeamB_user${i}`]: {
+                                    user_id: 'User not found',
+                                    user_rate: 'User not found'
+                                }
+                            };
+                            teamBUsers.push(userDataB);
+                        }
+                    }
+                });
+
+                
+                const teamAUser1Rate = teamAUsers[0].TeamA_user1.user_rate
+                const teamAUser2Rate = teamAUsers[1].TeamA_user2.user_rate
+                const teamAUser3Rate = teamAUsers[2].TeamA_user3.user_rate
+                const teamAUser4Rate = teamAUsers[3].TeamA_user4.user_rate
+                const teamAUser5Rate = teamAUsers[4].TeamA_user5.user_rate
+                const teamBUser1Rate = teamBUsers[0].TeamB_user1.user_rate
+                const teamBUser2Rate = teamBUsers[1].TeamB_user2.user_rate
+                const teamBUser3Rate = teamBUsers[2].TeamB_user3.user_rate
+                const teamBUser4Rate = teamBUsers[3].TeamB_user4.user_rate
+                const teamBUser5Rate = teamBUsers[4].TeamB_user5.user_rate
+
+                const teamAavgRate = (teamAUsers[0].TeamA_user1.user_rate + teamAUsers[1].TeamA_user2.user_rate + teamAUsers[2].TeamA_user3.user_rate + teamAUsers[3].TeamA_user4.user_rate + teamAUsers[4].TeamA_user5.user_rate) / 5
+                const teamBavgRate = (teamBUsers[0].TeamB_user1.user_rate + teamBUsers[1].TeamB_user2.user_rate + teamBUsers[2].TeamB_user3.user_rate + teamBUsers[3].TeamB_user4.user_rate + teamBUsers[4].TeamB_user5.user_rate) / 5
+
+
+
+
+                res.render('result_set', {
+                    idName: req.session.idName,
+                    reservation: reservation[0],
+                    users: users,  // 결과를 템플릿에 전달
+                    teamAUsers: teamAUsers,
+                    teamBUsers: teamBUsers,
+                    teamAUser1Rate: teamAUser1Rate,
+                    teamAUser2Rate: teamAUser2Rate,
+                    teamAUser3Rate: teamAUser3Rate,
+                    teamAUser4Rate: teamAUser4Rate,
+                    teamAUser5Rate: teamAUser5Rate,
+                    teamBUser1Rate: teamBUser1Rate,
+                    teamBUser2Rate: teamBUser2Rate,
+                    teamBUser3Rate: teamBUser3Rate,
+                    teamBUser4Rate: teamBUser4Rate,
+                    teamBUser5Rate: teamBUser5Rate,
+                    teamAavgRate: teamAavgRate,
+                    teamBavgRate: teamBavgRate
+                });
             });
+
         } else {
             res.status(404).send("Reservation not found");
         }
     });
+
 });
 
 // 경기결과를 설정하기 위한 기능 라우터
 router.post('/set_winner', (req, res) => {
     const { winner, reserv_idx } = req.body;
+    console.log(req.body);
 
     // 예제 쿼리: 승자 정보를 reservation_info 테이블에 업데이트 (실제 데이터베이스 구조에 따라 변경 필요)
     const sql = `UPDATE reservation_info SET winner = ? WHERE reserv_idx = ?`;
@@ -111,15 +224,11 @@ router.post('/set_winner', (req, res) => {
     });
 });
 
-
-
-
-
 // 예약관리 라우터
 router.post('/reserv', (req, res) => {
     const user_id = req.session.idName;
     const sql = "SELECT f.boss_id, c.court_name, c.court_idx FROM court_info c JOIN field_info f ON f.field_idx = c.field_idx";
-    
+
     conn.query(sql, (err, results) => {
         if (err) {
             console.error("500 에러 ~", err);
@@ -166,5 +275,45 @@ router.post('/cancel_reservation', (req, res) => {
         }
     });
 });
+
+// 레이트 부여 라우터
+router.post('/update_ratings', (req, res) => {
+    // user아이디와 update할 user 레이트 
+    const updateUserInfo = [
+        { id: req.body.teamA_user1, user_rate: req.body.new_rateA[0] },
+        { id: req.body.teamA_user2, user_rate: req.body.new_rateA[1] },
+        { id: req.body.teamA_user3, user_rate: req.body.new_rateA[2] },
+        { id: req.body.teamA_user4, user_rate: req.body.new_rateA[3] },
+        { id: req.body.teamA_user5, user_rate: req.body.new_rateA[4] },
+        { id: req.body.teamB_user1, user_rate: req.body.new_rateB[0] },
+        { id: req.body.teamB_user2, user_rate: req.body.new_rateB[1] },
+        { id: req.body.teamB_user3, user_rate: req.body.new_rateB[2] },
+        { id: req.body.teamB_user4, user_rate: req.body.new_rateB[3] },
+        { id: req.body.teamB_user5, user_rate: req.body.new_rateB[4] }
+    ];
+    console.log("updateUserInfo", updateUserInfo);
+
+    const sql = 'UPDATE user_info SET user_rate = ? WHERE user_id = ?';
+
+    let completed = 0; // 완료된 업데이트 수
+    const totalUpdates = updateUserInfo.length; // 총 업데이트 수
+
+    // 업데이트 작업을 수행
+    for (let i = 0; i < totalUpdates; i++) {
+        const user = updateUserInfo[i];
+        conn.query(sql, [user.user_rate, user.id], (err, results) => {
+            if (err) {
+                console.error(err);
+                res.status(500).send('<script>alert("An error occurred while updating ratings."); window.history.go(-1);</script>');
+                return;
+            }
+            completed++;
+            if (completed === totalUpdates) {
+                res.status(200).send('<script>alert("레이트 업데이트 성공!"); window.history.go(-1);</script>');
+            }
+        });
+    }
+});
+
 
 module.exports = router;

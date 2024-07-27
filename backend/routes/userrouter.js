@@ -463,7 +463,7 @@ router.get("/match", (req, res) => {
     conn.query(sql, (err, results) => {
         if (err) {
             console.error('데이터 조회 오류:', err);
-            res.send("데이터를 가져오는 중 오류가 발생했습니다.");
+            res.send(`<script>alert("데이터를 가져오는 중 오류가 발생했습니다."); window.history.go(-1);</script>`);
         } else {
             res.render("match", { 
                 matches: results, 
@@ -488,7 +488,7 @@ router.post("/join_game", (req, res) => {
     conn.query(sql, [match_idx], (err, results) => {
         if (err) {
             console.error('데이터 조회 오류:', err);
-            res.send("데이터를 가져오는 중 오류가 발생했습니다.");
+            res.send(`<script>alert("데이터를 업데이트하는 중 오류가 발생했습니다."); window.history.go(-1);</script>`);
         } else {
             let currentJoinUser = results[0].join_user; // 현재 join_user 컬럼의 값 가져오기
             let join_user = currentJoinUser ? currentJoinUser + ", " + newUserId : newUserId; // 새로운 사용자 추가
@@ -497,9 +497,9 @@ router.post("/join_game", (req, res) => {
             conn.query(sql, [join_user, match_idx], (err, results) => { // match_idx를 WHERE 조건으로 추가
                 if (err) {
                     console.error('데이터 업데이트 오류:', err);
-                    res.send("데이터를 업데이트하는 중 오류가 발생했습니다.");
+                    res.send(`<script>alert("데이터를 업데이트하는 중 오류가 발생했습니다."); window.history.go(-1);</script>`);
                 } else {
-                    res.send("데이터 업데이트 성공!");
+                    res.send(`<script>alert("경기 참가 성공!"); window.history.go(-1);</script>`);
                 }
             });
         }
@@ -518,7 +518,7 @@ router.post("/cancel_game", (req, res) => {
     conn.query(sql, [match_idx], (err, results) => {
         if (err) {
             console.error('데이터베이스 조회 오류:', err);
-            return res.send("데이터를 조회하는 중 오류가 발생했습니다.");
+            return res.send(`<script>alert("데이터를 조회하는 중 오류가 발생했습니다."); window.history.go(-1);</script>`);
         }
 
         let currentJoinUser = results[0].join_user || "";
@@ -526,7 +526,7 @@ router.post("/cancel_game", (req, res) => {
 
         const index = currentJoinUsers.indexOf(cancelUserId);
         if (index === -1) {
-            return res.send("탈퇴할 사용자를 찾을 수 없습니다.");
+            return res.send(`<script>alert("탈퇴할 사용자를 찾을 수 없습니다."); window.history.go(-1);</script>`);
         }
 
         // 탈퇴 여부 확인을 위한 페이지를 반환
@@ -555,7 +555,7 @@ router.post("/confirm_cancel_game", (req, res) => {
     conn.query(sql, [match_idx], (err, results) => {
         if (err) {
             console.error('데이터베이스 조회 오류:', err);
-            return res.send("데이터를 조회하는 중 오류가 발생했습니다.");
+            return res.send(`<script>alert("데이터를 조회하는 중 오류가 발생했습니다."); window.history.go(-1);</script>`);
         }
 
         let currentJoinUser = results[0].join_user || "";
@@ -563,7 +563,7 @@ router.post("/confirm_cancel_game", (req, res) => {
         
         const index = currentJoinUsers.indexOf(cancelUserId);
         if (index === -1) {
-            return res.send("탈퇴할 사용자를 찾을 수 없습니다.");
+            return res.send(`<script>alert("탈퇴할 사용자를 찾을 수 없습니다."); window.history.go(-1);</script>`);
         }
 
         currentJoinUsers.splice(index, 1);
@@ -573,9 +573,9 @@ router.post("/confirm_cancel_game", (req, res) => {
         conn.query(sql, [join_user, match_idx], (err, results) => {
             if (err) {
                 console.error('데이터 업데이트 오류:', err);
-                return res.send("데이터를 업데이트하는 중 오류가 발생했습니다.");
+                return res.send(`<script>alert("데이터를 업데이트하는 중 오류가 발생했습니다."); window.history.go(-1);</script>`);
             }
-            res.send("탈퇴가 완료되었습니다.");
+            res.send(`<script>alert("탈퇴가 완료되었습니다."); window.history.go(-1);</script>`);
         });
     });
 });
