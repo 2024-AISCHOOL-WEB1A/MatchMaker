@@ -67,7 +67,7 @@ router.get("/bal_rate_tmmatch", (req, res) => {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 매치 페이지 
 router.get("/match", (req, res) => {
-    res.render("match", { idName: req.session.idName });
+    res.render("match", { idName: req.session.idName, rate: req.session.rate });
 });
 
 // 방 만들기 페이지

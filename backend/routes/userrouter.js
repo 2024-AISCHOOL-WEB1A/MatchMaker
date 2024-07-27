@@ -143,6 +143,7 @@ router.post("/login", (req, res) => {
                 req.session.idName = id;
                 req.session.nick = rows[0].user_nick;
                 req.session.rate = rows[0].user_rate;
+                req.session.rank = rows[0].user_rank;
                 console.log(req.session.idName);
                 res.redirect('/main_login');
             } else {
@@ -408,45 +409,79 @@ router.post("/court_info_update", (req, res) => {
 
 
 // 매치페이지에서 방만들기 했을 때 match_info 테이블에 정보 insert 기능하는 router
-router.post("/create_match", (req, res) => {
+// router.post("/create_match", (req, res) => {
 
+//     console.log("match_info테이블", req.body);
+//     let { match_title, female_match_yn, rate_match_yn, main_region, sub_region, match_date, reserv_tm, match_info } = req.body;
+
+//     let boss_id = req.session.idName;
+//     let join_user = boss_id;
+//     let created_at = new Date();
+//     let match_region = `${main_region}, ${sub_region}`;
+//     let match_st_dt = reserv_tm[0];
+//     let match_ed_dt = reserv_tm.pop();
+//     console.log(`match_ed_dt : ${match_ed_dt}`);
+
+//     if (req.body.female_match_yn === "on") {
+//         female_match_yn = 'Y';
+//     } else {
+//         female_match_yn = 'N';
+//     }
+
+//     if (req.body.rate_match_yn === "on") {
+//         rate_match_yn = 'Y';
+//     } else {
+//         rate_match_yn = 'N';
+//     }
+
+
+//     let sql = "insert into match_info1 (match_title, join_user, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, created_at, match_info) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//     conn.query(sql, [match_title, join_user, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, created_at, match_info], (err, rows) => {
+//         console.log('insert 완', rows);
+//         if (rows) {
+//             res.redirect('/user/match');
+//         } else {
+//             res.send(`<script>alert('다시 시도해 주세용~ ') 
+//                 window.location.href="/create_match"<script>`);
+//         }
+//     });
+
+// });
+
+// 매치에서 방 만들기 했을 때 match_info 테이블에 정보를 insert 기능하는 router
+router.post("/create_match", (req, res) => {
     console.log("match_info테이블", req.body);
-    let { match_title, female_match_yn, rate_match_yn, main_region, sub_region, match_date, reserv_tm, match_info } = req.body;
+    let { match_title, female_match_yn, rate_match_yn, main_region, sub_region, match_date, selected_times, match_info } = req.body;
 
     let boss_id = req.session.idName;
     let join_user = boss_id;
     let created_at = new Date();
     let match_region = `${main_region}, ${sub_region}`;
-    let match_st_dt = reserv_tm[0];
-    let match_ed_dt = reserv_tm.pop();
-    console.log(`match_ed_dt : ${match_ed_dt}`);
 
-    if (req.body.female_match_yn === "on") {
-        female_match_yn = 'Y';
-    } else {
-        female_match_yn = 'N';
-    }
+    // selected_times 처리
+    let times = selected_times.split(',');
+    let match_st_dt = times[0];
+    let match_ed_dt = times[times.length - 1];
+    console.log(`match_st_dt: ${match_st_dt}, match_ed_dt: ${match_ed_dt}`);
 
-    if (req.body.rate_match_yn === "on") {
-        rate_match_yn = 'Y';
-    } else {
-        rate_match_yn = 'N';
-    }
-
+    female_match_yn = req.body.female_match_yn === "on" ? 'Y' : 'N';
+    rate_match_yn = req.body.rate_match_yn === "on" ? 'Y' : 'N';
 
     let sql = "insert into match_info1 (match_title, join_user, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, created_at, match_info) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     conn.query(sql, [match_title, join_user, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, created_at, match_info], (err, rows) => {
-        console.log('insert 완', rows);
-        if (rows) {
+        if (err) {
+            console.error('Insert error:', err);
+            res.status(500).send(`<script>alert('오류가 발생했습니다. 다시 시도해 주세요.'); window.location.href="/create_match";</script>`);
+            return;
+        }
+        console.log('insert 완료:', rows);
+        if (rows.affectedRows > 0) {
             res.redirect('/user/match');
         } else {
-            res.send(`<script>alert('다시 시도해 주세용~ ') 
-                window.location.href="/create_match"<script>`);
+            res.send(`<script>alert('다시 시도해 주세요.'); window.location.href="/create_match";</script>`);
         }
     });
-
 });
-
 
 // 매치 페이지에서 방 리스트를 보여주는 라우터
 router.get("/match", (req, res) => {
