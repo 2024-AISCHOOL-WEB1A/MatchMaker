@@ -57,11 +57,12 @@ return bestTeams;
 
 // 참가자들 정보를 받아와 팀구성 기능
 router.post("/tmmatch", (req, res) => {
+    console.log("req.body", req.body);
     const join_users = req.body.user_id;
-    const match_idx = req.body.match_idx[0];
+    const match_idx = req.body.match_idx;
     const user_rates = req.body.user_rate;
+    const balanceMatched = req.body.balanceMatched;
     console.log("user_rates", user_rates);
-    console.log("match_idx", match_idx);
 
     // join_users는 배열 형식으로 user_id가 전달될 것으로 가정합니다.
     const user_ids = Array.isArray(join_users) ? join_users : [join_users];  
@@ -80,12 +81,10 @@ router.post("/tmmatch", (req, res) => {
             return res.send('<script>alert("참가자 수가 10명이 아닙니다."); window.history.back();</script>');
         }
 
-        console.log("results", results);
+
         const user_ids = results.map(result => result.user_id);
         const scores = results.map(result => result.user_rate);
-        console.log("user_ids", user_ids);
-        console.log("scores",scores);
-        
+
         const userInfo = {};
         results.forEach(result => {
             userInfo[result.user_id] = result.user_rate;
@@ -99,7 +98,6 @@ router.post("/tmmatch", (req, res) => {
 
         const teamA = bestTeams.teamA.map(index => ({ user_id: user_ids[index], user_rate: userInfo[user_ids[index]] }));
         const teamB = bestTeams.teamB.map(index => ({ user_id: user_ids[index], user_rate: userInfo[user_ids[index]] }));
-        console.log("teamA", teamA);
 
         // 팀 평균 계산
         const avgTeamA = calculateAverage(teamA.map(player => player.user_rate));
@@ -114,7 +112,8 @@ router.post("/tmmatch", (req, res) => {
             teamB: teamB,
             avgTeamA: avgTeamA,
             avgTeamB: avgTeamB,
-            match_idx: match_idx
+            idName: req.session.idName,
+            balanceMatched:balanceMatched
         });
     });
 });
