@@ -136,7 +136,7 @@ router.post("/login", (req, res) => {
     let userOrboss = Object.keys(req.body)[0];
 
     if (userOrboss === "user") {
-        let sql = 'SELECT user_id, user_nick FROM user_info WHERE user_id = ? AND user_pw = ?';
+        let sql = 'SELECT user_id, user_nick, user_rate, user_rank FROM user_info WHERE user_id = ? AND user_pw = ?';
         conn.query(sql, [id, hashedPw], (err, rows) => {
             console.log("rows", rows);
             if (rows.length > 0) {
