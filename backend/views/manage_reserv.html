@@ -13,7 +13,7 @@
                     <th>예약 ID</th>
                     <th>사용자 ID</th>
                     <th>코트 이름</th>
-                    <th>예약 날짜</th>
+                    <th id="reservationDateHeader" onclick="sortTableByDate()">예약 날짜</th>
                     <th>예약 시작 시간</th>
                     <th>예약 종료 시간</th>
                     <th>매치 제목</th>
@@ -30,9 +30,9 @@
                     <th>예약 취소</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="reservationTable">
                 {% for reservation in reservations %}
-                <tr onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">
+                <tr data-court-name="{{ reservation.court_name }}" data-reservation-date="{{ reservation.reserv_dt }}" onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">
                     <td>{{ reservation.reserv_idx }}</td>
                     <td>{{ reservation.user_id }}</td>
                     <td>{{ reservation.court_name }}</td>
@@ -71,6 +71,34 @@
 <script>
     function redirectToWLResult(reserv_idx) {
         window.location.href = '/manage/result_set/' + reserv_idx;
+    }
+
+    function filterMatches() {
+        const selectedCourt = document.getElementById('court_name').value;
+        const rows = document.querySelectorAll('#reservationTable tr');
+        
+        rows.forEach(row => {
+            if (selectedCourt === '코트 선택' || row.getAttribute('data-court-name') === selectedCourt) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    function sortTableByDate() {
+        const table = document.getElementById('reservationTable');
+        const rows = Array.from(table.rows);
+        const sortedRows = rows.sort((a, b) => {
+            const dateA = new Date(a.getAttribute('data-reservation-date'));
+            const dateB = new Date(b.getAttribute('data-reservation-date'));
+
+            return isAscending ? dateA - dateB : dateB - dateA;
+        });
+
+        isAscending = !isAscending;
+
+        sortedRows.forEach(row => table.appendChild(row));
     }
 </script>
 

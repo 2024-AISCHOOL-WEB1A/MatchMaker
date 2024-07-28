@@ -43,6 +43,7 @@ router.post('/join1', (req, res) => {
             req.session.idName = user_id
             req.session.nick = user_nick
             req.session.rate = user_rate
+            req.session.rank = user_rank
             res.redirect("/main_login");
         }
     })
@@ -94,6 +95,7 @@ router.post("/field_join", (req, res) => {
 
         // 삽입된 field_info의 field_idx 값 가져오기
         let field_idx = result.insertId;
+        req.session.field_idx = field_idx;
 
         // court_info 테이블에 데이터 삽입
         let courtSql = `INSERT INTO court_info (field_idx, court_name, book_yn) VALUES (?, ?, 'N')`;
@@ -151,18 +153,25 @@ router.post("/login", (req, res) => {
             }
         });
     } else {
-        let sql = 'SELECT boss_id, boss_name FROM boss_info WHERE boss_id = ? AND boss_pw = ?';
-        conn.query(sql, [id, hashedPw], (err, rows) => {
+        let sql1 = 'SELECT boss_id, boss_name FROM boss_info WHERE boss_id = ? AND boss_pw = ?';
+        
+        conn.query(sql1, [id, hashedPw], (err, rows) => {
             console.log("rows", rows);
-            if (rows.length > 0) {
-                req.session.idName = id;
-                console.log(req.session.idName);
-                res.redirect('/main_login');
-            } else {
-                res.send("<script>alert('아이디 혹은 비밀번호를 잘못 입력하셨습니다.'); window.location.href='/login1';</script>")
-            }
+
+            let boss_id = req.body.id;
+            let sql2 = "SELECT field_idx FROM field_info WHERE boss_id = ?";
+            conn.query(sql2, boss_id, (err, rows) => {
+                if (rows.length > 0) {  // 로그인 성공
+                    req.session.idName = id;
+                    req.session.fieldIdx = rows[0].field_idx;  
+                    console.log(req.session.idName);
+                    res.redirect('/');
+                } else {
+                    res.send("<script>alert('아이디 혹은 비밀번호를 잘못 입력하셨습니다.'); window.location.href='/login';</script>")
+                }
+            });
         });
-    };
+    }
 
 });
 
