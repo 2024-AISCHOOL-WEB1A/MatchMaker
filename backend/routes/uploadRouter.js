@@ -32,11 +32,11 @@ router.post('/upload', upload.single('img'), (req, res) => {
     console.log(req.file);
     const imageUrl = `/uploads/${req.file.filename}`;
     const userId = req.session.idName;
-    
+
     // 기존 이미지 URL을 가져와 파일 삭제
     conn.query('SELECT user_photo FROM user_info WHERE user_id = ?', [userId], (error, results) => {
         if (error) throw error;
-        
+
         const oldImageUrl = results[0].user_photo;
         if (oldImageUrl && oldImageUrl !== '/img/ball.png') {
             const oldImagePath = path.join(__dirname, '..', oldImageUrl);
@@ -48,18 +48,19 @@ router.post('/upload', upload.single('img'), (req, res) => {
                 }
             });
         }
-    });
-    // 데이터베이스에 이미지 URL 저장 
-    conn.query('UPDATE user_info SET user_photo = ? WHERE user_id = ?', [imageUrl, userId], (error, results) => {
-        console.log("results",results);
-        if (error) throw error;
-        res.json({ url: imageUrl });
+
+        // 데이터베이스에 이미지 URL 저장 
+        conn.query('UPDATE user_info SET user_photo = ? WHERE user_id = ?', [imageUrl, userId], (error, results) => {
+            console.log("results", results);
+            if (error) throw error;
+            res.json({ url: imageUrl });
+        });
     });
 });
 
 // 특정 사용자의 프로필 이미지 URL을 반환하는 API
 router.get('/profile-image', (req, res) => {
-    const userId = req.session.idName; 
+    const userId = req.session.idName;
     conn.query('SELECT user_photo FROM user_info WHERE user_id = ?', [userId], (error, results) => {
         if (error) throw error;
         const imageUrl = results[0].user_photo;
