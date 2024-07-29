@@ -60,7 +60,31 @@ router.get("/login1", (req, res) => {
 
 // 풋살장 구장주의 마이페이지
 router.get("/boss_myPage", (req, res) => {
-    res.render("boss_myPage1", { idName: req.session.idName });
+    console.log(req.session.idName);
+    let id = req.session.idName;
+
+    
+    let sql1 = 'SELECT * FROM boss_info WHERE boss_id = ?;'
+    let sql2 = 'SELECT * FROM field_info WHERE boss_id = ?;'
+    let sql3 = 'SELECT * FROM court_info WHERE field_idx = (SELECT field_idx FROM field_info WHERE boss_id = ?);'
+    conn.query(sql1, [id], (err1, bossInfoRows) => {
+        console.log("bossInfoRows", bossInfoRows);
+        conn.query(sql2, [id], (err2, fieldInfoRows) => {
+            conn.query(sql3, [id], (err3, courtInfoRows) => {
+                console.log(courtInfoRows.length);
+                res.render("boss_myPage1", { 
+                    idName: req.session.idName,
+                    bossInfo: bossInfoRows,
+                    fieldInfo: fieldInfoRows,
+                    courtInfo: courtInfoRows,
+                    courtcount: courtInfoRows.length
+                });
+            });
+
+        });
+        
+    });
+    
 });
 
 
