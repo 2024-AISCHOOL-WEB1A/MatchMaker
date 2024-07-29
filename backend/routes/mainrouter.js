@@ -25,6 +25,11 @@ router.get('/main_login', (req, res) => {
     };
 });
 
+// 사장님 로그인 후
+router.get('/boss_main', (req, res) => {
+
+    res.render('boss_main');
+});
 
 // 일반 회원 회원가입 페이지
 router.get('/join1', (req, res) => {
@@ -37,12 +42,12 @@ router.get('/boss_join1', (req, res) => {
     res.render('boss_join1')
 })
 
-router.get("/join_select1", (req, res)=>{
+router.get("/join_select1", (req, res) => {
     res.render("join_select1");
 });
 
 // 구장 등록 페이지
-router.get("/field_join", (req, res)=>{
+router.get("/field_join", (req, res) => {
     res.render("field_join");
 });
 
@@ -54,7 +59,7 @@ router.get("/login1", (req, res) => {
 
 
 // 풋살장 구장주의 마이페이지
-router.get("/boss_myPage", (req, res)=>{
+router.get("/boss_myPage", (req, res) => {
     res.render("boss_myPage1", { idName: req.session.idName });
 });
 
@@ -120,7 +125,7 @@ router.get('/match_room/:match_idx', (req, res) => {
                 console.log("join_users", join_users);
                 console.log("user_rate.a1", user_rate.a1);
                 console.log("match_idx", match_idx);
-                
+
 
 
                 res.render('match_room', {
