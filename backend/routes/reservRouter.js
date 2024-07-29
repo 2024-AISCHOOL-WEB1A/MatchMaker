@@ -7,7 +7,7 @@ router.get('/reservAll', (req, res) => {
     const selectedFieldIdx = req.query.field_idx || '';
     const selectedCourtIdx = req.query.court_idx || '';
     const selectedreservDate = req.query.reserv_dt || '';
-    const matchIdx = req.query.match_idx || '';
+    const matchIdx = req.query.match_idx[0] || '';
     const currentDate = new Date();
     const currentDateString = currentDate.toISOString().split('T')[0];
     const currentTimeString = currentDate.toTimeString().split(' ')[0];
@@ -118,7 +118,8 @@ router.post('/reserv', (req, res) => {
             }
 
             console.log('reservation 완료', rows);
-            res.send('<script>alert("예약 성공!!"); window.location.href="/user/match";</script>');
+
+            res.send('<script>alert("예약에 성공했습니다."); window.location.href="/user/match";</script>');
         });
     } else {
         res.send('<script>alert("예약시작시간보다 종료시간이 더 빠릅니다"); window.location.href="/reserv/reservAll";</script>');
