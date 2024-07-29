@@ -48,20 +48,20 @@
             </thead>
             <tbody id="reservationTable">
                 {% for reservation in reservations %}
-                <tr data-court-name="{{ reservation.court_name }}" data-reservation-date="{{ reservation.reserv_dt }}" onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">
-                    <td>{{ reservation.reserv_idx }}</td>
-                    <td>{{ reservation.user_id }}</td>
-                    <td>{{ reservation.court_name }}</td>
-                    <td>{{ reservation.reserv_dt }}</td>
-                    <td>{{ reservation.reserv_st_tm }}</td>
-                    <td>{{ reservation.reserv_ed_tm }}</td>
-                    <td>{{ reservation.match_title }}</td>
-                    <td>{{ reservation.teamA_user1 }}, {{ reservation.teamA_user2 }}, {{ reservation.teamA_user3 }}, {{ reservation.teamA_user4 }}, {{ reservation.teamA_user5 }}</td>
+                <tr data-court-name="{{ reservation.court_name }}" data-reservation-date="{{ reservation.reserv_dt }}" >
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.reserv_idx }}</td>
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.user_id }}</td>
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.court_name }}</td>
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.reserv_dt }}</td>
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.reserv_st_tm }}</td>
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.reserv_ed_tm }}</td>
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.match_title }}</td>
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.teamA_user1 }}, {{ reservation.teamA_user2 }}, {{ reservation.teamA_user3 }}, {{ reservation.teamA_user4 }}, {{ reservation.teamA_user5 }}</td>
                     <!-- <td>{{ reservation.teamA_user2 }}</td>
                     <td>{{ reservation.teamA_user3 }}</td>
                     <td>{{ reservation.teamA_user4 }}</td>
                     <td>{{ reservation.teamA_user5 }}</td> -->
-                    <td>{{ reservation.teamB_user1 }}, {{ reservation.teamB_user2 }}, {{ reservation.teamB_user3 }}, {{ reservation.teamB_user4 }}, {{ reservation.teamB_user5 }}</td>
+                    <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.teamB_user1 }}, {{ reservation.teamB_user2 }}, {{ reservation.teamB_user3 }}, {{ reservation.teamB_user4 }}, {{ reservation.teamB_user5 }}</td>
                     <!-- <td>{{ reservation.teamB_user2 }}</td>
                     <td>{{ reservation.teamB_user3 }}</td>
                     <td>{{ reservation.teamB_user4 }}</td>
