@@ -2,9 +2,7 @@ const express = require('express')
 const router = express.Router()
 const conn = require('../config/DB')
 const md5 = require('md5');
-const multer = require('multer');
 const path = require('path');
-const upload = multer({ dest: 'uploads/' });
 
 
 // 풋살을 하기 위한 회원들의 회원가입
