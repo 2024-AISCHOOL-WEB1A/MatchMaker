@@ -14,7 +14,7 @@ router.post('/join1', (req, res) => {
 
     // 새로 가입한 유저의 기본 값들 정의
     let user_rate = 1500
-    let user_rank = '세미프로'
+    let user_rank = '3부리그, 3군'
     let user_shooting_point = 0
     let user_pass_point = 0
     let user_dribble_point = 0
@@ -277,7 +277,7 @@ router.post("/update", (req, res) => {
     conn.query(sql, [nick, phone, req.session.idName], (err, rows) => {
         console.log("rows", rows);
         if (rows.affectedRows > 0) {
-            res.redirect('/');
+            res.redirect('/user/myPage');
         } else {
             res.send(`
                 <script>

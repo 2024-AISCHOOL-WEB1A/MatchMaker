@@ -151,7 +151,7 @@ router.get('/match_room/:match_idx', (req, res) => {
                 console.log("match_idx", match_idx);
 
                 // 점수 매치 체크 및 랭크 비교
-                if (match.rate_match_yn === 'Y' && req.session.rank[0] !== user_rank[teamLeader][0]) {
+                if (match.rate_match_yn === 'Y' && req.session.rank !== user_rank[teamLeader].split(',')[0]) {
                     res.send("<script>alert('이 방에는 접속하실 수 없습니다.'); window.location.href='/user/match';</script>");
                     return;
                 }

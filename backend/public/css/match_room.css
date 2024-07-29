@@ -139,6 +139,7 @@ a {
 .player-info span {
     display: block;
     font-size: 12px;
+    white-space: nowrap;
 }
 
 
