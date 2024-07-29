@@ -12,6 +12,7 @@
 
     <form id="updateRatingsForm" action="/manage/update_ratings" method="POST">
         <input type="hidden" name="reservation_idx" value="{{ reservation_idx }}">
+        <input type="hidden" name="rate_match_yn" value="{{ reservation.rate_match_yn }}">
         <div class="teams-container">
             <div class="team-section">
                 <h2>팀 A</h2>

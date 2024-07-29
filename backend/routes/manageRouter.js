@@ -312,7 +312,7 @@ router.post('/update_ratings', async (req, res) => {
         }
 
         // 매치 결과 업데이트
-        if (req.body.exist_rateA[0] < req.body.new_rateA[0]) {
+        if (req.body.exist_rateA[0] < req.body.new_rateA[0] && req.body.rate_match_yn == null) {
             await new Promise((resolve, reject) => {
                 conn.query(sql2, [req.body.reservation_idx], (err, rows) => {
                     if (err) return reject(err);
@@ -320,7 +320,7 @@ router.post('/update_ratings', async (req, res) => {
                 });
             });
             res.status(200).send('<script>alert("레이트 업데이트 성공! A팀 승리!"); window.history.go(-1);</script>');
-        } else {
+        } else if(req.body.exist_rateA[0] > req.body.new_rateA[0] && req.body.rate_match_yn == null){
             await new Promise((resolve, reject) => {
                 conn.query(sql3, [req.body.reservation_idx], (err, rows) => {
                     if (err) return reject(err);
@@ -328,6 +328,8 @@ router.post('/update_ratings', async (req, res) => {
                 });
             });
             res.status(200).send('<script>alert("레이트 업데이트 성공! B팀 승리!"); window.history.go(-1);</script>');
+        } else{
+            res.status(200).send('<script>alert("이미 점수부여가 됬을걸요"); window.history.go(-1);</script>');
         }
     } catch (err) {
         console.error(err);
