@@ -2,6 +2,9 @@ const express = require('express')
 const router = express.Router()
 const conn = require('../config/DB')
 const md5 = require('md5');
+const multer = require('multer');
+const path = require('path');
+const upload = multer({ dest: 'uploads/' });
 
 
 // 풋살을 하기 위한 회원들의 회원가입
@@ -258,7 +261,8 @@ router.get("/myPage", (req, res) => {
                     currentTimeString: currentTimeString,
                     matchInfoRows:matchInfoRows,
                     teamInfoRows : teamInfoRows,
-                    id:id
+                    id:id,
+                    userInfoRowsProfile: userInfoRows.user_photo
                 });
 
            
@@ -288,6 +292,7 @@ router.post("/update", (req, res) => {
         }
     });
 });
+
 
 // 풋살장 관리자의 마이페이지에서 boss_info 테이블 업데이트 기능 router
 router.post("/boss_info_update", (req, res) => {

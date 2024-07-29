@@ -1,17 +1,10 @@
-document.getElementById("imageUpload").addEventListener("change", function(event) {
-    const file = event.target.files[0];
-    const formData = new FormData();
-    formData.append('profileImage', file);
+const fileInput = document.getElementById('fileInput');
+const submitButton = document.getElementById('submitButton');
 
-    fetch('/upload', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('profileImage').src = data.imageUrl;
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+document.querySelector('.upload-icon').addEventListener('click', function() {
+    fileInput.click();
+});
+
+fileInput.addEventListener('change', function() {
+    submitButton.click();
 });
