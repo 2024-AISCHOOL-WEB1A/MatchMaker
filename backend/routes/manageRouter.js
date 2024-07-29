@@ -331,7 +331,7 @@ router.post('/update_ratings', async (req, res) => {
         }
     } catch (err) {
         console.error(err);
-        res.status(500).send('<script>alert("An error occurred while updating ratings."); window.history.go(-1);</script>');
+        res.status(500).send('<script>alert("승리한 팀을 선택해주세요."); window.history.go(-1);</script>');
     }
 });
 
