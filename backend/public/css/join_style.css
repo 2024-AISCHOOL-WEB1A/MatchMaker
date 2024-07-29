@@ -99,6 +99,11 @@ button {
     transition: all 0.4s ease;
 }
 
+button a {
+    text-decoration: none;
+    color: white;
+}
+
 button:hover {
     background-color: rgb(255, 255, 255, 0.5);
 }

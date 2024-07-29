@@ -1,13 +1,29 @@
 {% extends "main.html" %}
 
 {% block content %}
-<h1>🍥 예약 관리 페이지 입니당 🍥</h1>
+<!-- <h1>🍥 예약 관리 페이지 입니당 🍥</h1> -->
+ <link rel="stylesheet" href="/css/manage_reserv.css">
+ <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<nav id="navbar">
+    <img src="/img/logo2.png" alt="" class="main_logo">
+    <div class="user_info">
+        <a href="/user/myPage">
+            <ion-icon name="person-outline" class="user_logo"></ion-icon>
+        </a>
+        <a href="/user/logout">
+            <ion-icon name="log-out-outline" class="logout_logo"></ion-icon>
+        </a>
+    </div>
+</nav>
+ 
 
 {% if boss_id %}
     <p>관리자: {{ boss_id }}</p>
     {% if reservations.length > 0 %}
         <h3>예약 정보</h3>
-        <table border="1">
+        <table>
             <thead>
                 <tr>
                     <th>예약 ID</th>
@@ -102,4 +118,4 @@
     }
 </script>
 
-{% endblock %}
+<!-- {% endblock %} -->
