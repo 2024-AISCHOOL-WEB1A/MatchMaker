@@ -66,7 +66,7 @@ router.get('/result_set/:reserv_idx', (req, res) => {
     const sql = `
         SELECT r.reserv_idx, r.user_id, r.reserv_dt, r.reserv_st_tm, r.reserv_ed_tm,
             c.court_name, 
-            m.match_title,
+            m.match_title, m.rate_match_yn,
             t.teamA_user1, t.teamA_user2, t.teamA_user3, t.teamA_user4, t.teamA_user5,
             t.teamB_user1, t.teamB_user2, t.teamB_user3, t.teamB_user4, t.teamB_user5
         FROM reservation_info r
@@ -261,8 +261,9 @@ router.post('/reserv', (req, res) => {
 
 // 예약 취소 라우터 
 router.post('/cancel_reservation', (req, res) => {
+    console.log("req.body",req.body);
     const reserv_idx = req.body.reserv_idx;
-    console.log("rserv_idx : ", reserv_idx);
+    console.log("reserv_idx : ", reserv_idx);
 
     const sql = "DELETE FROM reservation_info WHERE reserv_idx = ?";
     conn.query(sql, [reserv_idx], (err, results) => {
