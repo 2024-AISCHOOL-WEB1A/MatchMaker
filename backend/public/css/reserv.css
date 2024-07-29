@@ -1,0 +1,41 @@
+.time-bar-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.time-bar {
+    display: flex;
+    width: max-content;
+    height: 40px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+}
+
+.time-slot {
+    width: 40px;
+    height: 100%;
+    border-right: 1px solid #ccc;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+
+.time-slot:hover {
+    background-color: #e0e0e0;
+}
+
+.time-slot.selected {
+    background-color: #4CAF50;
+}
+
+.time-slot.disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.time-label {
+    font-size: 12px;
+    padding: 2px;
+}
