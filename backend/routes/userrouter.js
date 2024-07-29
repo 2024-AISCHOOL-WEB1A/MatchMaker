@@ -167,7 +167,7 @@ router.post("/login", (req, res) => {
                     console.log(req.session.idName);
                     res.redirect('/boss_main');
                 } else {
-                    res.send("<script>alert('아이디 혹은 비밀번호를 잘못 입력하셨습니다.'); window.location.href='/login';</script>")
+                    res.send("<script>alert('아이디 혹은 비밀번호를 잘못 입력하셨습니다.'); window.location.href='/login1';</script>")
                 }
             });
         });

@@ -1,5 +1,3 @@
-
-
 {% block content %}
 
 
@@ -76,7 +74,7 @@
         <p>여성부 매치: {{ match.female_match_yn }}</p>
         <p>점수 매치: {{ match.rate_match_yn }}</p>
 
-        
+
         <div class="button-container">
             {% if idName != teamLeader %}
             <form action="/user/join_game" method="post" onsubmit="return checkUserLimit()">
@@ -154,10 +152,10 @@
             </form>
             {% endif %}
             <div class="chatt">
-                <input id="input" autocomplete="off" placeholder="채팅을 입력해주세요"/>
-                <input id="chatBtn" type="button" value="전송" onclick="sendMessage()" >
-                    <ul id="messages" style="list-style: none;"></ul>
-                    <span id="userNick" style="display: none;">{{ nick }}</span>
+                <input id="input" autocomplete="off" placeholder="채팅을 입력해주세요" />
+                <input id="chatBtn" type="button" value="전송" onclick="sendMessage()">
+                <ul id="messages" style="list-style: none;"></ul>
+                <span id="userNick" style="display: none;">{{ nick }}</span>
             </div>
         </div>
     </div>
@@ -167,125 +165,135 @@
 <!-- 스크립트 -->
 
 <script>
-        const matchIdxElement = document.getElementsByName("match_idx")[0];
-const matchIdxValue = matchIdxElement ? matchIdxElement.value : null;
-console.log('Match Index:', matchIdxValue);
-const now = new Date();
-const timestamp = now.toLocaleTimeString();
+    const matchIdxElement = document.getElementsByName("match_idx")[0];
+    const matchIdxValue = matchIdxElement ? matchIdxElement.value : null;
+    console.log('Match Index:', matchIdxValue);
+    const now = new Date();
+    const timestamp = now.toLocaleTimeString();
 
 
 
-function sendMessage() {
-    const userNickElement = document.getElementById('userNick');
-    const userNick = userNickElement.textContent;
-    const input = document.getElementById('input');
+    function sendMessage() {
+        const userNickElement = document.getElementById('userNick');
+        const userNick = userNickElement.textContent;
+        const input = document.getElementById('input');
 
-    if (input.value) {
-        if (ws.readyState === WebSocket.OPEN) {
-            const now = new Date();
-            const timestamp = now.toLocaleTimeString();
+        if (input.value) {
+            if (ws.readyState === WebSocket.OPEN) {
+                const now = new Date();
+                const timestamp = now.toLocaleTimeString();
 
-            const message = {
-                nick: userNick,
-                message: input.value,
-                timestamp: timestamp
-            };
-
-            ws.send(JSON.stringify(message));
-
-            // 서버에 채팅 메시지 저장 요청
-            fetch(`/match_room/${encodeURIComponent(matchIdxValue)}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    timestamp: timestamp,
+                const message = {
+                    nick: userNick,
                     message: input.value,
-                    match_idx : matchIdxValue
+                    timestamp: timestamp
+                };
+
+                ws.send(JSON.stringify(message));
+
+                // 서버에 채팅 메시지 저장 요청
+                fetch(`/match_room/${encodeURIComponent(matchIdxValue)}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        timestamp: timestamp,
+                        message: input.value,
+                        match_idx: matchIdxValue
+                    })
                 })
-            })
-            .then(response => response.text())
-            .then(result => {
-                console.log('Message saved:', result);
-                input.value = '';
-            })
-            .catch(error => console.error('Error saving message:', error));
-        } else {
-            console.error('WebSocket is not open. ReadyState:', ws.readyState);
+                    .then(response => response.text())
+                    .then(result => {
+                        console.log('Message saved:', result);
+                        input.value = '';
+                    })
+                    .catch(error => console.error('Error saving message:', error));
+            } else {
+                console.error('WebSocket is not open. ReadyState:', ws.readyState);
+            }
         }
     }
-}
 
 
 
 
 
-let ws;
+    let ws;
 
-function connect()  {
-            const wsUrl = `ws://localhost:3007/match_room/${encodeURIComponent(matchIdxValue)}`;
-            ws = new WebSocket(wsUrl);
+    function connect() {
+        const wsUrl = `ws://localhost:3007/match_room/${encodeURIComponent(matchIdxValue)}`;
+        ws = new WebSocket(wsUrl);
 
-            ws.onopen = function() {
-                console.log('Connected to the WebSocket server');
-            };
+        ws.onopen = function () {
+            console.log('Connected to the WebSocket server');
+        };
 
-            ws.onmessage = function(event) {
-                const messageData = JSON.parse(event.data);
-                const item = document.createElement('li');
-                item.textContent = `[${messageData.timestamp}] ${messageData.nick}: ${messageData.message}`;
-                document.getElementById('messages').appendChild(item);
-                window.scrollTo(0, document.body.scrollHeight);
-            };
-            ws.onclose = function() {
-                console.log('WebSocket connection closed');
-                // Reconnect attempt
-                setTimeout(connect, 1000);
-            };
+        ws.onmessage = function (event) {
+            const messageData = JSON.parse(event.data);
+            const item = document.createElement('li');
+            item.textContent = `[${messageData.timestamp}] ${messageData.nick}: ${messageData.message}`;
+            document.getElementById('messages').appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        };
+        ws.onclose = function () {
+            console.log('WebSocket connection closed');
+            // Reconnect attempt
+            setTimeout(connect, 1000);
+        };
 
-            ws.onerror = function(error) {
-                console.error('WebSocket error:', error);
-            };
+        ws.onerror = function (error) {
+            console.error('WebSocket error:', error);
+        };
     }
 
 
     function loadMessages() {
-    fetch(`/getMessages?match_idx=${encodeURIComponent(matchIdxValue)}`)
-        .then(response => response.json())
-        .then(data => {
-            const messagesList = document.getElementById('messages');
-            messagesList.innerHTML = ''; // 기존 메시지 삭제
+        fetch(`/getMessages?match_idx=${encodeURIComponent(matchIdxValue)}`)
+            .then(response => response.json())
+            .then(data => {
+                const messagesList = document.getElementById('messages');
+                messagesList.innerHTML = ''; // 기존 메시지 삭제
 
-            data.forEach(message => {
-                const item = document.createElement('li');
-                item.textContent = `[${message.timestamp}] ${message.nick}: ${message.message}`;
-                messagesList.appendChild(item);
-            });
+                data.forEach(message => {
+                    const item = document.createElement('li');
+                    item.textContent = `[${message.timestamp}] ${message.nick}: ${message.message}`;
+                    messagesList.appendChild(item);
+                });
 
-            window.scrollTo(0, document.body.scrollHeight);
-        })
-        .catch(error => console.error('Error fetching messages:', error));
-}
+                window.scrollTo(0, document.body.scrollHeight);
+            })
+            .catch(error => console.error('Error fetching messages:', error));
+    }
 
     document.addEventListener('DOMContentLoaded', function () {
 
 
         connect();
-    loadMessages();
-  
-    const inputField = document.getElementById('input');
-            const chatBtn = document.getElementById('chatBtn');
+        loadMessages();
 
-            // 입력 필드에서 Enter 키가 눌렸을 때
-            inputField.addEventListener('keydown', function(event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault(); // 기본 Enter 동작 방지 (폼 제출 등)
-                    sendMessage(); // sendMessage 함수 호출
-                }
-            });
+        const inputField = document.getElementById('input');
+        const chatBtn = document.getElementById('chatBtn');
+
+        // 입력 필드에서 Enter 키가 눌렸을 때
+        inputField.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // 기본 Enter 동작 방지 (폼 제출 등)
+                sendMessage(); // sendMessage 함수 호출
+            }
+        });
         var joinButton = document.getElementById("joinButton");
-        var userCount = joinButton.getAttribute("data-user-count");
+        // joinButton 요소 선택
+        var joinButton = document.querySelector('.btn'); // 예시로 .btn 클래스 사용
+
+        // joinButton이 존재하는지 확인
+        if (joinButton) {
+            // joinButton이 존재할 때만 data-user-count 속성 값 가져오기
+            var userCount = joinButton.getAttribute("data-user-count");
+            console.log(userCount);
+        } else {
+            console.error("joinButton 요소를 찾을 수 없습니다.");
+        }
 
         function checkUserLimit() {
             if (userCount >= 10) {
