@@ -1,69 +1,82 @@
-
-
 {% block content %}
 
 <link rel="stylesheet" href="/css/reserv.css">
 
-<h1>🍙예약하기🍙</h1>
-
-<form id="fieldForm" action="/reserv/reservAll" method="get">
-    <input type="hidden" name="match_idx" value="{{ match_idx }}">
-    <label for="field">필드:</label>
-    <select id="field" name="field_idx" required onchange="submitFieldForm()">
-        <option value="">필드를 선택하세요</option>
-        {% for item in fields %}
-        <option value="{{ item.field_idx }}" {% if selected_field_idx==item.field_idx %} selected {% endif %}>
-            {{ item.field_name }}
-        </option>
-        {% endfor %}
-    </select><br>
-
-    <label for="court">코트:</label>
-    <select id="court" name="court_idx" required onchange="submitFieldForm()">
-        <option value="">코트를 선택하세요</option>
-        {% for item in courts %}
-        <option value="{{ item.court_idx }}" {% if selected_court_idx==item.court_idx %} selected {% endif %}>
-            {{ item.court_name }}
-        </option>
-        {% endfor %}
-    </select><br>
-
-    <label for="reserv_dt">예약 날짜:</label>
-    <input type="date" id="reserv_dt" name="reserv_dt" value="{{ reserv_date }}" required onchange="submitFieldForm()"><br>
-</form>
-
-<form id="reservationForm" action="/reserv/reserv" method="post">
-    <input type="hidden" name="field_idx" value="{{ selected_field_idx }}">
-    <input type="hidden" name="court_idx" value="{{ selected_court_idx }}">
-    <input type="hidden" name="reserv_dt" value="{{ reserv_date }}">
-    <input type="hidden" name="match_idx" value="{{ match_idx }}">
-
-    <div class="time-bar-container">
-        <div class="time-bar">
-            {% set times = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"] %}
-            {% set min_time = field_oper_st_time.split(':')[0]|int %}
-            {% set max_time = field_oper_ed_time.split(':')[0]|int %}
-            {% set is_24_hours = (min_time == 0 and max_time == 0) %}
-
-            {% for time in times %}
-                {% set hour = time.split(':')[0]|int %}
-                {% set is_disabled = ((is_24_hours != is_24_hours) and (hour < min_time or max_time <= hour)) %}
-                {% for reserv in reservations %}
-                    {% set reserv_st_tm = reserv.reserv_st_tm.split(':')[0]|int %}
-                    {% set reserv_ed_tm = reserv.reserv_ed_tm.split(':')[0]|int %}
-                    {% if reserv.reserv_dt == reserv_date and (reserv_st_tm <= hour and hour < reserv_ed_tm) %}
-                        {% set is_disabled = true %}
-                    {% endif %}
-                {% endfor %}
-                <div class="time-slot {% if is_disabled %}disabled{% else %}enabled{% endif %}" data-time="{{ time }}">
-                    <span class="time-label">{{ time }}</span>
-                </div>
-            {% endfor %}
-        </div>
+<nav id="navbar">
+    <a href="/user/match"><img src="/img/logo2.png" alt="" class="main_logo"></a>
+    <div class="user_info">
+        <a href="/user/myPage">
+            <ion-icon name="person-outline" class="user_logo"></ion-icon>
+        </a>
+        <a href="/user/logout">
+            <ion-icon name="log-out-outline" class="logout_logo"></ion-icon>
+        </a>
     </div>
+</nav>
 
-    <button type="submit">예약하기</button>
-</form>
+<div class="form-container">
+    <form id="fieldForm" action="/reserv/reservAll" method="get">
+        <input type="hidden" name="match_idx" value="{{ match_idx }}">
+        <label for="field">필드:</label>
+        <select id="field" name="field_idx" required onchange="submitFieldForm()">
+            <option value="">필드를 선택하세요</option>
+            {% for item in fields %}
+            <option value="{{ item.field_idx }}" {% if selected_field_idx==item.field_idx %} selected {% endif %}>
+                {{ item.field_name }}
+            </option>
+            {% endfor %}
+        </select><br>
+
+        <label for="court">코트:</label>
+        <select id="court" name="court_idx" required onchange="submitFieldForm()">
+            <option value="">코트를 선택하세요</option>
+            {% for item in courts %}
+            <option value="{{ item.court_idx }}" {% if selected_court_idx==item.court_idx %} selected {% endif %}>
+                {{ item.court_name }}
+            </option>
+            {% endfor %}
+        </select><br>
+
+        <label for="reserv_dt">예약 날짜:</label>
+        <input type="date" id="reserv_dt" name="reserv_dt" value="{{ reserv_date }}" required onchange="submitFieldForm()"><br>
+    </form>
+
+    <form id="reservationForm" action="/reserv/reserv" method="post">
+        <input type="hidden" name="field_idx" value="{{ selected_field_idx }}">
+        <input type="hidden" name="court_idx" value="{{ selected_court_idx }}">
+        <input type="hidden" name="reserv_dt" value="{{ reserv_date }}">
+        <input type="hidden" name="match_idx" value="{{ match_idx }}">
+
+        <div class="time-bar-container">
+            <div class="time-bar">
+                {% set times = ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"] %}
+                {% set min_time = field_oper_st_time.split(':')[0]|int %}
+                {% set max_time = field_oper_ed_time.split(':')[0]|int %}
+                {% set is_24_hours = (min_time == 0 and max_time == 0) %}
+
+                {% for time in times %}
+                    {% set hour = time.split(':')[0]|int %}
+                    {% set is_disabled = ((is_24_hours != is_24_hours) and (hour < min_time or max_time <= hour)) %}
+                    {% for reserv in reservations %}
+                        {% set reserv_st_tm = reserv.reserv_st_tm.split(':')[0]|int %}
+                        {% set reserv_ed_tm = reserv.reserv_ed_tm.split(':')[0]|int %}
+                        {% if reserv.reserv_dt == reserv_date and (reserv_st_tm <= hour and hour < reserv_ed_tm) %}
+                            {% set is_disabled = true %}
+                        {% endif %}
+                    {% endfor %}
+                    <div class="time-slot {% if is_disabled %}disabled{% else %}enabled{% endif %}" data-time="{{ time }}">
+                        <span class="time-label">{{ time }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <button type="submit">예약하기</button>
+    </form>
+</div>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
 <script>
     function submitFieldForm() {
