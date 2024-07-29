@@ -32,6 +32,8 @@
                         <span>{{ teamA[loop.index0].user_id }}</span>
                         <br>
                         <span>{{ teamA[loop.index0].user_rate }}</span>
+                        <br>
+                        <span>{{ teamA[loop.index0].user_rank }}</span>
                     </div>
                     {% else %}
                     {% set indexB = loop.index0 - teamA|length %}
@@ -40,6 +42,8 @@
                             <span>{{ teamB[indexB].user_id }}</span>
                             <br>
                             <span>{{ teamB[indexB].user_rate }}</span>
+                            <br>
+                            <span>{{ teamB[indexB].user_rank }}</span>
                         </div>
                         {% endif %}
                         {% endif %}
@@ -53,6 +57,7 @@
                             <span>{{ join_users[loop.index0] }}</span>
                             <br>
                             <span>{{ user_rate[join_users[loop.index0]] }}</span>
+                            <span>{{ user_rank[join_users[loop.index0]] }}</span>
             </div>
             {% endif %}
             {% endif %}

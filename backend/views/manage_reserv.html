@@ -48,7 +48,7 @@
             </thead>
             <tbody id="reservationTable">
                 {% for reservation in reservations %}
-                <tr data-court-name="{{ reservation.court_name }}" data-reservation-date="{{ reservation.reserv_dt }}" >
+                <tr data-court-name="{{ reservation.court_name }}" data-reservation-date="{{ reservation.reserv_dt }}" onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">
                     <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.reserv_idx }}</td>
                     <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.user_id }}</td>
                     <td onclick="redirectToWLResult('{{ reservation.reserv_idx }}')">{{ reservation.court_name }}</td>
@@ -85,6 +85,8 @@
 {% endif %}
 
 <script>
+    let isAscending = true;
+    
     function redirectToWLResult(reserv_idx) {
         window.location.href = '/manage/result_set/' + reserv_idx;
     }
