@@ -159,7 +159,7 @@ router.get('/result_set/:reserv_idx', (req, res) => {
                     }
                 });
 
-                
+
                 const teamAUser1Rate = teamAUsers[0].TeamA_user1.user_rate
                 const teamAUser2Rate = teamAUsers[1].TeamA_user2.user_rate
                 const teamAUser3Rate = teamAUsers[2].TeamA_user3.user_rate
@@ -170,12 +170,10 @@ router.get('/result_set/:reserv_idx', (req, res) => {
                 const teamBUser3Rate = teamBUsers[2].TeamB_user3.user_rate
                 const teamBUser4Rate = teamBUsers[3].TeamB_user4.user_rate
                 const teamBUser5Rate = teamBUsers[4].TeamB_user5.user_rate
+                const reservation_idx = reservation[0].reserv_idx
 
                 const teamAavgRate = (teamAUsers[0].TeamA_user1.user_rate + teamAUsers[1].TeamA_user2.user_rate + teamAUsers[2].TeamA_user3.user_rate + teamAUsers[3].TeamA_user4.user_rate + teamAUsers[4].TeamA_user5.user_rate) / 5
                 const teamBavgRate = (teamBUsers[0].TeamB_user1.user_rate + teamBUsers[1].TeamB_user2.user_rate + teamBUsers[2].TeamB_user3.user_rate + teamBUsers[3].TeamB_user4.user_rate + teamBUsers[4].TeamB_user5.user_rate) / 5
-
-
-
 
                 res.render('result_set', {
                     idName: req.session.idName,
@@ -194,7 +192,8 @@ router.get('/result_set/:reserv_idx', (req, res) => {
                     teamBUser4Rate: teamBUser4Rate,
                     teamBUser5Rate: teamBUser5Rate,
                     teamAavgRate: teamAavgRate,
-                    teamBavgRate: teamBavgRate
+                    teamBavgRate: teamBavgRate,
+                    reservation_idx: reservation_idx
                 });
             });
 
@@ -277,8 +276,9 @@ router.post('/cancel_reservation', (req, res) => {
 });
 
 // 레이트 부여 라우터
-router.post('/update_ratings', (req, res) => {
-    // user아이디와 update할 user 레이트 
+router.post('/update_ratings', async (req, res) => {
+    console.log("req.body", req.body);
+
     const updateUserInfo = [
         { id: req.body.teamA_user1, user_rate: req.body.new_rateA[0] },
         { id: req.body.teamA_user2, user_rate: req.body.new_rateA[1] },
@@ -291,29 +291,46 @@ router.post('/update_ratings', (req, res) => {
         { id: req.body.teamB_user4, user_rate: req.body.new_rateB[3] },
         { id: req.body.teamB_user5, user_rate: req.body.new_rateB[4] }
     ];
+
     console.log("updateUserInfo", updateUserInfo);
 
     const sql = 'UPDATE user_info SET user_rate = ? WHERE user_id = ?';
+    const sql2 = 'UPDATE match_info1 SET team_a = "W", team_b = "L" WHERE match_idx = (SELECT match_idx FROM reservation_info WHERE reserv_idx = ?)';
+    const sql3 = 'UPDATE match_info1 SET team_a = "L", team_b = "W" WHERE match_idx = (SELECT match_idx FROM reservation_info WHERE reserv_idx = ?)';
 
-    let completed = 0; // 완료된 업데이트 수
-    const totalUpdates = updateUserInfo.length; // 총 업데이트 수
+    try {
+        // 각 사용자 레이트 업데이트
+        for (const user of updateUserInfo) {
+            await new Promise((resolve, reject) => {
+                conn.query(sql, [user.user_rate, user.id], (err, results) => {
+                    if (err) return reject(err);
+                    resolve();
+                });
+            });
+        }
 
-    // 업데이트 작업을 수행
-    for (let i = 0; i < totalUpdates; i++) {
-        const user = updateUserInfo[i];
-        conn.query(sql, [user.user_rate, user.id], (err, results) => {
-            if (err) {
-                console.error(err);
-                res.status(500).send('<script>alert("An error occurred while updating ratings."); window.history.go(-1);</script>');
-                return;
-            }
-            completed++;
-            if (completed === totalUpdates) {
-                res.status(200).send('<script>alert("레이트 업데이트 성공!"); window.history.go(-1);</script>');
-            }
-        });
+        // 매치 결과 업데이트
+        if (req.body.exist_rateA[0] < req.body.new_rateA[0]) {
+            await new Promise((resolve, reject) => {
+                conn.query(sql2, [req.body.reservation_idx], (err, rows) => {
+                    if (err) return reject(err);
+                    resolve();
+                });
+            });
+            res.status(200).send('<script>alert("레이트 업데이트 성공! A팀 승리!"); window.history.go(-1);</script>');
+        } else {
+            await new Promise((resolve, reject) => {
+                conn.query(sql3, [req.body.reservation_idx], (err, rows) => {
+                    if (err) return reject(err);
+                    resolve();
+                });
+            });
+            res.status(200).send('<script>alert("레이트 업데이트 성공! B팀 승리!"); window.history.go(-1);</script>');
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('<script>alert("An error occurred while updating ratings."); window.history.go(-1);</script>');
     }
 });
-
 
 module.exports = router;

@@ -118,7 +118,7 @@ router.post('/reserv', (req, res) => {
             }
 
             console.log('reservation 완료', rows);
-            res.redirect(`/match_room/${finalMatchIdx}`);
+            res.send('<script>alert("예약 성공!!"); window.location.href="/user/match";</script>');
         });
     } else {
         res.send('<script>alert("예약시작시간보다 종료시간이 더 빠릅니다"); window.location.href="/reserv/reservAll";</script>');
