@@ -105,7 +105,7 @@
                 {% endfor %}
                 <input type="hidden" name="idName" value="{{ idName }}"> <!-- idName 값 유지 -->
                 <input type="hidden" name="balanceMatched" value="true"> <!-- 밸런스 매칭 상태 -->
-                <input type="submit" value="밸런스 매칭"><br>
+                <input type="submit" class="btn" value="밸런스 매칭"><br>
             </form>
             {% endif %}
         </div>
@@ -143,17 +143,17 @@
                 <input type="hidden" name="teamB_user4" value="{{ teamB[3].user_id }}">
                 <input type="hidden" name="teamB_user5" value="{{ teamB[4].user_id }}">
 
-                <input type="submit" value="팀확정">
+                <input type="submit" class="btn" value="팀확정">
             </form>
 
             <form action="/reserv/reservAll" method="get">
                 <input type="hidden" name="match_idx" value="{{ match.match_idx }}">
-                <a href="/reserv/reservAll"><input type="submit" value="예약하기"></a>
+                <a href="/reserv/reservAll"><input type="submit" class="btn" value="예약하기"></a>
             </form>
             {% endif %}
             <div class="chatt">
                 <input id="input" autocomplete="off" placeholder="채팅을 입력해주세요" />
-                <input id="chatBtn" type="button" value="전송" onclick="sendMessage()">
+                <input id="chatBtn" type="button" class="btn" value="전송" onclick="sendMessage()">
                 <ul id="messages" style="list-style: none;"></ul>
                 <span id="userNick" style="display: none;">{{ nick }}</span>
             </div>
