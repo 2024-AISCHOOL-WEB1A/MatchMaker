@@ -9,7 +9,7 @@ body {
     font-family: 'Pretendard-Regular';
     margin: 0;
     padding: 0 50px;
-    background-color: #79AFFF;
+    background-color: whitesmoke;
 }
 
 #navbar {
@@ -46,14 +46,17 @@ a {
 
 .container {
     display: flex;
-    gap: 20px;
+    gap: 50px;
+    max-width: 1200px; /* 원하는 최대 너비로 설정 */
+    margin: 0 auto; /* 중앙 정렬 */
+    padding: 0 20px; /* 좌우 여백 조정 */
 }
 
 .edit_button{
 	width:60px;
 	height: 40px;
-	color:#fff;
-	background: #229853;
+	color: white;
+	background: #59B4C3;
 	font-size: 10px;
 	border:none;
 	border-radius: 20px;
@@ -137,7 +140,7 @@ a {
 }
 
 .upload-icon:hover {
-    background-color: #0022cc;
+    background-color: #59B4C3;
 }
 
 .upload-icon ion-icon {
@@ -179,6 +182,7 @@ a {
     display: flex;
     flex-direction: column;
     gap: 20px;
+
 }
 
 .box {
@@ -193,16 +197,15 @@ a {
     margin-bottom: 15px;
 }
 
-.box-content {
+/* .box-content {
     background-color: white;
-    border: 0.2px solid lightblue;
     padding: 10px;
     margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: black;
-}
+} */
 
 /* 색상관련 */
 
@@ -212,16 +215,12 @@ a {
 }
 
 :root {
-    --primary-color: #2ecc71 ; /* 또는 #2ecc71 #3498db */
-    --secondary-color: #34495e; /* 또는 #34495e #2c3e50 */
+    --primary-color: #211C6A ;
+    --secondary-color:#59B4C3; 
     --background-color: #f5f5f5;
     --text-color: #333;
 }
 
-body {
-    background-color: var(--background-color);
-    color: var(--text-color);
-}
 
 .box {
     background-color: var(--primary-color);
@@ -237,6 +236,3 @@ body {
     color: var(--text-color);
 }
 
-
-
-/* 다른 요소들에도 필요에 따라 색상 적용 */
