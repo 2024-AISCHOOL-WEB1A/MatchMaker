@@ -151,7 +151,7 @@ router.get('/match_room/:match_idx', (req, res) => {
                 console.log("match_idx", match_idx);
 
                 // 점수 매치 체크 및 랭크 비교
-                if (match.rate_match_yn === 'Y' && req.session.rank[0] !== user_rank[teamLeader][0]) {
+                if (match.rate_match_yn === 'Y' && req.session.rank !== user_rank[teamLeader].split(',')[0]) {
                     res.send("<script>alert('이 방에는 접속하실 수 없습니다.'); window.location.href='/user/match';</script>");
                     return;
                 }
@@ -178,6 +178,42 @@ router.get('/match_room/:match_idx', (req, res) => {
     });
 });
 
+router.get('/getMessages', (req, res) => {
+    const match_idx = req.query.match_idx;
+
+    const messageSql = "SELECT * FROM messages WHERE match_idx = ?";
+    
+    conn.query(messageSql, [match_idx], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send("채팅 내용을 가져오는 중 오류가 발생했습니다.");
+        }
+        
+        // 결과를 JSON 형식으로 클라이언트에 응답
+        res.json(results);
+    });
+});
+
+
+router.post('/match_room/:match_idx', (req, res) => {
+    const { match_idx,timestamp, message} = req.body;
+    const nick = req.session.nick;
+    
+  
+
+    console.log(`match_idx : ${match_idx}, timestamp: ${timestamp}, message: ${message}, nick: ${nick}`);
+
+    const sql = "INSERT INTO messages (match_idx, timestamp, nick, message) VALUES (?, ?, ?, ?)";
+
+    conn.query(sql, [match_idx, timestamp, nick, message], (err, result) => {
+        if (err) {
+            console.error('Error inserting message into database:', err);
+            return res.status(500).send("채팅 메시지를 저장하는 중 오류가 발생했습니다.");
+        }
+
+        res.status(200).send("Message saved successfully");
+    });
+});
 
 
 module.exports = router;
