@@ -248,6 +248,7 @@ router.get("/myPage", (req, res) => {
             // 세 번째 쿼리 실행
             conn.query(sql3, [id, id, id, id, id, id, id, id, id, id], (err3, teamInfoRows) => {
                 console.log("matchInfo", matchInfoWithTimestamps);
+                
                 // 세 쿼리 결과를 한 번에 렌더링
                 res.render("myPage", {
                     userInfo: userInfoRows,
@@ -256,8 +257,8 @@ router.get("/myPage", (req, res) => {
                     currentDateString: currentDateString,
                     currentTimeString: currentTimeString,
                     matchInfoRows:matchInfoRows,
-                    teamInfoRows : teamInfoRows
-                    
+                    teamInfoRows : teamInfoRows,
+                    id:id
                 });
 
            

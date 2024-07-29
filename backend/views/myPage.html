@@ -12,7 +12,7 @@
 
 <body>
     <nav id="navbar">
-        <img src="/img/logo2.png" alt="Match Maker Logo" class="main_logo">
+        <a href="/user/match"><img src="/img/logo2.png" alt="Match Maker Logo" class="main_logo"></a>
         <div class="user_info">
             <a href="#">
                 <ion-icon name="person-outline" class="user_logo"></ion-icon>
@@ -89,8 +89,16 @@
                     TEAM B : {{teamList.teamB_user1}}, {{teamList.teamB_user2}}, {{teamList.teamB_user3}},
                     {{teamList.teamB_user4}}, {{teamList.teamB_user5}}
                     {% endif %}
-                    {% endfor %}
+                    {% endfor %}<br><br>
+                    {% if [teamList.teamA_user1, teamList.teamA_user2, teamList.teamA_user3, teamList.teamA_user4,
+                        teamList.teamA_user5] in id %}
+                    경기결과 : {{ matchList.team_a }}
+                    {% else %}
+                    경기결과 : {{ matchList.team_b }}
+                    {% endif %}
                 </div><br><br>
+
+                
                 {% endif %}
                 {% endfor %}
 
@@ -102,76 +110,77 @@
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closePopup()">&times;</span>
-            <div class="modal-header">               
+            <div class="modal-header">
                 <h1>⚽ 최근 경기 전적 ⚽</h1>
             </div>
             <div id="modalContent">
-            {% set latestMatch = null %}
-            {% set latestTimestamp = 0 %}
+                {% set latestMatch = null %}
+                {% set latestTimestamp = 0 %}
 
-            {% for matchList in matchInfo %}
-            {% if matchList.isMatchEnded and matchList.matchTimestamp > latestTimestamp %}
-            {% set latestMatch = matchList %}
-            {% set latestTimestamp = matchList.matchTimestamp %}
-            {% endif %}
-            {% endfor %}
-
-            {% if latestMatch %}
-            <div class="click">
-                {% if latestMatch.rate_match_yn == 'Y' %}
-                <h2>레이팅 매치</h2>
-                {% else %}
-                <h2>일반 매치</h2>
-                {% endif %}
-                <h3>{{ latestMatch.match_title }}</h3>
-                지역: {{ latestMatch.match_region }}<br><br>
-                경기날짜: {{ latestMatch.match_date }}&nbsp;&nbsp;&nbsp;
-                경기시간: {{ latestMatch.match_st_dt }} ~ {{ latestMatch.match_ed_dt
-                }}<br><br>
-                참가선수: {{ latestMatch.join_user }}<br><br>
-                {% for teamList in teamInfoRows %}
-                {% if latestMatch.match_idx == teamList.match_idx %}
-                TEAM A: {{ teamList.teamA_user1 }}, {{ teamList.teamA_user2 }}, {{ teamList.teamA_user3 }}, {{
-                teamList.teamA_user4 }}, {{ teamList.teamA_user5 }}<br>
-                TEAM B: {{ teamList.teamB_user1 }}, {{ teamList.teamB_user2 }}, {{ teamList.teamB_user3 }}, {{
-                teamList.teamB_user4 }}, {{ teamList.teamB_user5 }}
+                {% for matchList in matchInfo %}
+                {% if matchList.isMatchEnded and matchList.matchTimestamp > latestTimestamp %}
+                {% set latestMatch = matchList %}
+                {% set latestTimestamp = matchList.matchTimestamp %}
                 {% endif %}
                 {% endfor %}
-            </div><br><br>
-            {% endif %}
+
+                {% if latestMatch %}
+                <div class="click">
+                    {% if latestMatch.rate_match_yn == 'Y' %}
+                    <h2>레이팅 매치</h2>
+                    {% else %}
+                    <h2>일반 매치</h2>
+                    {% endif %}
+                    <h3>{{ latestMatch.match_title }}</h3>
+                    지역: {{ latestMatch.match_region }}<br><br>
+                    경기날짜: {{ latestMatch.match_date }}&nbsp;&nbsp;&nbsp;
+                    경기시간: {{ latestMatch.match_st_dt }} ~ {{ latestMatch.match_ed_dt
+                    }}<br><br>
+                    참가선수: {{ latestMatch.join_user }}<br><br>
+                    {% for teamList in teamInfoRows %}
+                    {% if latestMatch.match_idx == teamList.match_idx %}
+                    TEAM A: {{ teamList.teamA_user1 }}, {{ teamList.teamA_user2 }}, {{ teamList.teamA_user3 }}, {{
+                    teamList.teamA_user4 }}, {{ teamList.teamA_user5 }}<br>
+                    TEAM B: {{ teamList.teamB_user1 }}, {{ teamList.teamB_user2 }}, {{ teamList.teamB_user3 }}, {{
+                    teamList.teamB_user4 }}, {{ teamList.teamB_user5 }}
+                    {% endif %}
+                    {% endfor %}<br><br>
+
+                </div><br><br>
+                {% endif %}
+            </div>
         </div>
-    </div>
 
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    <script src="/js/mypage.css"></script>
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+        <script src="/js/mypage.css"></script>
 
-    <script>
-        // 모달 열기
-        function showPopup() {
-            document.getElementById("myModal").style.display = "block";
-        }
-
-        // 페이지 로드 시 팝업 표시
-        window.onload = showPopup;
-
-        // 모달 닫기
-        function closePopup() {
-            document.getElementById("myModal").style.display = "none";
-        }
-
-        // 모달 외부 클릭 시 닫기
-        window.onclick = function (event) {
-            var modal = document.getElementById("myModal");
-            if (event.target == modal) {
-                modal.style.display = "none";
+        <script>
+            // 모달 열기
+            function showPopup() {
+                document.getElementById("myModal").style.display = "block";
             }
-        }
+
+            // 페이지 로드 시 팝업 표시
+            window.onload = showPopup;
+
+            // 모달 닫기
+            function closePopup() {
+                document.getElementById("myModal").style.display = "none";
+            }
+
+            // 모달 외부 클릭 시 닫기
+            window.onclick = function (event) {
+                var modal = document.getElementById("myModal");
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
 
 
 
 
-    </script>
+        </script>
 
 </body>
 

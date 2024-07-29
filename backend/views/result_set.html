@@ -94,6 +94,7 @@
     <p><strong>예약 시간:</strong> {{ reservation.reserv_st_tm }} ~ {{ reservation.reserv_ed_tm }}</p>
 
     <form id="updateRatingsForm" action="/manage/update_ratings" method="POST">
+        <input type="hidden" name="reservation_idx" value="{{ reservation_idx }}">
         <div class="teams-container">
             <div class="team-section">
                 <h2>팀 A</h2><h3>평균 레이트 : {{teamAavgRate}}</h3>
