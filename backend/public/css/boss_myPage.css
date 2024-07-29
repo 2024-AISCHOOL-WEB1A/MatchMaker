@@ -27,9 +27,11 @@ body {
     height: 30px;
 }
 
-.logout_logo{
+.logout_logo {
     width: 30px;
     height: 30px;
+    margin-left: 10px;
+    color: black;
 }
 
 a {

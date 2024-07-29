@@ -108,8 +108,11 @@ a {
     margin: 0;
 }
 
+
+
 .btn{
     font-family: 'Pretendard-Regular';
+    background-color: lightblue;
 }
 
 .overlay-image {
