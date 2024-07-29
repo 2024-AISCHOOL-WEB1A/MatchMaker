@@ -41,6 +41,7 @@ router.get('/manage_reserv', (req, res) => {
                     console.error(err);
                     return res.status(500).send("Database query error");
                 }
+                console.log("reservations", reservations);
 
                 // Step 3: Render the page with fetched data
                 res.render('manage_reserv', {

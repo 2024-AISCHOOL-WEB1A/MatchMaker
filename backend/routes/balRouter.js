@@ -113,7 +113,8 @@ router.post("/tmmatch", (req, res) => {
             avgTeamA: avgTeamA,
             avgTeamB: avgTeamB,
             idName: req.session.idName,
-            balanceMatched:balanceMatched
+            balanceMatched:balanceMatched,
+            match_idx:match_idx
         });
     });
 });

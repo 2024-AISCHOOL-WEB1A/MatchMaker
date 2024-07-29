@@ -1,11 +1,10 @@
-{% extends 'main.html'%}
 
 {% block content %}
 
-<link rel="stylesheet" href="/css/match.css">
+<link rel="stylesheet" href="../css/match.css">
 
 <nav id="navbar">
-    <a href="/user/match"><img src="/img/logo2.png" alt="" class="main_logo"></a>
+    <img src="/img/logo1.png" alt="" class="main_logo">
     <div class="user_info">
         <a href="/user/myPage">
             <ion-icon name="person-outline" class="user_logo"></ion-icon>
@@ -62,11 +61,11 @@
 </div>
 
 <!-- 개설된 경기 생기는 곳 -->
-<table id="match_table" class="table">
+<table class="table">
     <tr class="match-list">
         <th>매치 제목</th>
         <th>지역</th>
-        <th id="match_date_header" style="cursor:pointer;">예상 경기 날짜</th>
+        <th>예상 경기 날짜</th>
         <th>예상 시작 시간</th>
         <th>예상 종료 시간</th>
         <th>여성부 매치</th>
@@ -89,9 +88,11 @@
     {% endfor %}
 
 </table>
+<br><br>
 
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -101,10 +102,6 @@
                 var match_idx = this.getAttribute("matchRoom_idx");
                 window.location.href = "/match_room/" + match_idx;
             });
-        });
-
-        document.getElementById('match_date_header').addEventListener('click', function() {
-            sortTableByDate('match_table', 2);
         });
 
         updateSubRegion();
@@ -209,22 +206,6 @@
             // 필터링 조건에 맞는 경우 표시
             row.style.display = display ? "" : "none";
         });
-    }
-
-    function sortTableByDate(tableId, columnIdx) {
-        const table = document.getElementById(tableId);
-        const tbody = table.tBodies[0];
-        const rows = Array.from(tbody.rows);
-        const isAscending = table.getAttribute("data-sort-ascending") === "true";
-        
-        rows.sort((rowA, rowB) => {
-            const dateA = new Date(rowA.cells[columnIdx].textContent);
-            const dateB = new Date(rowB.cells[columnIdx].textContent);
-            return isAscending ? dateA - dateB : dateB - dateA;
-        });
-
-        rows.forEach(row => tbody.appendChild(row));
-        table.setAttribute("data-sort-ascending", !isAscending);
     }
 </script>
 

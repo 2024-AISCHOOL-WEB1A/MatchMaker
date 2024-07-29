@@ -33,16 +33,16 @@
                     <th>예약 시작 시간</th>
                     <th>예약 종료 시간</th>
                     <th>매치 제목</th>
-                    <th>팀 A 사용자 1</th>
-                    <th>팀 A 사용자 2</th>
+                    <th>팀 A</th>
+                    <!-- <th>팀 A 사용자 2</th>
                     <th>팀 A 사용자 3</th>
                     <th>팀 A 사용자 4</th>
-                    <th>팀 A 사용자 5</th>
-                    <th>팀 B 사용자 1</th>
-                    <th>팀 B 사용자 2</th>
+                    <th>팀 A 사용자 5</th> -->
+                    <th>팀 B</th>
+                    <!-- <th>팀 B 사용자 2</th>
                     <th>팀 B 사용자 3</th>
                     <th>팀 B 사용자 4</th>
-                    <th>팀 B 사용자 5</th>
+                    <th>팀 B 사용자 5</th> -->
                     <th>예약 취소</th>
                 </tr>
             </thead>
@@ -56,16 +56,16 @@
                     <td>{{ reservation.reserv_st_tm }}</td>
                     <td>{{ reservation.reserv_ed_tm }}</td>
                     <td>{{ reservation.match_title }}</td>
-                    <td>{{ reservation.teamA_user1 }}</td>
-                    <td>{{ reservation.teamA_user2 }}</td>
+                    <td>{{ reservation.teamA_user1 }}, {{ reservation.teamA_user2 }}, {{ reservation.teamA_user3 }}, {{ reservation.teamA_user4 }}, {{ reservation.teamA_user5 }}</td>
+                    <!-- <td>{{ reservation.teamA_user2 }}</td>
                     <td>{{ reservation.teamA_user3 }}</td>
                     <td>{{ reservation.teamA_user4 }}</td>
-                    <td>{{ reservation.teamA_user5 }}</td>
-                    <td>{{ reservation.teamB_user1 }}</td>
-                    <td>{{ reservation.teamB_user2 }}</td>
+                    <td>{{ reservation.teamA_user5 }}</td> -->
+                    <td>{{ reservation.teamB_user1 }}, {{ reservation.teamB_user2 }}, {{ reservation.teamB_user3 }}, {{ reservation.teamB_user4 }}, {{ reservation.teamB_user5 }}</td>
+                    <!-- <td>{{ reservation.teamB_user2 }}</td>
                     <td>{{ reservation.teamB_user3 }}</td>
                     <td>{{ reservation.teamB_user4 }}</td>
-                    <td>{{ reservation.teamB_user5 }}</td>
+                    <td>{{ reservation.teamB_user5 }}</td> -->
                     <td>
                         <form action="/manage/cancel_reservation" method="post" onsubmit="return confirm('정말로 이 예약을 취소하시겠습니까?');">
                             <input type="hidden" name="reserv_idx" value="{{ reservation.reserv_idx }}">
