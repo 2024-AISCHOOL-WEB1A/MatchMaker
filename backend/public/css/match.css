@@ -146,8 +146,8 @@ select {
     font-weight: 400;
     line-height: 1.5;
 
-    color: #444;
-    background-color: #fff;
+    color: black;
+    background-color: white;
     
     padding: 0.5em 1.4em 0.4em 0.8em; /* 높이와 패딩 조절 */
     margin: 0 5px;
@@ -157,6 +157,7 @@ select {
     box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
     
     text-align: center; /* 글자 가운데 정렬 */
+    font-weight: 500;
     height: 35px; /* 높이 설정 */
     width: 100px;
     
@@ -195,11 +196,28 @@ select:disabled {
     justify-items: center;
 }
 
+
+select {
+    height: 40px;
+    font-size: 15px;
+    align-items: center;
+    padding: 5px;
+}
+
+.match_info {
+    text-align: center;
+    font-size: 18px;
+    color: black;
+    margin-bottom: 10px;
+}
+
+
+
 .table{
     text-align: center;
     margin: auto;
     padding-top: 2%;
-    width: 90%; 
+    width: 80%; 
     border-collapse: separate;
     border-spacing: 0;
     border-radius: 10px; /* 원하는 radius 값으로 조정 */
@@ -210,14 +228,14 @@ select:disabled {
 .table th{
     border: 0.2px solid rgb(3, 19, 45);
     padding: 0.5px;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 900;
 }
 
 .table td{
     border: 0.2px solid rgb(3, 19, 45);
     padding: 0.5px;
-    font-size: 12px
+    font-size: 13px
 }
 
 .match-list{
