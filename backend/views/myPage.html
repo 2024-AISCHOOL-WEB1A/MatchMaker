@@ -81,7 +81,7 @@
                     경기시간 {{matchList.match_st_dt}} ~
                     {{matchList.match_ed_dt}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br><br>
                     참가선수 {{matchList.join_user}}<br><Br>
-                    경기정보 {{matchList.match_info}}
+                    경기정보 {{matchList.match_info}}<br><Br>
                     {% for teamList in teamInfoRows %}
                     {% if matchList.match_idx == teamList.match_idx %}
                     TEAM A : {{teamList.teamA_user1}}, {{teamList.teamA_user2}}, {{teamList.teamA_user3}},
@@ -145,6 +145,12 @@
                     teamList.teamB_user4 }}, {{ teamList.teamB_user5 }}
                     {% endif %}
                     {% endfor %}<br><br>
+                    {% if [teamList.teamA_user1, teamList.teamA_user2, teamList.teamA_user3, teamList.teamA_user4,
+                        teamList.teamA_user5] in id %}
+                    경기결과 : {{ latestMatch.team_a }}
+                    {% else %}
+                    경기결과 : {{ latestMatch.team_b }}
+                    {% endif %}
 
                 </div><br><br>
                 {% endif %}
@@ -153,7 +159,7 @@
 
         <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
         <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-        <script src="/js/mypage.css"></script>
+        <script src="/js/mypage.js"></script>
 
         <script>
             // 모달 열기
