@@ -23,6 +23,8 @@
         </div>
     </nav>
 
+    
+
     <div class="container">
         <div class="sidebar">
             <div class="profile_wrapper">
@@ -78,44 +80,53 @@
             </div>
         </div>
     </div>
+    <input type="hidden" id="bossid" value="{{idName}}">
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
     <script>
-        // 페이지 로드 시 프로필 이미지 불러오기
-        window.addEventListener('load', () => {
-            fetch('/api/boss/bossprofile-image')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.url) {
-                        document.getElementById('profileImage').src = data.url;
-                    }
+        const bossId = document.getElementById("bossid").value; // 사용자 ID를 실제 사용자 ID로 설정
+
+            // 페이지 로드 시 프로필 이미지 불러오기
+            window.addEventListener('load', () => {
+                const apiUrl = `/api/boss/profile-image/${bossId}`;
+                fetch(apiUrl)
+                    .then(response => {
+                        if (response.ok) {
+                            return response.blob();
+                        } else {
+                            throw new Error('Profile image not found');
+                        }
+                    })
+                    .then(blob => {
+                        const imageUrl = URL.createObjectURL(blob);
+                        document.getElementById('profileImage').src = imageUrl;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
+
+            document.getElementById('imageUpload').addEventListener('change', function () {
+                const file = this.files[0];
+                const formData = new FormData();
+                formData.append('img', file);
+                formData.append('bossId', bossId);
+
+                fetch('/api/boss/upload', {
+                    method: 'POST',
+                    body: formData,
                 })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        });
-
-
-        document.getElementById('imageUpload').addEventListener('change', function () {
-            const file = this.files[0];
-            const formData = new FormData();
-            formData.append('img', file);
-
-            fetch('/api/boss/bossupload', {
-                method: 'POST',
-                body: formData,
-            })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('profileImage').src = data.url;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        });
-
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
     </script>
     <!-- <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons.js"></script> -->
 </body>

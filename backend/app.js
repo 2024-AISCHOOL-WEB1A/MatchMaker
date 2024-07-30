@@ -24,8 +24,11 @@ nunjucks.configure("views", {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 정적 파일 서빙 설정
-app.use(express.static(path.join(__dirname, "public")));
+// 정적 파일 제공 설정
+app.use(express.static(path.join(__dirname, 'public')));
+
+// 정적 파일 제공 설정 (기본 프로필 이미지 접근 가능)
+app.use('/img', express.static(path.join(__dirname, 'img')));
 
 const sessionDir = path.join(__dirname, 'sessions');
 
@@ -71,9 +74,7 @@ app.use("/user", userRouter);
 app.use("/reserv", reservRouter);
 app.use("/bal", balRouter);
 app.use("/manage", manageRouter);
-// 정적 파일 제공 설정 (업로드된 파일 접근 가능)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/uploads/boss', express.static(path.join(__dirname, 'uploads')));
+
 
 // 업로드 라우터 추가
 app.use('/api', uploadRouter);
@@ -97,13 +98,13 @@ app.post("/check-username", (req, res) => {
 
 // 서버와 WebSocket 서버를 함께 실행
 const server = app.listen(3007, () => {
-  console.log("3007 port waiting");
+  
 });
 
 const wss = new WebSocket.Server({ server });
 
 wss.on("connection", (ws) => {
-  console.log("새 사용자가 연결되었습니다.");
+  
 
   ws.on("message", (message) => {
     // 모든 클라이언트에게 메시지 전송
@@ -116,6 +117,6 @@ wss.on("connection", (ws) => {
   });
 
   ws.on("close", () => {
-    console.log("사용자가 연결을 종료했습니다.");
+    
   });
 });
