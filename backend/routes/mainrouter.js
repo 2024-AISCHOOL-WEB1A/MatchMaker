@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const conn = require('../config/DB');
 const path = require('path');
-const multer = require('multer');
 const fs = require('fs');
 
 
@@ -108,6 +107,12 @@ router.get("/create_match", (req, res) => {
 });
 
 
+// buffer를 Base64 URL로 바꾸는 함수
+const bufferToBase64Url = (buffer) => {
+    const base64 = buffer.toString('base64');
+    return `data:image/png;base64,${base64}`;
+};
+
 // 매칭방 입장 페이지
 router.get('/match_room/:match_idx', (req, res) => {
     const match_idx = req.params.match_idx;
@@ -137,14 +142,14 @@ router.get('/match_room/:match_idx', (req, res) => {
                     console.error(err);
                     return res.send("사용자 정보를 가져오는 중 오류가 발생했습니다.");
                 }
-
                 let user_rate = {};
                 let user_rank = {};
                 let user_photo = {};
+
                 users.forEach(user => {
                     user_rate[user.user_id] = user.user_rate;
                     user_rank[user.user_id] = user.user_rank;
-                    user_photo[user.user_id] = user.user_photo;
+                    user_photo[user.user_id] = bufferToBase64Url(user.user_photo); // user_photo를 Base64 URL로 바꾸는 작업
                 });
 
                 const teamLeader = join_users[0]; // 방장 아이디 값 저장
@@ -164,7 +169,7 @@ router.get('/match_room/:match_idx', (req, res) => {
                         return;
                     }
                 }
-
+                console.log("user_photo", user_photo);
                 res.render('match_room', {
                     match: match,
                     idName: req.session.idName,
@@ -189,6 +194,8 @@ router.get('/match_room/:match_idx', (req, res) => {
 });
 
 
+
+// 채팅 가져오기
 router.get('/getMessages', (req, res) => {
     const match_idx = req.query.match_idx;
 
