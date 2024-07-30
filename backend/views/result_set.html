@@ -48,7 +48,7 @@
                     <input type="hidden" name="exist_rateA" id="a_player5Rt" value="{{ teamAUser5Rate }}">
                     <input type="hidden" name="new_rateA" id="a_player5_newRtInput">
                 </ul>
-                <button class="winner-btn" type="button" onclick="setWinner('A')" {% if reservation.rate_match_yn == 'N' or reservation.result_btn == "Y" %}disabled{% endif %}>팀 A 승자 설정</button>
+                <button class="winner-btn" type="button" onclick="setWinner('A')" {% if reservation.rate_match_yn == 'N' %}disabled{% endif %}>팀 A 승자 설정</button>
             </div>
 
             <div class="team-section">
@@ -85,10 +85,10 @@
                     <input type="hidden" name="exist_rateB" id="b_player5Rt" value="{{ teamBUser5Rate }}">
                     <input type="hidden" name="new_rateB" id="b_player5_newRtInput">
                 </ul>
-                <button class="winner-btn" type="button" onclick="setWinner('B')" {% if reservation.rate_match_yn == 'N' or reservation.result_btn == "Y" %}disabled{% endif %}>팀 B 승자 설정</button>
+                <button class="winner-btn" type="button" onclick="setWinner('B')" {% if reservation.rate_match_yn == 'N' or reservation.result_btn = "Y" %}disabled{% endif %}>팀 B 승자 설정</button>
             </div>
         </div>
-        <button class="update-btn" type="submit" {% if reservation.rate_match_yn == 'N' or reservation.result_btn == "Y" %}disabled{% endif %}>Update Ratings</button>
+        <button class="update-btn" type="submit" {% if reservation.rate_match_yn == 'N' %}disabled{% endif %}>Update Ratings</button>
     </form>
 </div>
 
@@ -115,22 +115,22 @@
 
     function displayNewRatings(homeNewRatings, awayNewRatings) {
         for (let i = 0; i < homeNewRatings.length; i++) {
-            document.getElementById(`a_player${ i + 1}_newRt`).innerText = homeNewRatings[i];
-        document.getElementById(`a_player${ i + 1}_newRtInput`).value = homeNewRatings[i];
+            document.getElementById(`a_player${i + 1}_newRt`).innerText = homeNewRatings[i];
+            document.getElementById(`a_player${i + 1}_newRtInput`).value = homeNewRatings[i];
+        }
+        for (let i = 0; i < awayNewRatings.length; i++) {
+            document.getElementById(`b_player${i + 1}_newRt`).innerText = awayNewRatings[i];
+            document.getElementById(`b_player${i + 1}_newRtInput`).value = awayNewRatings[i];
+        }
     }
-    for (let i = 0; i < awayNewRatings.length; i++) {
-        document.getElementById(`b_player${ i + 1}_newRt`).innerText = awayNewRatings[i];
-    document.getElementById(`b_player${ i + 1}_newRtInput`).value = awayNewRatings[i];
-    }
-}
 
     function setWinner(winningTeam) {
-        let confirmationMessage = `${ winningTeam } 팀 승리가 맞나요?`;
+        let confirmationMessage = `${winningTeam} 팀 승리가 맞나요?`;
         if (!confirm(confirmationMessage)) {
             return; // If user cancels, do nothing
         }
 
-        alert(`축하합니다! ${ winningTeam } 팀이 승리했습니다!`);
+        alert(`축하합니다! ${winningTeam} 팀이 승리했습니다!`);
 
         let homeRatings = [
             parseInt(document.getElementById("a_player1Rt").value),

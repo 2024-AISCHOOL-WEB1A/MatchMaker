@@ -51,14 +51,15 @@
                         {% else %}
                         <img src="/img/gold8.png" alt="">
                         {% endif %}
-                        {% if loop.index0 < join_users|length %} 
-                        <div class="player-info">
-                            <div class="profile_wrapper">
-                            <img id="profileImage" src="{{user_photo[join_users[loop.index0]]}}" alt="Profile Image"
-                                class="profile_image circle" onerror="this.onerror=null; this.src='/img/ball.png';"></div>
-                            <span>{{ join_users[loop.index0] }}  {{ user_rate[join_users[loop.index0]] }}</span>
+                        {% if loop.index0 < join_users|length %} <div class="player-info">
+                            <div class="profile_wrapper" id="profileImagesContainer">
+                                <img id="profileImage" src="{{ user_photo[join_users[loop.index0]] }}" 
+                                alt="Profile Image" class="profile_image circle"
+                                onerror="this.onerror=null;this.src='/img/ball.png';">
+                            </div>
+                            <span>{{ join_users[loop.index0] }} {{ user_rate[join_users[loop.index0]] }}</span>
                             <span>{{ user_rank[join_users[loop.index0]] }}</span>
-                        </div>
+            </div>
             {% endif %}
             {% endif %}
         </div>
@@ -175,6 +176,7 @@
         </div>
     </div>
 </div>
+
 
 
 <!-- 스크립트 -->
@@ -324,6 +326,8 @@
 
         document.querySelector('form').onsubmit = checkUserLimit;
     });
+    
 
 </script>
+
 {% endblock %}
