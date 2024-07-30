@@ -6,6 +6,7 @@ const md5 = require('md5');
 
 
 
+
 // 풋살을 하기 위한 회원들의 회원가입
 router.post('/join1', (req, res) => {
     console.log('join 실행', req.body);
@@ -132,7 +133,7 @@ router.post("/field_join", (req, res) => {
         Promise.all(courtInserts)
             .then(results => {
                 console.log('모든 코트 정보 삽입 완료', results);
-                res.redirect('/');
+                res.redirect('/boss_main');
             })
             .catch(err => {
                 console.error('코트 정보 삽입 오류:', err);

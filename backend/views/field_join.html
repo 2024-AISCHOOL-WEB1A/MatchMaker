@@ -1,12 +1,17 @@
-{% extends 'main.html'%}
-
-{%block content%}
-<h3>구장 등록 화면입니다</h3>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/field_join.css">
+</head>
+<body>
+    <h3>구장 등록 화면입니다</h3>
 <form action="/user/field_join" method='post'>
     구장 이름 : <input type="text" name="field_name" required>
     <br />
     <div class="field_region">
-        <label >구장 지역 : </label>
         <select id="main_region" name="main_region" onchange="updateSubRegion()">
             <option value="서울">서울특별시</option>
             <option value="광주">광주광역시</option>
@@ -83,6 +88,5 @@
   
   
   </script>
-
 </body>
 </html>
