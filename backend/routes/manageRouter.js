@@ -66,7 +66,7 @@ router.get('/result_set/:reserv_idx', (req, res) => {
     const sql = `
         SELECT r.reserv_idx, r.user_id, r.reserv_dt, r.reserv_st_tm, r.reserv_ed_tm,
             c.court_name, 
-            m.match_title, m.rate_match_yn,
+            m.match_title, m.rate_match_yn, m.result_btn,
             t.teamA_user1, t.teamA_user2, t.teamA_user3, t.teamA_user4, t.teamA_user5,
             t.teamB_user1, t.teamB_user2, t.teamB_user3, t.teamB_user4, t.teamB_user5
         FROM reservation_info r
@@ -78,6 +78,7 @@ router.get('/result_set/:reserv_idx', (req, res) => {
 
 
     conn.query(sql, [reserv_idx], (err, reservation) => {
+        console.log("reservation", reservation);
 
         if (err) {
             console.error(err);
@@ -302,8 +303,10 @@ router.post('/update_ratings', async (req, res) => {
     console.log("updateUserInfo[0]", updateUserInfo[0]);
 
     const sql = 'UPDATE user_info SET user_rate = ?, user_rank = ? WHERE user_id = ?';
-    const sql2 = 'UPDATE match_info1 SET team_a = "W", team_b = "L" WHERE match_idx = (SELECT match_idx FROM reservation_info WHERE reserv_idx = ?)';
-    const sql3 = 'UPDATE match_info1 SET team_a = "L", team_b = "W" WHERE match_idx = (SELECT match_idx FROM reservation_info WHERE reserv_idx = ?)';
+    const sql2 = 'UPDATE match_info1 SET team_a = "W", team_b = "L", result_btn = "Y" WHERE match_idx = (SELECT match_idx FROM reservation_info WHERE reserv_idx = ?)';
+    const sql3 = 'UPDATE match_info1 SET team_a = "L", team_b = "W", result_btn = "Y" WHERE match_idx = (SELECT match_idx FROM reservation_info WHERE reserv_idx = ?)';
+    // sql4 는 삭제해도 가능할 듯 (테이블 값들 다 삭제한 후에)
+    const sql4 = 'UPDATE match_info1 SET result_btn = "Y" WHERE match_idx = (SELECT match_idx FROM reservation_info WHERE reserv_idx = ?)';
 
     try {
         // 각 사용자 레이트 업데이트
@@ -352,6 +355,7 @@ router.post('/update_ratings', async (req, res) => {
         if (req.body.exist_rateA[0] < req.body.new_rateA[0] && req.body.rate_match_yn == null) {
             await new Promise((resolve, reject) => {
                 conn.query(sql2, [req.body.reservation_idx], (err, rows) => {
+                    console.log("rows", rows);
                     if (err) return reject(err);
                     resolve();
                 });
@@ -360,12 +364,19 @@ router.post('/update_ratings', async (req, res) => {
         } else if (req.body.exist_rateA[0] > req.body.new_rateA[0] && req.body.rate_match_yn == null) {
             await new Promise((resolve, reject) => {
                 conn.query(sql3, [req.body.reservation_idx], (err, rows) => {
+                    console.log("rows", rows);
                     if (err) return reject(err);
                     resolve();
                 });
             });
             res.status(200).send('<script>alert("레이트 업데이트 성공! B팀 승리!"); window.history.go(-1);</script>');
         } else {
+            await new Promise((resolve, reject) => {
+                conn.query(sql4, [req.body.reservation_idx], (err, rows) => {
+                    if (err) return reject(err);
+                    resolve();
+                });
+            });
             res.status(200).send('<script>alert("이미 점수부여가 됬을걸요"); window.history.go(-1);</script>');
         }
     } catch (err) {

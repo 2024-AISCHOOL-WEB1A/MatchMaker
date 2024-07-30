@@ -48,7 +48,7 @@
                     <input type="hidden" name="exist_rateA" id="a_player5Rt" value="{{ teamAUser5Rate }}">
                     <input type="hidden" name="new_rateA" id="a_player5_newRtInput">
                 </ul>
-                <button class="winner-btn" type="button" onclick="setWinner('A')" {% if reservation.rate_match_yn == 'N' %}disabled{% endif %}>팀 A 승자 설정</button>
+                <button class="winner-btn" type="button" onclick="setWinner('A')" {% if reservation.rate_match_yn == 'N' or reservation.result_btn == "Y" %}disabled{% endif %}>팀 A 승자 설정</button>
             </div>
 
             <div class="team-section">
@@ -85,10 +85,10 @@
                     <input type="hidden" name="exist_rateB" id="b_player5Rt" value="{{ teamBUser5Rate }}">
                     <input type="hidden" name="new_rateB" id="b_player5_newRtInput">
                 </ul>
-                <button class="winner-btn" type="button" onclick="setWinner('B')" {% if reservation.rate_match_yn == 'N' %}disabled{% endif %}>팀 B 승자 설정</button>
+                <button class="winner-btn" type="button" onclick="setWinner('B')" {% if reservation.rate_match_yn == 'N' or reservation.result_btn == "Y" %}disabled{% endif %}>팀 B 승자 설정</button>
             </div>
         </div>
-        <button class="update-btn" type="submit" {% if reservation.rate_match_yn == 'N' %}disabled{% endif %}>Update Ratings</button>
+        <button class="update-btn" type="submit" {% if reservation.rate_match_yn == 'N' or reservation.result_btn == "Y" %}disabled{% endif %}>Update Ratings</button>
     </form>
 </div>
 

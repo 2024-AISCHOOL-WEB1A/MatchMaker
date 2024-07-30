@@ -498,9 +498,10 @@ router.post("/create_match", (req, res) => {
 
     female_match_yn = req.body.female_match_yn === "on" ? 'Y' : 'N';
     rate_match_yn = req.body.rate_match_yn === "on" ? 'Y' : 'N';
+    let result_btn ='N';
 
-    let sql = "insert into match_info1 (match_title, join_user, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, created_at, match_info) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    conn.query(sql, [match_title, join_user, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, created_at, match_info], (err, rows) => {
+    let sql = "insert into match_info1 (match_title, join_user, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, created_at, match_info, result_btn) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    conn.query(sql, [match_title, join_user, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, created_at, match_info, result_btn], (err, rows) => {
         if (err) {
             console.error('Insert error:', err);
             res.status(500).send(`<script>alert('오류가 발생했습니다. 다시 시도해 주세요.'); window.location.href="/create_match";</script>`);
