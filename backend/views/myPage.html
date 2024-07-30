@@ -94,14 +94,14 @@
                     {% endif %}
                     {% endfor %}<br><br>
                     {% if [teamList.teamA_user1, teamList.teamA_user2, teamList.teamA_user3, teamList.teamA_user4,
-                        teamList.teamA_user5] in id %}
+                    teamList.teamA_user5] in id %}
                     경기결과 : {{ matchList.team_a }}
                     {% else %}
                     경기결과 : {{ matchList.team_b }}
                     {% endif %}
                 </div><br><br>
 
-                
+
                 {% endif %}
                 {% endfor %}
 
@@ -149,7 +149,7 @@
                     {% endif %}
                     {% endfor %}<br><br>
                     {% if [teamList.teamA_user1, teamList.teamA_user2, teamList.teamA_user3, teamList.teamA_user4,
-                        teamList.teamA_user5] in id %}
+                    teamList.teamA_user5] in id %}
                     경기결과 : {{ latestMatch.team_a }}
                     {% else %}
                     경기결과 : {{ latestMatch.team_b }}
@@ -185,38 +185,40 @@
                     modal.style.display = "none";
                 }
             }
+
+
             // 페이지 로드 시 프로필 이미지 불러오기
-        window.addEventListener('load', () => {
-            fetch('/api/profile-image')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.url) {
-                        document.getElementById('profileImage').src = data.url;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        });
-
-
-        document.getElementById('imageUpload').addEventListener('change', function() {
-            const file = this.files[0];
-            const formData = new FormData();
-            formData.append('img', file);
-
-            fetch('/api/upload', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('profileImage').src = data.url;
-            })
-            .catch(error => {
-                console.error('Error:', error);
+            window.addEventListener('load', () => {
+                fetch('/api/profile-image')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.url) {
+                            document.getElementById('profileImage').src = data.url;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
             });
-        });
+
+
+            document.getElementById('imageUpload').addEventListener('change', function () {
+                const file = this.files[0];
+                const formData = new FormData();
+                formData.append('img', file);
+
+                fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData,
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('profileImage').src = data.url;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            });
 
 
 
