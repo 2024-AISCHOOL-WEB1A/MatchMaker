@@ -151,9 +151,17 @@ router.get('/match_room/:match_idx', (req, res) => {
                 console.log("match_idx", match_idx);
 
                 // 점수 매치 체크 및 랭크 비교
-                if (match.rate_match_yn === 'Y' && req.session.rank !== user_rank[teamLeader].split(',')[0]) {
-                    res.send("<script>alert('이 방에는 접속하실 수 없습니다.'); window.location.href='/user/match';</script>");
-                    return;
+                if (match.rate_match_yn === 'Y') {
+                    // 먼저 user_rank[teamLeader]가 정의되어 있는지 확인
+                    if (user_rank[teamLeader] && req.session.rank !== user_rank[teamLeader].split(',')[0]) {
+                        res.send("<script>alert('이 방에는 접속하실 수 없습니다.'); window.location.href='/user/match';</script>");
+                        return;
+                    } else if (!user_rank[teamLeader]) {
+                        // user_rank[teamLeader]가 undefined인 경우 오류를 로그로 출력
+                        console.error('Error: user_rank[teamLeader] is undefined');
+                        res.send("<script>alert('팀 리더 정보가 없습니다.'); window.location.href='/user/match';</script>");
+                        return;
+                    }
                 }
 
                 res.render('match_room', {
