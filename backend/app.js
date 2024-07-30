@@ -34,23 +34,27 @@ if (!fs.existsSync(sessionDir)) {
   fs.mkdirSync(sessionDir, { recursive: true });
 }
 
-// 세션 미들웨어
+
+
+// 세션 스토어 설정
+const sessionStore = new fileStore({
+  path: sessionDir,
+  retries: 5, // 재시도 횟수
+  retryDelay: 100, // 재시도 지연 시간 (밀리초)
+  logFn: function (error) {
+    console.error(error);
+  }
+});
+
 app.use(
   session({
+    store: sessionStore,
     secret: 'secret',
     resave: false,
     saveUninitialized: false,
-    store: new fileStore({
-      path: sessionDir, // 세션 파일 저장 경로 설정
-      retries: 0 // 기본적으로 5번의 재시도, 에러가 많이 발생한다면 0으로 설정하여 재시도 안하도록 할 수 있음
-    }),
-    cookie: {
-      httpOnly: true, // 클라이언트 측에서 쿠키에 접근하지 못하도록 설정
-    }
+  
   })
 );
-
-
 
 
 // 라우터 설정

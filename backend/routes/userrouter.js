@@ -87,8 +87,8 @@ router.post("/boss_join", (req, res) => {
 // 구장 정보 등록 router -> 코트 정보도 같이 입력됨
 router.post("/field_join", (req, res) => {
     console.log("구장 정보 등록", req.body);
-    let { field_name, field_addr, field_detail, court_count, main_region, sub_region, field_oper_st_time, field_oper_ed_time} = req.body;
-    let region = `${req.body.main_region}, ${req.body.sub_region}`
+    let { field_name, field_addr, field_detail, court_count, main_region, sub_region, field_oper_st_time, field_oper_ed_time } = req.body;
+    let region = `${main_region}, ${sub_region}`;
     let boss_id = req.session.idName;
 
     if (!boss_id) {
@@ -140,6 +140,7 @@ router.post("/field_join", (req, res) => {
             });
     });
 });
+
 
 
 // 로그인 기능 router
