@@ -53,23 +53,35 @@ router.post('/join1', (req, res) => {
 
 // 풋살장 사장님 회원가입
 router.post("/boss_join", (req, res) => {
-
     console.log("풋살장 관리자 회원가입", req.body);
-    let { id, pw, name, phone } = req.body;
-    let hashedPw = md5(pw);
 
-    let sql = "insert into boss_info(boss_id, boss_pw, boss_name, boss_phone) values (?, ?, ?, ?)";
+    const { id, pw, confirm_pw, name, phone } = req.body;
+
+    // 비밀번호와 비밀번호 확인이 일치하는지 확인
+    if (pw !== confirm_pw) {
+        res.send("<script>alert('비밀번호가 일치하지 않습니다.'); window.location.href='/boss_join1';</script>");
+        return;
+    }
+
+    const hashedPw = md5(pw);
+
+    const sql = "INSERT INTO boss_info (boss_id, boss_pw, boss_name, boss_phone) VALUES (?, ?, ?, ?)";
     conn.query(sql, [id, hashedPw, name, phone], (err, rows) => {
-        console.log('insert 완', rows);
-        if (rows) {
+        if (err) {
+            console.error('Error inserting into boss_info:', err);
+            res.send("<script>alert('회원가입에 실패했습니다. 다시 시도해 주십시오.'); window.location.href='/boss_join1';</script>");
+            return;
+        }
+
+        console.log('Insert 완료', rows);
+
+        if (rows.affectedRows > 0) {
             req.session.idName = id;
             res.redirect('/field_join');
         } else {
-            res.send(`<script>alert('다시 시도해 주세용~ ') 
-                window.location.href="/boss_join1"<script>`);
+            res.send("<script>alert('다시 시도해 주십시오.'); window.location.href='/boss_join1';</script>");
         }
     });
-
 });
 
 // 구장 정보 등록 router -> 코트 정보도 같이 입력됨
