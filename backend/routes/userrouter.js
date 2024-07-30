@@ -133,7 +133,7 @@ router.post("/field_join", (req, res) => {
         Promise.all(courtInserts)
             .then(results => {
                 console.log('모든 코트 정보 삽입 완료', results);
-                res.redirect('/');
+                res.redirect('/boss_main');
             })
             .catch(err => {
                 console.error('코트 정보 삽입 오류:', err);
