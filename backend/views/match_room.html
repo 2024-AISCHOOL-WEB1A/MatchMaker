@@ -153,10 +153,23 @@
                 <a href="/reserv/reservAll"><input type="submit" class="btn" value="예약하기"></a>
             </form>
             {% endif %}
-            <div class="chatt">
+            <!-- <div class="chatt">
                 <input id="input" autocomplete="off" placeholder="채팅을 입력해주세요" />
                 <input id="chatBtn" type="button" class="btn" value="전송" onclick="sendMessage()">
                 <ul id="messages" style="list-style: none;"></ul>
+                <span id="userNick" style="display: none;">{{ nick }}</span>
+            </div> -->
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h3>💬채팅방</h3>
+                </div>
+                <div class="chat-messages">
+                    <ul id="messages"></ul>
+                </div>
+                <div class="chat-input">
+                    <input id="input" type="text" autocomplete="off" placeholder="채팅을 입력해주세요" />
+                    <button id="chatBtn" class="btn" onclick="sendMessage()">전송</button>
+                </div>
                 <span id="userNick" style="display: none;">{{ nick }}</span>
             </div>
         </div>
