@@ -112,17 +112,11 @@ a {
 
 .profile_wrapper {
     position: relative;
+    display: inline-block;
+
     width: 150px;
     height: 150px;
     margin: 0 auto 20px;
-}
-
-.profile_image {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid white;
 }
 
 .upload-icon {
@@ -139,6 +133,15 @@ a {
     align-items: center;
     cursor: pointer;
     transition: background-color 0.3s;
+}
+
+
+.profile_image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid white;
 }
 
 .upload-icon:hover {
