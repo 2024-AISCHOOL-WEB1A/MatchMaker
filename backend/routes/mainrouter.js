@@ -148,12 +148,13 @@ router.get('/match_room/:match_idx', (req, res) => {
                 });
 
                 const teamLeader = join_users[0]; // 방장 아이디 값 저장
-                
+                console.log("teamLeader", teamLeader);
 
                 // 점수 매치 체크 및 랭크 비교
                 if (match.rate_match_yn === 'Y') {
                     // 먼저 user_rank[teamLeader]가 정의되어 있는지 확인
-                    if (user_rank[teamLeader] && req.session.rank !== user_rank[teamLeader].split(',')[0]) {
+                    if (req.session.rank.split(',')[0] !== user_rank[teamLeader].split(',')[0]) {
+                        console.log("user_rank[teamLeader].split(',')[0]", user_rank[teamLeader].split(',')[0]);
                         res.send("<script>alert('이 방에는 접속하실 수 없습니다.'); window.location.href='/user/match';</script>");
                         return;
                     } else if (!user_rank[teamLeader]) {

@@ -42,10 +42,10 @@ if (!fs.existsSync(sessionDir)) {
 // 세션 스토어 설정
 const sessionStore = new fileStore({
   path: sessionDir,
-  retries: 5, // 재시도 횟수
-  retryDelay: 100, // 재시도 지연 시간 (밀리초)
+  retries: 1, // 재시도 횟수
+  retryDelay: 7000, // 재시도 지연 시간 (밀리초)
   logFn: function (error) {
-    console.error(error);
+    console.error("세션 재로딩중~ 걱정 말아유 ~ ");
   }
 });
 

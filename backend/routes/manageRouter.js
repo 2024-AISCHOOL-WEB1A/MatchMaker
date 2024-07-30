@@ -261,7 +261,7 @@ router.post('/reserv', (req, res) => {
 
 // 예약 취소 라우터 
 router.post('/cancel_reservation', (req, res) => {
-    console.log("req.body",req.body);
+    console.log("req.body", req.body);
     const reserv_idx = req.body.reserv_idx;
     console.log("reserv_idx : ", reserv_idx);
 
@@ -281,6 +281,8 @@ router.post('/cancel_reservation', (req, res) => {
 router.post('/update_ratings', async (req, res) => {
     console.log("req.body", req.body);
 
+    let update_rank = '';
+
     const updateUserInfo = [
         { id: req.body.teamA_user1, user_rate: req.body.new_rateA[0] },
         { id: req.body.teamA_user2, user_rate: req.body.new_rateA[1] },
@@ -295,16 +297,51 @@ router.post('/update_ratings', async (req, res) => {
     ];
 
     console.log("updateUserInfo", updateUserInfo);
+    console.log("user_rate[0]", updateUserInfo[0].user_rate);
+    console.log("updateUserInfo의 길이", updateUserInfo.length);
+    console.log("updateUserInfo[0]", updateUserInfo[0]);
 
-    const sql = 'UPDATE user_info SET user_rate = ? WHERE user_id = ?';
+    const sql = 'UPDATE user_info SET user_rate = ?, user_rank = ? WHERE user_id = ?';
     const sql2 = 'UPDATE match_info1 SET team_a = "W", team_b = "L" WHERE match_idx = (SELECT match_idx FROM reservation_info WHERE reserv_idx = ?)';
     const sql3 = 'UPDATE match_info1 SET team_a = "L", team_b = "W" WHERE match_idx = (SELECT match_idx FROM reservation_info WHERE reserv_idx = ?)';
 
     try {
         // 각 사용자 레이트 업데이트
         for (const user of updateUserInfo) {
+            if (user.user_rate >= 1760) {
+                update_rank = '1부리그, 1군';
+            } else if (user.user_rate >= 1730) {
+                update_rank = '1부리그, 2군';
+            } else if (user.user_rate >= 1700) {
+                update_rank = '1부리그, 3군';
+            } else if (user.user_rate >= 1660) {
+                update_rank = '2부리그, 1군';
+            } else if (user.user_rate >= 1630) {
+                update_rank = '2부리그, 2군';
+            } else if (user.user_rate >= 1600) {
+                update_rank = '2부리그, 3군';
+            } else if (user.user_rate >= 1560) {
+                update_rank = '3부리그, 1군';
+            } else if (user.user_rate >= 1530) {
+                update_rank = '3부리그, 2군';
+            } else if (user.user_rate >= 1500) {
+                update_rank = '3부리그, 3군';
+            } else if (user.user_rate >= 1460) {
+                update_rank = '4부리그, 1군';
+            } else if (user.user_rate >= 1430) {
+                update_rank = '4부리그, 2군';
+            } else if (user.user_rate >= 1400) {
+                update_rank = '4부리그, 3군';
+            } else if (user.user_rate >= 1360) {
+                update_rank = '5부리그, 1군';
+            } else if (user.user_rate >= 1330) {
+                update_rank = '5부리그, 2군';
+            } else {
+                update_rank = '5부리그, 3군';
+            }
+
             await new Promise((resolve, reject) => {
-                conn.query(sql, [user.user_rate, user.id], (err, results) => {
+                conn.query(sql, [user.user_rate, update_rank, user.id], (err, results) => {
                     if (err) return reject(err);
                     resolve();
                 });
@@ -320,7 +357,7 @@ router.post('/update_ratings', async (req, res) => {
                 });
             });
             res.status(200).send('<script>alert("레이트 업데이트 성공! A팀 승리!"); window.history.go(-1);</script>');
-        } else if(req.body.exist_rateA[0] > req.body.new_rateA[0] && req.body.rate_match_yn == null){
+        } else if (req.body.exist_rateA[0] > req.body.new_rateA[0] && req.body.rate_match_yn == null) {
             await new Promise((resolve, reject) => {
                 conn.query(sql3, [req.body.reservation_idx], (err, rows) => {
                     if (err) return reject(err);
@@ -328,7 +365,7 @@ router.post('/update_ratings', async (req, res) => {
                 });
             });
             res.status(200).send('<script>alert("레이트 업데이트 성공! B팀 승리!"); window.history.go(-1);</script>');
-        } else{
+        } else {
             res.status(200).send('<script>alert("이미 점수부여가 됬을걸요"); window.history.go(-1);</script>');
         }
     } catch (err) {

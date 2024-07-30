@@ -33,7 +33,13 @@ router.get('/profile-image/:userId', (req, res) => {
     }
 
     conn.query('SELECT user_photo FROM user_info WHERE user_id = ?', [userId], (error, results) => {
+
         if (error) throw error;
+
+        
+
+        const imageUrl = results[0].user_photo.toString(); // Buffer를 문자열로 변환
+        const filePath = path.join(__dirname, '..', imageUrl); // 이미지 파일의 실제 경로
 
         const imageBuffer = results[0]?.user_photo;
         if (imageBuffer) {
