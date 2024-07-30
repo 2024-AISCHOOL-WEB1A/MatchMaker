@@ -68,6 +68,7 @@ a {
     width: 100%;
 }
 
+
 .overlay-image {
     position: absolute;
     top: 50%; /* 적절한 위치 설정 */
@@ -78,11 +79,12 @@ a {
 }
 
 .info-container {
+    font-family: 'Pretendard-Regular';
     max-width: 300px;
     padding: 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
+    border: 1px solid lightgoldenrodyellow;
     border-radius: 5px;
+    background-color: lightgoldenrodyellow;
     word-wrap: break-word;
     overflow-wrap: break-word;
     overflow: auto;
@@ -111,7 +113,9 @@ a {
 
 
 .btn{
+    margin-bottom: 10px;
     font-family: 'Pretendard-Regular';
+    font-weight: bold;
     background-color: lightblue;
 }
 
@@ -119,11 +123,30 @@ a {
     position: absolute;
     width: 110px;
     height: 110px;
+    overflow: hidden;
 }
 
 .overlay-image img {
-    width: 100%;
-    height: 100%;
+    width: 95%;
+    height: 95%;
+    animation: glow 0.5s infinite alternate;
+}
+
+.overlay-image img {
+    width: 95%;
+    height: 95%;
+    animation: glow 0.5s infinite alternate;
+}
+
+@keyframes glow {
+    0% {
+        opacity: 0.8; /* 처음에는 약간 투명 */
+        filter: drop-shadow(0 0 px rgba(255, 215, 0, 0.5));
+    }
+    100% {
+        opacity: 1; /* 완전히 불투명 */
+        filter: drop-shadow(0 0 5px rgba(255, 215, 0, 1));
+    }
 }
 
 .player-info {

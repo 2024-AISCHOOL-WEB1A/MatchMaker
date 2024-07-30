@@ -113,7 +113,7 @@
             {% if teamA and teamA|length > 0 %}
             팀A (Average rate: {{ avgTeamA }})<br>
             {% for member in teamA %}
-            <div style="border: 2px solid purple;">
+            <div style="border: 1px solid purple;">
                 [{{ member.user_id }}, {{ member.user_rate }}]<br>
             </div>
             {% endfor %}
@@ -122,7 +122,7 @@
             {% if teamB and teamB|length > 0 %}
             팀B (Average rate: {{ avgTeamB }})<br>
             {% for member in teamB %}
-            <div style="border: 2px solid orange;">
+            <div style="border: 1px solid orange;">
                 [{{ member.user_id }}, {{ member.user_rate }}]<br>
             </div>
             {% endfor %}
