@@ -108,7 +108,7 @@
             </div>
         </div>
     </div>
-
+    <input type="hidden" value="{{id}}" id="id">
     <!-- 모달 구조 -->
     <div id="myModal" class="modal">
         <div class="modal-content">
@@ -186,26 +186,32 @@
                 }
             }
 
-
+            const userId = document.getElementById("id").value; // 사용자 ID를 실제 사용자 ID로 설정
             // 페이지 로드 시 프로필 이미지 불러오기
             window.addEventListener('load', () => {
-                fetch('/api/profile-image')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.url) {
-                            document.getElementById('profileImage').src = data.url;
+                const apiUrl = `/api/profile-image/${userId}`;
+                fetch(apiUrl)
+                    .then(response => {
+                        if (response.ok) {
+                            return response.blob();
+                        } else {
+                            throw new Error('Profile image not found');
                         }
+                    })
+                    .then(blob => {
+                        const imageUrl = URL.createObjectURL(blob);
+                        document.getElementById('profileImage').src = imageUrl;
                     })
                     .catch(error => {
                         console.error('Error:', error);
                     });
             });
 
-
             document.getElementById('imageUpload').addEventListener('change', function () {
                 const file = this.files[0];
                 const formData = new FormData();
                 formData.append('img', file);
+                formData.append('userId', userId);
 
                 fetch('/api/upload', {
                     method: 'POST',
@@ -213,7 +219,8 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        document.getElementById('profileImage').src = data.url;
+                        alert(data.message);
+                        window.location.reload();
                     })
                     .catch(error => {
                         console.error('Error:', error);
