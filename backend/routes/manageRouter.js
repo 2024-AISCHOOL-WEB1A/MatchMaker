@@ -281,7 +281,7 @@ router.post('/cancel_reservation', (req, res) => {
 router.post('/update_ratings', async (req, res) => {
     console.log("req.body", req.body);
 
-    let update_rank = '';
+    let update_rank = "";
 
     const updateUserInfo = [
         { id: req.body.teamA_user1, user_rate: req.body.new_rateA[0] },
