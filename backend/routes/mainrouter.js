@@ -1,6 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const conn = require('../config/DB');
+const path = require('path');
+const multer = require('multer');
+const fs = require('fs');
 
 
 // 메인 페이지
@@ -127,7 +130,7 @@ router.get('/match_room/:match_idx', (req, res) => {
 
         if (join_users.length > 0) {
             let placeholders = join_users.map(() => '?').join(',');
-            let user_sql = `SELECT user_id, user_rate, user_rank FROM user_info WHERE user_id IN (${placeholders})`;
+            let user_sql = `SELECT user_id, user_rate, user_rank, user_photo FROM user_info WHERE user_id IN (${placeholders})`;
 
             conn.query(user_sql, join_users, (err, users) => {
                 if (err) {
@@ -137,18 +140,15 @@ router.get('/match_room/:match_idx', (req, res) => {
 
                 let user_rate = {};
                 let user_rank = {};
+                let user_photo = {};
                 users.forEach(user => {
                     user_rate[user.user_id] = user.user_rate;
                     user_rank[user.user_id] = user.user_rank;
+                    user_photo[user.user_id] = user.user_photo;
                 });
 
                 const teamLeader = join_users[0]; // 방장 아이디 값 저장
-                console.log("teamLeader", teamLeader);
-                console.log("user_rate", user_rate);
-                console.log("user_rank", user_rank);
-                console.log("join_users", join_users);
-                console.log("user_rate.a1", user_rate.a1);
-                console.log("match_idx", match_idx);
+                
 
                 // 점수 매치 체크 및 랭크 비교
                 if (match.rate_match_yn === 'Y') {
@@ -170,6 +170,7 @@ router.get('/match_room/:match_idx', (req, res) => {
                     join_users: join_users,
                     user_rate: user_rate,
                     user_rank: user_rank,
+                    user_photo: user_photo,
                     teamLeader: teamLeader,
                     match_idx: match_idx // match_idx 값을 렌더링에 포함
                 });
@@ -185,6 +186,7 @@ router.get('/match_room/:match_idx', (req, res) => {
         }
     });
 });
+
 
 router.get('/getMessages', (req, res) => {
     const match_idx = req.query.match_idx;

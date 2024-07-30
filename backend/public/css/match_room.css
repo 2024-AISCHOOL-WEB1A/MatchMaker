@@ -51,6 +51,8 @@ a {
     font-weight: 900;
 }
 
+
+
 .logout_logo {
     width: 30px;
     height: 30px;
@@ -63,6 +65,19 @@ a {
     justify-content: center;
     align-items: flex-start;
     gap: 20px;
+}
+
+.profile_wrapper {
+    position: relative;
+    display: inline-block;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+
+.profile_image {
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .matchfield-container {

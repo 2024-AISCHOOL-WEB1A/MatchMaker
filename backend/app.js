@@ -8,8 +8,6 @@ const fileStore = require("session-file-store")(session);
 const path = require("path"); // path 모듈 추가
 const conn = require("./config/DB.js");
 const WebSocket = require("ws");
-const uploadRouter = require('./routes/uploadRouter.js'); 
-const bossuploadRouter = require('./routes/bossuploadRouter.js'); 
 const fs = require('fs');
 
 
@@ -61,6 +59,9 @@ const userRouter = require("./routes/userrouter");
 const reservRouter = require("./routes/reservRouter");
 const balRouter = require("./routes/balRouter");
 const manageRouter = require("./routes/manageRouter.js");
+const uploadRouter = require('./routes/uploadRouter.js'); 
+const bossuploadRouter = require('./routes/bossuploadRouter.js'); 
+
 app.use("/", mainRouter);
 app.use("/user", userRouter);
 app.use("/reserv", reservRouter);
