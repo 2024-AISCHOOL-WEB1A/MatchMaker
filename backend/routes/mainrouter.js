@@ -108,7 +108,11 @@ router.get("/create_match", (req, res) => {
 
 
 // buffer를 Base64 URL로 바꾸는 함수
-const bufferToBase64Url = (buffer) => {
+function bufferToBase64Url(buffer) {
+    if (!buffer) {
+        return null;
+    }
+
     const base64 = buffer.toString('base64');
     return `data:image/png;base64,${base64}`;
 };
