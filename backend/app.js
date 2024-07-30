@@ -42,7 +42,7 @@ const sessionStore = new fileStore({
   retries: 5, // 재시도 횟수
   retryDelay: 100, // 재시도 지연 시간 (밀리초)
   logFn: function (error) {
-    console.error(error);
+    console.error("세션 재로딩중~ 걱정 말아유 ~ ");
   }
 });
 
