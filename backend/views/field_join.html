@@ -1,12 +1,25 @@
-{% extends 'main.html'%}
-
 {%block content%}
-<h3>구장 등록 화면입니다</h3>
+
+<link rel="stylesheet" href="/css/field_join.css">
+
+<nav id="navbar">
+    <img src="/img/logo2.png" alt="" class="main_logo">
+    <div class="user_info">
+        <a href="#">
+            <ion-icon name="person-outline" class="user_logo"></ion-icon>
+        </a>
+        <a href="/user/logout">
+            <ion-icon name="log-out-outline" class="logout_logo"></ion-icon>
+        </a>
+    </div>    
+</nav>
+
+<h3>구장 등록</h3>
 <form action="/user/field_join" method='post'>
     구장 이름 : <input type="text" name="field_name">
     <br />
     <div class="field_region">
-        <label >구장 지역 : </label>
+        <!-- <label >구장 지역 : </label> -->
         <select id="main_region" name="main_region" onchange="updateSubRegion()">
             <option value="서울">서울특별시</option>
             <option value="광주">광주광역시</option>
@@ -29,6 +42,9 @@
 
     <input type="submit" value="구장 등록">
 </form>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
 <script>
     function updateSubRegion() {
