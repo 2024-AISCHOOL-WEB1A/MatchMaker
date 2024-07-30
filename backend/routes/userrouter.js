@@ -58,7 +58,7 @@ router.post("/boss_join", (req, res) => {
     let { id, pw, name, phone } = req.body;
     let hashedPw = md5(pw);
 
-    let sql = "insert into boss_info values (?,?,?,?)";
+    let sql = "insert into boss_info(boss_id, boss_pw, boss_name, boss_phone) values (?, ?, ?, ?)";
     conn.query(sql, [id, hashedPw, name, phone], (err, rows) => {
         console.log('insert 완', rows);
         if (rows) {
@@ -66,7 +66,7 @@ router.post("/boss_join", (req, res) => {
             res.redirect('/field_join');
         } else {
             res.send(`<script>alert('다시 시도해 주세용~ ') 
-                window.location.href="/boss_join"<script>`);
+                window.location.href="/boss_join1"<script>`);
         }
     });
 
