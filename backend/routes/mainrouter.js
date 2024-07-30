@@ -202,7 +202,7 @@ router.get('/getMessages', (req, res) => {
     });
 });
 
-
+//채팅정보 저장 라우터~~~~
 router.post('/match_room/:match_idx', (req, res) => {
     const { match_idx,timestamp, message} = req.body;
     const nick = req.session.nick;
