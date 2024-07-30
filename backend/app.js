@@ -8,7 +8,8 @@ const fileStore = require("session-file-store")(session);
 const path = require("path"); // path 모듈 추가
 const conn = require("./config/DB.js");
 const WebSocket = require("ws");
-const uploadRouter = require('./routes/uploadRouter.js'); // uploadRouter 경로에 맞게 수정
+const uploadRouter = require('./routes/uploadRouter.js'); 
+const bossuploadRouter = require('./routes/bossuploadRouter.js'); 
 const fs = require('fs');
 
 
@@ -67,9 +68,11 @@ app.use("/bal", balRouter);
 app.use("/manage", manageRouter);
 // 정적 파일 제공 설정 (업로드된 파일 접근 가능)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads/boss', express.static(path.join(__dirname, 'uploads')));
 
 // 업로드 라우터 추가
 app.use('/api', uploadRouter);
+app.use('/api/boss', bossuploadRouter);
 
 
 // 아이디 중복 확인 API
