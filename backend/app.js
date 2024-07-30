@@ -9,7 +9,7 @@ const path = require("path"); // path 모듈 추가
 const conn = require("./config/DB.js");
 const WebSocket = require("ws");
 const uploadRouter = require('./routes/uploadRouter.js'); // uploadRouter 경로에 맞게 수정
-const bossUploadRouter = require('./routes/bossuploadRouter');
+const fs = require('fs');
 
 
 
@@ -28,16 +28,31 @@ app.use(express.urlencoded({ extended: true }));
 // 정적 파일 서빙 설정
 app.use(express.static(path.join(__dirname, "public")));
 
+const sessionDir = path.join(__dirname, 'sessions');
+
+
+if (!fs.existsSync(sessionDir)) {
+  fs.mkdirSync(sessionDir, { recursive: true });
+}
+
 // 세션 미들웨어
 app.use(
   session({
-    httpOnly: true,
+    secret: 'secret',
     resave: false,
-    secret: "secret",
-    store: new fileStore(),
     saveUninitialized: false,
+    store: new fileStore({
+      path: sessionDir, // 세션 파일 저장 경로 설정
+      retries: 0 // 기본적으로 5번의 재시도, 에러가 많이 발생한다면 0으로 설정하여 재시도 안하도록 할 수 있음
+    }),
+    cookie: {
+      httpOnly: true, // 클라이언트 측에서 쿠키에 접근하지 못하도록 설정
+    }
   })
 );
+
+
+
 
 // 라우터 설정
 const mainRouter = require("./routes/mainrouter");
@@ -50,14 +65,11 @@ app.use("/user", userRouter);
 app.use("/reserv", reservRouter);
 app.use("/bal", balRouter);
 app.use("/manage", manageRouter);
-
 // 정적 파일 제공 설정 (업로드된 파일 접근 가능)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/uploads/boss', express.static(path.join(__dirname, 'uploads/boss')));
 
 // 업로드 라우터 추가
 app.use('/api', uploadRouter);
-app.use('/api/boss', bossUploadRouter);
 
 
 // 아이디 중복 확인 API
