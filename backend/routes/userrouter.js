@@ -6,6 +6,7 @@ const md5 = require('md5');
 
 
 
+
 // 풋살을 하기 위한 회원들의 회원가입
 router.post('/join1', (req, res) => {
     console.log('join 실행', req.body);
