@@ -171,6 +171,10 @@ router.post("/login", (req, res) => {
         let sql1 = 'SELECT boss_id, boss_name FROM boss_info WHERE boss_id = ? AND boss_pw = ?';
         
         conn.query(sql1, [id, hashedPw], (err, rows) => {
+
+            if(err){
+                console.log(err)
+            }
             console.log("rows", rows);
 
             let boss_id = req.body.id;
