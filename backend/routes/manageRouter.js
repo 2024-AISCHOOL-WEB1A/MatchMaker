@@ -377,7 +377,7 @@ router.post('/update_ratings', async (req, res) => {
                     resolve();
                 });
             });
-            res.status(200).send('<script>alert("승리팀 설정 완료 !"); window.history.go(-1);</script>');
+            res.status(200).send('<script>alert("이미 점수부여가 됬을걸요"); window.history.go(-1);</script>');
         }
     } catch (err) {
         console.error(err);

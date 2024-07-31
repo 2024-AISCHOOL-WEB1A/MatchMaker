@@ -4,10 +4,10 @@ const path = require('path');
 const conn = require('../config/DB');
 const router = express.Router();
 
-// Configure multer to store files in memory
+// 이미지 파일을 업로드 하기 위한 multer미들웨어
 const upload = multer({
     storage: multer.memoryStorage(),
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB 이하만 가능
 });
 
 router.post('/upload', upload.single('img'), (req, res) => {
@@ -18,7 +18,7 @@ router.post('/upload', upload.single('img'), (req, res) => {
         return res.status(400).json({ error: 'User ID is required' });
     }
 
-    // Store the image buffer in the database
+    // DB에 이미지 buffer 저장
     conn.query('UPDATE user_info SET user_photo = ? WHERE user_id = ?', [imageBuffer, userId], (error) => {
         if (error) {
             console.error('Error updating profile image:', error);
@@ -47,7 +47,7 @@ router.get('/profile-image/:userId', (req, res) => {
 
         const imageBuffer = results[0].user_photo;
         res.writeHead(200, {
-            'Content-Type': 'image/jpeg', // Adjust based on your image type
+            'Content-Type': 'image/jpeg', // 이미지 타입에 따른 코드조정
             'Content-Length': imageBuffer.length,
         });
         res.end(imageBuffer);
