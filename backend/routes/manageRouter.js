@@ -66,7 +66,7 @@ router.get('/result_set/:reserv_idx', (req, res) => {
     const sql = `
         SELECT r.reserv_idx, r.user_id, r.reserv_dt, r.reserv_st_tm, r.reserv_ed_tm,
             c.court_name, 
-            m.match_title, m.rate_match_yn, m.result_btn,
+            m.match_title, m.rate_match_yn, m.result_btn, m.match_idx,
             t.teamA_user1, t.teamA_user2, t.teamA_user3, t.teamA_user4, t.teamA_user5,
             t.teamB_user1, t.teamB_user2, t.teamB_user3, t.teamB_user4, t.teamB_user5
         FROM reservation_info r
