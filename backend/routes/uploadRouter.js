@@ -2,7 +2,6 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const conn = require('../config/DB');
-
 const router = express.Router();
 
 // Configure multer to store files in memory
