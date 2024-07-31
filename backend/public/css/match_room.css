@@ -42,7 +42,7 @@ body {
 .user_logo {
     width: 30px;
     height: 30px;
-    color: black;
+    color: white;
 }
 
 a {
@@ -57,7 +57,7 @@ a {
     width: 30px;
     height: 30px;
     margin-left: 10px;
-    color: black;
+    color: white;
 }
 
 .content-container{
@@ -120,7 +120,7 @@ a {
 
 .info-container {
     font-family: 'Pretendard-Regular';
-    max-width: 300px;
+    max-width: 350px;
     padding: 10px;
     border: 1px solid lightgoldenrodyellow;
     border-radius: 5px;
