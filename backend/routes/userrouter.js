@@ -113,7 +113,7 @@ router.post("/field_join", (req, res) => {
         req.session.field_idx = field_idx;
 
         // court_info 테이블에 데이터 삽입
-        let courtSql = `INSERT INTO court_info (field_idx, court_name, book_yn) VALUES (?, ?, 'N')`;
+        let courtSql = `INSERT INTO court_info (field_idx, court_name) VALUES (?, ?)`;
 
         // 가지고 있는 코트 개수만큼 반복
         let courtInserts = [];
