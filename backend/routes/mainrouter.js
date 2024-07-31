@@ -61,7 +61,7 @@ router.get("/login1", (req, res) => {
 
 
 // 풋살장 구장주의 마이페이지
-router.get("/boss_myPage", (req, res) => {
+router.get("/boss_myPage1", (req, res) => {
     console.log(req.session.idName);
     let id = req.session.idName;
 
