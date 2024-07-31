@@ -321,12 +321,12 @@ router.post("/boss_info_update", (req, res) => {
     conn.query(sql, [hashedPw, name, phone, id], (err, rows) => {
         console.log("rows", rows);
         if (rows.affectedRows > 0) {
-            res.redirect('/');
+            res.redirect('/boss_myPage1');
         } else {
             res.send(`
                 <script>
                     alert('다시 한번 시도해주세요.')
-                    window.location.href="/update"
+                    window.location.href="/boss_myPage1"
                 </script>
             `);
         }
@@ -345,12 +345,12 @@ router.post("/field_info_update", (req, res) => {
     conn.query(sql, [field_name, field_addr, field_detail, boss_id], (err, rows) => {
         console.log("rows", rows);
         if (rows.affectedRows > 0) {
-            res.redirect('/');
+            res.redirect('/boss_myPage1');
         } else {
             res.send(`
                 <script>
                     alert('다시 한번 시도해주세요.')
-                    window.location.href="/update"
+                    window.location.href="/boss_myPage1"
                 </script>
             `);
         }
@@ -396,10 +396,10 @@ router.post("/court_info_update", (req, res) => {
 
             if (court_count > currentCourtCount) {
                 // 코트 수가 더 많아진 경우 - 코트 추가
-                let insertCourtSql = `INSERT INTO court_info (field_idx, court_name, book_yn) VALUES (?, ?, 'N')`;
+                let insertCourtSql = `INSERT INTO court_info (field_idx, court_name) VALUES (?, ?)`;
                 let courtInserts = [];
                 for (let i = currentCourtCount + 1; i <= court_count; i++) {
-                    let courtName = `구장${i}`;
+                    let courtName = `코트${i}`;
                     courtInserts.push(new Promise((resolve, reject) => {
                         conn.query(insertCourtSql, [field_idx, courtName], (err, result) => {
                             if (err) {
@@ -412,7 +412,7 @@ router.post("/court_info_update", (req, res) => {
                 Promise.all(courtInserts)
                     .then(results => {
                         console.log('코트 추가 완료', results);
-                        res.redirect('/boss_myPage');
+                        res.redirect('/boss_myPage1');
                     })
                     .catch(err => {
                         console.error('코트 추가 오류:', err);
@@ -429,56 +429,16 @@ router.post("/court_info_update", (req, res) => {
                         return res.status(500).send('서버 오류');
                     }
                     console.log('코트 삭제 완료', result);
-                    res.redirect('/boss_myPage');
+                    res.redirect('/boss_myPage1');
                 });
             } else {
                 // 코트 수가 같은 경우 - 아무 것도 하지 않음
-                res.redirect('/boss_myPage');
+                res.redirect('/boss_myPage1');
             }
         });
     });
 });
 
-
-// 매치페이지에서 방만들기 했을 때 match_info 테이블에 정보 insert 기능하는 router
-// router.post("/create_match", (req, res) => {
-
-//     console.log("match_info테이블", req.body);
-//     let { match_title, female_match_yn, rate_match_yn, main_region, sub_region, match_date, reserv_tm, match_info } = req.body;
-
-//     let boss_id = req.session.idName;
-//     let join_user = boss_id;
-//     let created_at = new Date();
-//     let match_region = `${main_region}, ${sub_region}`;
-//     let match_st_dt = reserv_tm[0];
-//     let match_ed_dt = reserv_tm.pop();
-//     console.log(`match_ed_dt : ${match_ed_dt}`);
-
-//     if (req.body.female_match_yn === "on") {
-//         female_match_yn = 'Y';
-//     } else {
-//         female_match_yn = 'N';
-//     }
-
-//     if (req.body.rate_match_yn === "on") {
-//         rate_match_yn = 'Y';
-//     } else {
-//         rate_match_yn = 'N';
-//     }
-
-
-//     let sql = "insert into match_info1 (match_title, join_user, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, created_at, match_info) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-//     conn.query(sql, [match_title, join_user, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, created_at, match_info], (err, rows) => {
-//         console.log('insert 완', rows);
-//         if (rows) {
-//             res.redirect('/user/match');
-//         } else {
-//             res.send(`<script>alert('다시 시도해 주세용~ ') 
-//                 window.location.href="/create_match"<script>`);
-//         }
-//     });
-
-// });
 
 // 매치에서 방 만들기 했을 때 match_info 테이블에 정보를 insert 기능하는 router
 router.post("/create_match", (req, res) => {

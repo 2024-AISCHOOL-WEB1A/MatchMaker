@@ -46,11 +46,11 @@
                 <h2>정보수정</h2>
                 <form action="/user/boss_info_update" method="post">
                     <div class="inputbox">
-                        변경할 이름 <input type="text" name="name" class="edit_input" placeholder="{{bossInfo[0].boss_name}}">
+                        변경할 이름 <input type="text" name="name" class="edit_input" value="{{bossInfo[0].boss_name}}">
                         <br>
-                        변경할 pw <input type="password" name="pw" class="edit_input" placeholder="●●●●●●●●●●●●"> <br>
+                        변경할 pw <input type="password" name="pw" class="edit_input" value="●●●●●●●●●●●●"> <br>
                         변경할 휴대폰 번호 <input type="text" name="phone" class="edit_input"
-                            placeholder="{{bossInfo[0].boss_phone}}"> <br>
+                            value="{{bossInfo[0].boss_phone}}"> <br>
                         <input type="submit" value="정보수정" class="edit_button">
                     </div>
                 </form>
@@ -60,11 +60,11 @@
                 <div class="inputbox">
                     <form action="/user/field_info_update" method="post">
                         변경할 구장 이름 <input type="text" name="field_name" class="edit_input"
-                            placeholder="{{fieldInfo[0].field_name}}"> <br>
+                            value="{{fieldInfo[0].field_name}}"> <br>
                         변경할 구장 주소 <input type="text" name="field_addr" class="edit_input"
-                            placeholder="{{fieldInfo[0].field_addr}}"> <br>
+                            value="{{fieldInfo[0].field_addr}}"> <br>
                         변경할 구장 상세 정보 <input type="text" name="field_detail" class="edit_input"
-                            placeholder="{{fieldInfo[0].field_detail}}"> <br>
+                            value="{{fieldInfo[0].field_detail}}"> <br>
                         <input type="submit" value="정보수정" class="edit_button">
                     </form>
                 </div>
@@ -74,7 +74,7 @@
                 <div class="inputbox">
                     <form action="/user/court_info_update" method="post">
                         변경할 코트 수 <input type="number" min="1" name="court_count" class="edit_input"
-                            placeholder="{{courtcount}}"> <br>
+                            value="{{courtcount}}"> <br>
                         <input type="submit" value="정보수정" class="edit_button">
                     </form>
                 </div>
