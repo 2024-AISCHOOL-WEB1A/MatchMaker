@@ -170,10 +170,10 @@ router.post("/login", (req, res) => {
         });
     } else {
         let sql1 = 'SELECT boss_id, boss_name FROM boss_info WHERE boss_id = ? AND boss_pw = ?';
-        
+
         conn.query(sql1, [id, hashedPw], (err, rows) => {
 
-            if(err){
+            if (err) {
                 console.log(err)
             }
             console.log("rows", rows);
@@ -183,7 +183,7 @@ router.post("/login", (req, res) => {
             conn.query(sql2, boss_id, (err, rows) => {
                 if (rows.length > 0) {  // 로그인 성공
                     req.session.idName = id;
-                    req.session.fieldIdx = rows[0].field_idx;  
+                    req.session.fieldIdx = rows[0].field_idx;
                     console.log(req.session.idName);
                     res.redirect('/boss_main');
                 } else {
@@ -265,24 +265,44 @@ router.get("/myPage", (req, res) => {
                 match.isMatchEnded = currentDate.getTime() > match.matchTimestamp;
                 return match;
             });
+            
             // 세 번째 쿼리 실행
             conn.query(sql3, [id, id, id, id, id, id, id, id, id, id], (err3, teamInfoRows) => {
                 console.log("matchInfo", matchInfoWithTimestamps);
-                
-                // 세 쿼리 결과를 한 번에 렌더링
-                res.render("myPage", {
-                    userInfo: userInfoRows,
-                    matchInfo: matchInfoWithTimestamps,
-                    currentTimestamp: currentDate.getTime(),
-                    currentDateString: currentDateString,
-                    currentTimeString: currentTimeString,
-                    matchInfoRows:matchInfoRows,
-                    teamInfoRows : teamInfoRows,
-                    id:id,
-                    userInfoRowsProfile: userInfoRows.user_photo
-                });
 
-           
+                // 네 번째 쿼리 실행
+                let sql4 = `
+                SELECT r.reserv_idx, r.user_id, r.reserv_dt, r.reserv_st_tm, r.reserv_ed_tm, r.match_idx,
+                    c.court_name, 
+                    f.field_name
+                FROM reservation_info r
+                LEFT JOIN court_info c ON r.court_idx = c.court_idx
+                LEFT JOIN field_info f ON c.field_idx = f.field_idx
+                LEFT JOIN team_info1 t ON r.match_idx = t.match_idx
+                WHERE ? IN (t.teamA_user1, t.teamA_user2, t.teamA_user3, t.teamA_user4, t.teamA_user5, 
+                            t.teamB_user1, t.teamB_user2, t.teamB_user3, t.teamB_user4, t.teamB_user5);`;
+
+                conn.query(sql4, [id], (err4, reservInfoRows) => {
+                    if (err4) {
+                        console.error('네 번째 쿼리 실행 오류: ', err4);
+                        return res.status(500).send('서버 오류');
+                    }
+                    console.log("reservInfoRows", reservInfoRows);
+
+                    // 네 쿼리 결과를 한 번에 렌더링
+                    res.render("myPage", {
+                        userInfo: userInfoRows,
+                        matchInfo: matchInfoWithTimestamps,
+                        currentTimestamp: currentDate.getTime(),
+                        currentDateString: currentDateString,
+                        currentTimeString: currentTimeString,
+                        matchInfoRows: matchInfoRows,
+                        teamInfoRows: teamInfoRows,
+                        id: id,
+                        userInfoRowsProfile: userInfoRows.user_photo,
+                        reservInfoRows:reservInfoRows
+                    });
+                });
             });
         });
     });
@@ -458,7 +478,7 @@ router.post("/create_match", (req, res) => {
 
     female_match_yn = req.body.female_match_yn === "on" ? 'Y' : 'N';
     rate_match_yn = req.body.rate_match_yn === "on" ? 'Y' : 'N';
-    let result_btn ='N';
+    let result_btn = 'N';
 
     let sql = "insert into match_info1 (match_title, join_user, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, created_at, match_info, result_btn) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     conn.query(sql, [match_title, join_user, match_region, match_date, match_st_dt, match_ed_dt, female_match_yn, rate_match_yn, created_at, match_info, result_btn], (err, rows) => {
@@ -493,11 +513,11 @@ router.get("/match", (req, res) => {
             console.error('데이터 조회 오류:', err);
             res.send(`<script>alert("데이터를 가져오는 중 오류가 발생했습니다."); window.history.go(-1);</script>`);
         } else {
-            res.render("match", { 
-                matches: results, 
-                idName: req.session.idName, 
-                rate: req.session.rate, 
-                rank: req.session.rank 
+            res.render("match", {
+                matches: results,
+                idName: req.session.idName,
+                rate: req.session.rate,
+                rank: req.session.rank
             });
         }
     });
@@ -594,7 +614,7 @@ router.post("/confirm_cancel_game", (req, res) => {
 
         let currentJoinUser = results[0].join_user || "";
         let currentJoinUsers = currentJoinUser.split(",").map(user => user.trim());
-        
+
         const index = currentJoinUsers.indexOf(cancelUserId);
         if (index === -1) {
             return res.send(`<script>alert("탈퇴할 사용자를 찾을 수 없습니다."); window.history.go(-1);</script>`);

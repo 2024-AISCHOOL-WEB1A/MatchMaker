@@ -25,9 +25,8 @@
     <div class="container">
         <div class="sidebar">
             <div class="profile_wrapper">
-                <img id="profileImage" src="" 
-                                alt="Profile Image" class="profile_image circle"
-                                onerror="this.onerror=null;this.src='/img/ball.png';">
+                <img id="profileImage" src="" alt="Profile Image" class="profile_image circle"
+                    onerror="this.onerror=null;this.src='/img/ball.png';">
                 <label for="imageUpload" class="upload-icon">
                     <ion-icon name="camera"></ion-icon>
                 </label>
@@ -46,8 +45,50 @@
                 <li>체력 {{userInfo[0].user_stamina_point}}</li>
                 <li>매너 {{userInfo[0].user_manner_point}}</li>
                 <li>웃음 {{userInfo[0].user_smile_point}}</li>
-
             </ul>
+            <div class="box">
+                <h2>경기 일정</h2>
+                <!-- 경기 일정 내용 추가 -->
+                {% for matchList in matchInfo %}
+                {% if matchList.isMatchEnded  == false%}
+                <div class="click">
+                    {% if matchList.rate_match_yn == 'Y' %}
+                    <h3>⚽ 레이팅 매치 ⚽</h3>
+                    {% else %}
+                    <h3>⚽ 일반 매치 ⚽</h3>
+                    {% endif %}
+
+                    {{matchList.match_title}}<br><br>
+
+                    지역 {{matchList.match_region}}<br>
+                    경기날짜 {{matchList.match_date}}<br>
+                    경기시간 {{matchList.match_st_dt}} ~ {{matchList.match_ed_dt}}<br><br>
+                    
+                    {% for teamList in teamInfoRows %}
+                    {% if matchList.match_idx == teamList.match_idx %}
+                    TEAM A : {{teamList.teamA_user1}}, {{teamList.teamA_user2}}, {{teamList.teamA_user3}},
+                    {{teamList.teamA_user4}}, {{teamList.teamA_user5}}<br><br>
+                    TEAM B : {{teamList.teamB_user1}}, {{teamList.teamB_user2}}, {{teamList.teamB_user3}},
+                    {{teamList.teamB_user4}}, {{teamList.teamB_user5}}
+                    {% endif %}
+                    {% endfor %}
+
+                    <h3>⚽ 예약 내역 ⚽</h3>
+                    {% for reservList in reservInfoRows %}
+                    {% if matchList.match_idx == reservList.match_idx %}
+                    예약자 : {{reservList.user_id}}<br>
+                    예약구장 : {{reservList.field_name}},{{reservList.court_name}}<br>
+                    경기날짜 : {{reservList.reserv_dt}}<br>
+                    경기시간 : {{reservList.reserv_st_tm}} ~ {{reservList.reserv_ed_tm}}<br>
+                    {% else %}
+                    <h3>예약내역이 없습니다. 구장 예약을 진행해주세요!</h3>
+                    {% endif %}
+                    {% endfor %}
+                </div><br><br>
+                {% endif %}
+                {% endfor %}
+
+            </div>
         </div>
         <div class="content">
             <div class="box">
@@ -68,17 +109,17 @@
                 <span class="rate_box">{{userInfo[0].user_rate}}</span>
                 <!-- 레이팅 내용 추가 -->
             </div>
+
             <div class="box">
                 <h2>경기 전적</h2>
-
                 <!-- 경기 전적 내용 추가 -->
                 {% for matchList in matchInfo %}
                 {% if matchList.isMatchEnded %}
                 <div class="click">
                     {% if matchList.rate_match_yn == 'Y' %}
-                    <h2>레이팅 매치</h2>
+                    <h2>⚽ 레이팅 매치 ⚽</h2>
                     {% else %}
-                    <h2>일반 매치</h2>
+                    <h2>⚽ 일반 매치 ⚽</h2>
                     {% endif %}
                     <h3>{{matchList.match_title}}</h3>
                     지역 {{matchList.match_region}}&nbsp;&nbsp;&nbsp;
@@ -102,11 +143,8 @@
                     경기결과 : {{ matchList.team_b }}
                     {% endif %}
                 </div><br><br>
-
-
                 {% endif %}
                 {% endfor %}
-
             </div>
         </div>
     </div>
