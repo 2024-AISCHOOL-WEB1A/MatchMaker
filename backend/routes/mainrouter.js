@@ -139,18 +139,20 @@ router.get('/match_room/:match_idx', (req, res) => {
 
         if (join_users.length > 0) {
             let placeholders = join_users.map(() => '?').join(',');
-            let user_sql = `SELECT user_id, user_rate, user_rank, user_photo FROM user_info WHERE user_id IN (${placeholders})`;
+            let user_sql = `SELECT user_id, user_nick, user_rate, user_rank, user_photo FROM user_info WHERE user_id IN (${placeholders})`;
 
             conn.query(user_sql, join_users, (err, users) => {
                 if (err) {
                     console.error(err);
                     return res.send("사용자 정보를 가져오는 중 오류가 발생했습니다.");
                 }
+                let user_nick = {};
                 let user_rate = {};
                 let user_rank = {};
                 let user_photo = {};
 
                 users.forEach(user => {
+                    user_nick[user.user_id] = user.user_nick;
                     user_rate[user.user_id] = user.user_rate;
                     user_rank[user.user_id] = user.user_rank;
                     user_photo[user.user_id] = bufferToBase64Url(user.user_photo); // user_photo를 Base64 URL로 바꾸는 작업
@@ -174,10 +176,12 @@ router.get('/match_room/:match_idx', (req, res) => {
                     }
                 }
                 console.log("user_photo", user_photo);
+                console.log("user_nick", user_nick);
                 res.render('match_room', {
                     match: match,
                     idName: req.session.idName,
                     join_users: join_users,
+                    user_nick: user_nick,
                     user_rate: user_rate,
                     user_rank: user_rank,
                     user_photo: user_photo,
