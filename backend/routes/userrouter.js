@@ -314,8 +314,8 @@ router.post("/update", (req, res) => {
 // 풋살장 관리자의 마이페이지에서 boss_info 테이블 업데이트 기능 router
 router.post("/boss_info_update", (req, res) => {
     console.log("boss_info_update", req.body);
-
-    let { id, pw, name, phone } = req.body;
+    let id = req.session.idName;
+    let { name, pw, phone } = req.body;
     let hashedPw = md5(pw);
     let sql = 'UPDATE boss_info SET boss_pw = ?, boss_name = ?, boss_phone = ? WHERE boss_id = ?';
     conn.query(sql, [hashedPw, name, phone, id], (err, rows) => {

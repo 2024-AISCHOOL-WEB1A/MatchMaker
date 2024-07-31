@@ -24,7 +24,7 @@ router.post('/upload', upload.single('img'), (req, res) => {
             console.error('Error updating profile image:', error);
             return res.status(500).json({ error: 'Failed to update profile image' });
         }
-        res.json({ message: 'Profile image uploaded successfully' });
+        res.json({ message: '프로필 사진 설정이 완료되었습니다!' });
     });
 });
 
