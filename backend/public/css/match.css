@@ -270,3 +270,47 @@ select {
 .table tr:last-child td:last-child {
     border-bottom-right-radius: 10px;
 }
+
+
+/* 퍼네이션 */
+div#nav-below.paging-navigation {
+    text-align: center; 
+}
+
+div#nav-below.paging-navigation .page-numbers {
+    display: inline-block;
+    padding: 8px 16px;
+    margin-right: 10px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+    background-color: transparent;
+    color: lightgray;
+}
+
+div#nav-below.paging-navigation span.page-numbers.current {
+    background-color: #0ef;
+    color: #FFF;
+}
+
+div#nav-below.paging-navigation a.page-numbers {
+    border: 1px solid #E0E0E0;
+}
+
+div#nav-below.paging-navigation a.page-numbers:hover,
+div#nav-below.paging-navigation a.page-numbers:focus {
+    background-color: #F5F5F5;
+    color: #333;
+}
+
+.separate-containers .paging-navigation {
+    padding: 25px 0;
+    text-align: center;
+    background-color: #FAFAFA;
+}
+
+div#nav-below.paging-navigation .gp-icon {
+    vertical-align: middle;
+}
