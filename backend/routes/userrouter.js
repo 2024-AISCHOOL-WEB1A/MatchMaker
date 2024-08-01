@@ -498,26 +498,50 @@ router.post("/create_match", (req, res) => {
 
 // 매치 페이지에서 방 리스트를 보여주는 라우터
 router.get("/match", (req, res) => {
-    console.log(req);
+    console.log("req.query.page", req.query.page);
+    let page = parseInt(req.query.page) || 1;  // 쿼리 파라미터에서 페이지 번호 읽기
+    const itemsPerPage = 10;
+    const offset = (page - 1) * itemsPerPage;
 
-    let sql = `
+    console.log(`현재 페이지: ${page}, 가져올 방 리스트 수: ${itemsPerPage}, 조회할 데이터의 시작 위치: ${offset}`);
+
+    let sqlCount = `
+    SELECT COUNT(*) as totalCount
+    FROM match_info1
+    `;
+
+    let sqlData = `
     SELECT m.match_idx, m.match_title, m.match_region, m.match_date, m.match_st_dt, m.match_ed_dt, 
            m.female_match_yn, m.rate_match_yn, m.match_info, m.join_user,
            u.user_rank as team_leader_rank
     FROM match_info1 m
     LEFT JOIN user_info u ON u.user_id = SUBSTRING_INDEX(m.join_user, ',', 1)
+    LIMIT ? OFFSET ?
     `;
 
-    conn.query(sql, (err, results) => {
+    conn.query(sqlCount, (err, countResults) => {
         if (err) {
             console.error('데이터 조회 오류:', err);
             res.send(`<script>alert("데이터를 가져오는 중 오류가 발생했습니다."); window.history.go(-1);</script>`);
         } else {
-            res.render("match", {
-                matches: results,
-                idName: req.session.idName,
-                rate: req.session.rate,
-                rank: req.session.rank
+            const totalCount = countResults[0].totalCount;
+            const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+            conn.query(sqlData, [itemsPerPage, offset], (err, results) => {
+                if (err) {
+                    console.error('데이터 조회 오류:', err);
+                    res.send(`<script>alert("데이터를 가져오는 중 오류가 발생했습니다."); window.history.go(-1);</script>`);
+                } else {
+                    console.log('쿼리 결과:', results);
+                    res.render("match", {
+                        matches: results,
+                        idName: req.session.idName,
+                        rate: req.session.rate,
+                        rank: req.session.rank,
+                        currentPage: page,
+                        totalPages: totalPages
+                    });
+                }
             });
         }
     });
