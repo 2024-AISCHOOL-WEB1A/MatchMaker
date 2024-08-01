@@ -510,7 +510,7 @@ router.get("/match", (req, res) => {
     FROM match_info1
     `;
 
-    let sql = `
+    let sqlData = `
     SELECT m.match_idx, m.match_title, m.match_region, m.match_date, m.match_st_dt, m.match_ed_dt, 
            m.female_match_yn, m.rate_match_yn, m.match_info, m.join_user,
            u.user_rank as team_leader_rank
